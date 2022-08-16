@@ -1,0 +1,15 @@
+.default__avater {
+    width: 100px;
+    height: 100px;
+}
+
+@media (max-width: 480px) {
+    .default__avater {
+        width: 75px !important;
+        height: 75px !important;
+    }
+
+    .default__avater span:nth-child(2) {
+        right: -25px;
+    }
+}

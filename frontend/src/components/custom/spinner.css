@@ -1,0 +1,53 @@
+
+/* Loading Spinner  */
+.loading{
+    width: 100vw;
+    height: 89vh;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.spinner{
+    width: 100px;
+}
+
+.small.spinner{
+    width: 100px;
+    max-width: 200px;
+}
+
+
+.spinner svg{
+    fill: teal;
+    width: 100%;
+    animation-name: spinner-desc;
+    animation-duration: 3s;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.small.spinner svg{
+    width: 2rem;
+}
+
+.large.spinner svg{
+    width: 100%;
+    max-width: 100px !important;
+}
+
+@keyframes spinner-desc {
+    0%{
+        fill: rgb(0, 100, 100);
+    }
+    100%{
+        transform: rotate(360deg);
+        fill: rgb(3, 231, 231);
+    }
+}
+
+
+/* ErrorMessage */

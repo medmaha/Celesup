@@ -1,0 +1,27 @@
+{% extends 'website/base.html' %}
+
+{% block content %}
+    {{maha}}
+    <center style="margin-top: 2rem;">
+        <fieldset style="width:500px">
+            <p>{{post.author}} <b>{{post.title}}</b></p>
+            {% if post.picture %}
+            <p>{{post.get_short_content}}...</p>
+            <img src="{{post.picture.url}}" alt="" width="80%">
+            {% else %}
+            <p>{{post.get_short_content}}...</p>
+            <p>{{object.title}}</p>
+            {% endif %}
+            <small>{{post.date_posted}}</small>
+            <p style="background: rgb(192, 231, 231); color: rgb(66, 63, 63); display: flex; gap: 1.5rem; justify-content: center;">
+                <button type="button">Views: {{post.views.count}}</button>
+                <button type="button" >followers: {{post.author_profile.followers.count}}</button>
+                <form  method="post" action="{% url 'post-like' post.key %}">
+                    {% csrf_token %}
+                    <button type="submit">likes: {{post.likes.count}}</button>
+                </form>
+            </p>
+        </fieldset>
+    </center>
+
+{% endblock %}

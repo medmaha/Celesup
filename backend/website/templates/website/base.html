@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/stylemaster.css' %}">
+    <title>Celesup</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar--wrapper">
+            <a href="/" class="navbar--logo">CeleSub</a>
+            <a href="#" class="mobile-menu " id="mobilMenu">
+                <span class="bar"></span> 
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </a>
+            <div class="navbar--search">
+                <input type="text" class="search--bar" placeholder="Search celesup">
+                <span class="search--icon"></span>
+            </div>
+            {% if profile %}
+            <ul class="navbar--menu">
+                <li class="navbar--menu--items">
+                    <a href="#" class="items--link active">Home</a>
+                </li>
+                <li class="navbar--menu--items">
+                    <a href="#" class="items--link">Explore</a>
+                </li>
+                <li class="navbar--menu--items">
+                    <a href="#" class="items--link" id="chat">Chats</a>
+                </li>
+                <li class="navbar--menu--items">
+                    <a href="#" class="items--link" id="notifications">Notifications</a>
+                </li>
+            </ul>
+            <div class="navbar--profile">
+                <div class="profile">
+                    <span class="profile--img">
+                        <img src="{{profile.avater.url}}" alt="">
+                    </span>
+                    <span class="dropdown--text">@{{profile}}</span>
+                </div>
+                <div id="dropdown">
+                    <ul class="dropdown--content">
+                        <li class="item">Account</li>
+                        <li class="item">Settings</li>
+                        <li class="item">Logout</li>
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+             <ul class="navbar--menu">
+                <li class="navbar--menu--items">
+                    <a href="#" class="items--link active">Login</a>
+                </li>
+                <li class="navbar--menu--items">
+                    <a href="#" class="items--link">Signup</a>
+                </li>
+            </ul>
+            {% endif %}
+
+        </div>
+
+        <!-- Navbar mobile -->
+        <ul class="mobile--menu--links" id="sidenav">
+            <li class="sidenav--menu--items">
+                <a href="#" class="sidenav--link ">Home</a>
+            </li>
+            <li class="sidenav--menu--items">
+                <a href="#" class="sidenav--link">Explore</a>
+            </li>
+            <li class="sidenav--menu--items">
+                <a href="#" class="sidenav--link ">Chats</a>
+            </li>
+            <li class="sidenav--menu--items">
+                <a href="#" class="sidenav--link">Notifications</a>
+            </li>
+            <li class="sidenav--menu--items">
+                <a href="#" class="sidenav--link">Settings</a>
+            </li>
+            <li class="sidenav--menu--items">
+                <a href="{% url 'logout' %}" class="sidenav--link">Logout</a>
+            </li>
+        </ul>
+    </nav>
+   {% block content %}
+   {% endblock %}
+
+   <script src="{% static 'js/scriptmaster.js' %}"></script>
+</body>
+</html>

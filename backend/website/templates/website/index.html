@@ -1,0 +1,253 @@
+{% extends 'website/base.html' %}
+
+{% block content %}
+<main>
+    <div class="main-wrapper">
+
+        <!-- activies-feed -->
+        <div class="left">
+            <div class="create--post">
+                <label for="title" class="post--btn" id="addPost">Create Post</label>
+                <div class="post--form">
+                    <form action="index.html" enctype="multipart/form-data">
+                        <input type="file">
+                        <input type="postFile" value="Add File">
+
+                        <input type="text" id="title" name="title" placeholder="title">
+                        <input type="text" name="hashtags" placeholder="hashtags">
+                        <textarea name="content" cols="30" rows="3" placeholder="Content"></textarea>
+                        <button type="submit">Post</button>
+                    </form>
+                </div>
+
+                <div class="activities--feed" id="activities">
+                    <div class="activity">
+                        <div class="author">
+                            <div class="author--img">
+                                <!-- <img src="../img/FB_IMG_15761885135962186.jpg" alt=""> -->
+                            </div>
+                            <span class="author--username">@react</span>
+                            <small class="time">
+                                2 hours ago
+                            </small>
+                        </div>
+                        <div class="commit">
+                            <p class="commit--msg">adds a post</p>
+                            <div class="commit--to">
+                                <!-- <img src="../img/66E63BDB-5ED7-473F-A257-93753DFCF749L0001~2.jpg" alt=""> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post and status -->
+        <div class="middle">
+            <!-- Status -->
+            <div class="users--status">
+                {% for status in statuses %}
+                <div class="status">
+                    {% if status.picture %}
+                    <div class="status--title">
+                        {{status.caption}}
+                    </div>
+
+                    <span class="status--body">
+                        <img src="{{status.picture.url}}" alt="">
+                    </span>
+                    {% elif status.caption %}
+                    <span class="status--body"
+                        style="border: 1px solid black; display: flex; align-items: center; justify-content: center;">
+                        {{status.caption}}
+                    </span>
+                    {% endif%}
+                    <span class="user--profile">
+                        <img src="{{profile.avater.url}}" alt="">
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Feeds -->
+            <div class="posts--feeds">
+                <div class="posts--wrapper">
+                    {% for post in posts %}
+                    <div class="post">
+                        {% if post.picture %}
+                        <div class="post--file">
+                            <a href="{% url 'post-detail' post.pk %}">
+                                <img src="{{post.picture.url}}" alt="">
+                            </a>
+                        </div>
+                        {% endif %}
+                        <span class="post--body">
+                            <a href="{% url 'post-detail' post.pk %}">
+                                <h4 class="post--title">
+                                    {{post.title}}
+                                </h4>
+                            </a>
+                            <p class="post--content">
+                                {{post.content}}
+                            </p>
+                        </span>
+                        <div class="post--details">
+                            <div class="interaction--bnts">
+                                <span>
+                                    <i class="material-icons like">
+                                        favorite
+                                    </i>
+                                    {{post.likes.count}}
+                                </span>
+                                <span>
+                                    <i class="material-icons chat">
+                                        chat
+                                    </i>
+                                    75+
+                                </span>
+                                <span>
+                                    <i class="material-icons share">
+                                        share
+                                    </i>
+                                    12
+                                </span>
+                                <span>
+                                    <i class="material-icons bookmark">
+                                        bookmark
+                                    </i>
+                                    7
+                                </span>
+                            </div>
+                            <div class="date">
+                                <span class="post--date">
+                                    {{post.date_posted}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div style="display: flex;">
+                        <span>
+                            {% if posts.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ posts.previous_page_number }}">previous</a>
+                            {% endif %}
+                            <span class="current">
+                                Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+                            </span>
+    
+                            {% if posts.has_next %}
+                                <a href="?page={{ posts.next_page_number }}">next</a>
+                                <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- trends -->
+        <div class="right" id="right">
+            <div class="top--trendings">
+                <h4>Top Trendings</h4>
+
+                <div class="trends--wrapper">
+                    {% for trend in trends %}
+                    <div class="trend">
+                        <div class="texts-wrapper">
+                            <span class="trend--title">{{trend}}</s>
+                                <p class="trend--content">
+                                    {{trend.content}}
+                                    {{trend.caption}}
+                                </p>
+                                <div class="trend--infos">
+                                    <span>
+                                        <i class="material-icons like">favorite</i>
+                                        <small>{{trend.likes.count}}</small>
+                                    </span>
+                                    <span>
+                                        <i class="material-icons chat">chat</i>
+                                        <small>40+</small>
+                                    </span>
+                                    <span>
+                                        <i class="material-icons share">share</i>
+                                        <small>18</small>
+                                    </span>
+                                    <span>
+                                        <i class="material-icons bookmark">bookmark</i>
+                                        <small>9</small>
+                                    </span>
+                                </div>
+                        </div>
+                        <div class="trend--file">
+                            {% if trend.picture %}
+                            <img src="{{trend.picture.url}}" alt="">
+                            {% else %}
+                            <img src="{{trend.thumbnail.url}}" alt="">
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- Chat App  # when focus takes full screen -->
+<div class="messaging-and-chat">
+    <!-- messager app -->
+    <div id="messenger">
+        <div class="celesup--message--app" id="celesupMessenger">
+            <h5 class="header">Messenger</h5>
+    
+            <form class="search--msgs">
+                <input type="text" id="msg-search" name="msg-query" placeholder="Search for messages">
+            </form>
+
+            <!-- individual conversation wrapper -->
+            <div class="chats--wrapper">
+                <div class="chat">
+
+                    <div class="chat--info">
+                        <div class="user--profile">
+                            <img src="../img/IMG_20181229_042718.jpg" alt="">
+                        </div>
+
+                        <div class="last--conversation">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque architecto dicta accusamus at
+                            quod cum magnam! Ex accusamus quisquam rerum suscipit voluptatem in ipsum enim laudantium
+                            impedit aliquid, corrupti voluptate!
+                        </div>
+                    </div>
+
+                    <span class="last--date">
+                        1 week ago
+                    </span>
+                </div>
+            </div>
+
+            <!-- feature for composing new messages -->
+            <div class="compose--new--msg">
+                +
+            </div>
+        </div>
+    </div>
+    
+    <!-- individual chats wrapper-->
+    <div class="chat-windows" id="chat-wrapper"> <!-- # waiting to be injected --> </div>
+
+    <!-- activate when the chat wrapper has no space left on the screen -->
+    <div class="mini-chat-window" id="mini-chat">
+
+        <div class="wrapper"> <!-- # waiting to be injected --> </div>
+
+        <div class="close-charts"> <!-- # waiting to be injected --> </div>
+
+    </div>
+</div>
+{% endblock %}

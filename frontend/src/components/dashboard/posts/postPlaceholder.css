@@ -1,0 +1,138 @@
+
+:root{
+    --bg-color: var(--text--color);
+}
+
+.light-mode{
+    --bg-color-animate-a: rgb(255, 255, 255, .6) !important;
+    --bg-color--animate-b: rgb(255, 255, 255, .7) !important;
+}
+
+.dark-mode {
+    --bg-color-animate-a: rgb(0, 0, 0, .9) !important;
+    --bg-color--animate-b: rgb(0, 0, 0, .0) !important;
+}
+
+
+
+.placeholder .post__author{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 50px;
+}
+.placeholder .post__author .avatar{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--bg-color);
+    overflow: hidden;
+}
+
+.placeholder .post__author .username_and_time{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
+}
+
+.placeholder .post__author .username_and_time .username{
+    height: 20px;
+    width: 200px;
+    background: var(--bg-color);
+    border-radius: .5rem;
+
+}
+.placeholder .post__author .username_and_time .time{
+    height: 15px;
+    width: 150px;
+    background: var(--bg-color);
+    border-radius: .5rem;
+
+}
+
+.placeholder .post__caption{
+    display: flex;
+    background: var(--bg-color);
+    height: 35px;
+    margin: .5rem;
+    max-width: 70%;
+    width: 100%;
+    border-radius: .7rem;
+
+}
+.placeholder .post__excerpt{
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    margin: .5rem;
+}
+.placeholder .post__excerpt .excerpt{
+    display: flex;
+    height: 20px;
+    border-radius: .7rem;
+    background: var(--bg-color);
+}
+
+.placeholder .post__image{
+    border-radius: 1rem;
+    margin: .5rem 0;
+    width: 100%;
+    min-height: 300px;
+    background: var(--bg-color);
+    /* display: flex; */
+    /* justify-content: center; */
+    z-index: 100;
+}
+.placeholder .post__image img{
+    width: 100%;
+    height: 100%;
+    border-radius: 1rem;
+    /* object-fit: cover; */
+}
+
+.placeholder .post__interactions{
+    display: flex;
+    height: 25px;
+    background: var(--bg-color);
+    border-radius: .7rem;
+}
+
+.dark-mode .placeholder .animate{
+    background-image: linear-gradient(to left,
+         rgba(0, 0, 10, .1), var(--bg-color--animate-b)
+        ) !important;
+}
+.light-mode .placeholder .animate{
+   background-image: linear-gradient(to right,
+         var(--bg-color--animate-b), var(--bg-color-animate-a)
+        ) !important;
+}
+.placeholder .animate{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 200% 100%;
+    animation-name: placeholder;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    z-index: 1;
+}
+
+/* .animate{
+    animation-fill-mode: both;
+    animation-direction:alternate-reverse;
+} */
+
+@keyframes placeholder{
+    0%{
+        background-position: 50% 0;
+    }
+
+    100%{
+        background-position: -150% 0;
+    }
+}

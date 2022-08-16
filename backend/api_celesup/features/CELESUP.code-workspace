@@ -1,0 +1,10 @@
+{
+    "folders": [
+        {
+            "path": "..\\..\\..\\..\\myApp"
+        }
+    ],
+    "settings": {
+        "editor.formatOnSave": false
+    }
+}

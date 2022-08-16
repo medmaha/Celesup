@@ -1,0 +1,52 @@
+
+/* Loading Spinner  */
+.loading{
+    width: 100vw;
+    height: 89vh;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.loading__spinner{
+    width: 100px;
+    max-width: 200px;
+}
+
+.loading__spinner svg{
+    fill: teal;
+    width: 100%;
+    max-width: 100%;
+    animation-name: spinner-desc;
+    animation-duration: 3s;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes spinner-desc {
+    0%{
+        transform: rotate(0deg);
+        fill: rgb(0, 33, 33);
+    }
+    30%{
+        fill: rgb(0, 100, 100);
+    }
+    70%{
+        fill: rgb(2, 170, 170);
+    }
+    100%{
+        transform: rotate(360deg);
+        fill: rgb(3, 231, 231);
+    }
+}
+
+
+/* ErrorMessage */
+
+.error{
+    width: 100%;
+    top: 0;
+}
