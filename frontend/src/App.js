@@ -20,7 +20,6 @@ import CreateNewPost from './components/dashboard/posts/create/createPost';
 
 export const GlobalContext = createContext({})
 
-
 function App() {
     const accessToken = localStorage.getItem('access')
     const refreshToken = localStorage.getItem('refresh')
@@ -41,7 +40,6 @@ function App() {
         if (tokens?.access && tokens?.refresh){
             localStorage.setItem('refresh', tokens.refresh)
             localStorage.setItem('access', tokens.access)
-
             const client = jwtDecode(tokens.access)
             setUser(client)
         }
@@ -59,25 +57,27 @@ function App() {
     }
    
     return (
-        <GlobalContext.Provider value={contextValues}>
-            {/* <Navbar /> */}
-            <BrowserRouter>
-                <Navbar/>
-                <Routes>
-                    <Route exact  path='/' element={<Index />}/>
-                    <Route path={`/:username`} element={<Dashboard/>}/>
-                    <Route path={`/:username/explore`} element={<ExplorePosts/>}/>
-                    
-                    <Route path={`/profile/:username`} element={<UserProfile/>}/>
-                    
-                    <Route path='/login' element={<Login setUser={setUser}/>}/>
-                    <Route path='/signup' element={<Register/>}/>
-                    <Route path='*' element={<PageNotFound/>}/>
-                </Routes>
-                {focusState?.createPost && <CreateNewPost/>}
-                <MobileNavbarLinks/>
-            </BrowserRouter>
-        </GlobalContext.Provider>
+        <div className='App'>
+            <GlobalContext.Provider value={contextValues}>
+                {/* <Navbar /> */}
+                <BrowserRouter>
+                    <Navbar/>
+                    <Routes>
+                        <Route exact  path='/' element={<Index />}/>
+                        <Route path={`/:username`} element={<Dashboard/>}/>
+                        <Route path={`/:username/explore`} element={<ExplorePosts/>}/>
+                        
+                        <Route path={`/profile/:username`} element={<UserProfile/>}/>
+                        
+                        <Route path='/login' element={<Login setUser={setUser}/>}/>
+                        <Route path='/signup' element={<Register/>}/>
+                        <Route path='*' element={<PageNotFound/>}/>
+                    </Routes>
+                    {focusState?.createPost && <CreateNewPost/>}
+                    <MobileNavbarLinks/>
+                </BrowserRouter>
+            </GlobalContext.Provider>
+        </div>
    );
 } 
 

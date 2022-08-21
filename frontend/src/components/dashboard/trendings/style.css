@@ -1,4 +1,14 @@
-.trending{
+.trending {
     position: sticky;
     top: -78.5%
+}
+
+.trend .first {
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+}
+
+.trend .last {
+    border-bottom-left-radius: 1rem !important;
+    border-bottom-right-radius: 1rem !important;
 }

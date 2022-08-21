@@ -69,14 +69,14 @@ const Login = () => {
 
     return (
         <>
-            <div className="d-flex justify-content-center mt-3">
+            <div className="d-flex justify-content-center mt-3 align-items-center">
                 <div className="card mx-__" style={{maxWidth: '300px'}}>
-                    <h3 className="text-center">
+                    <h4 className="text-center">
                         Welcome To Celesup
-                    </h3>
-                    <h5 className="text-center py-__ " style={{letterSpacing: '2px'}}>
+                    </h4>
+                    <h6 className="text-center py-__ " style={{letterSpacing: '2px'}}>
                         LOGIN
-                    </h5>
+                    </h6>
                     {error && <DisplayAlertMessage asError={true} message={error}/>}
                     <form onSubmit={submitForm}>
                         <div className='input-field'>
@@ -104,7 +104,7 @@ const Login = () => {
                             {pending ?
                                 < PendingSpinner small={true}/>
                                     :
-                                <button className='btn-outline-teal btn p-1'>
+                                <button className='btn-outline-primary btn p-1'>
                                     <span>login</span>
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
                                         <path d="M560 448H512V113.5c0-27.25-21.5-49.5-48-49.5L352 64.01V128h96V512h112c8.875 0 16-7.125 16-15.1v-31.1C576 455.1 568.9 448 560 448zM280.3 1.007l-192 49.75C73.1 54.51 64 67.76 64 82.88V448H16c-8.875 0-16 7.125-16 15.1v31.1C0 504.9 7.125 512 16 512H320V33.13C320 11.63 300.5-4.243 280.3 1.007zM232 288c-13.25 0-24-14.37-24-31.1c0-17.62 10.75-31.1 24-31.1S256 238.4 256 256C256 273.6 245.3 288 232 288z"/></svg>
@@ -114,10 +114,10 @@ const Login = () => {
                     </form>
                 </div>
             </div>
-            <div className="d-flex justify-content-center font-md mt-2">
+            <div className="d-flex justify-content-center cursor-pointer font-md mt-2"
+                onClick={gotoRegisterRoute}>
                 New to Celesup?
-                <span className='teal-text-lighten-2 pl-1 cursor-pointer text-hover-blue-lighten-3'
-                    onClick={gotoRegisterRoute}>
+                <span className='teal-text-lighten-2 pl-__  hint-text'>
                     Signup
                 </span>
             </div>

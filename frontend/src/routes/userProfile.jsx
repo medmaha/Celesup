@@ -1,51 +1,60 @@
 import'./userProfile.css'
-import { useEffect, useContext } from 'react' 
+import { useEffect, useContext, useState } from 'react' 
 import {GlobalContext} from '../App'
 import useAxiosRequest from '../hooks/useAxiosRequest'
-import { celesupApi } from '../axiosInstances'
-import { useState } from 'react'
+import useTokenRefresh from '../hooks/useTokenRefresh'
+import { celesupApi, CELESUP_BASE_URL } from '../axiosInstances'
 
 
 // const BASE_URL = ''
-const BASE_URL = 'http://localhost:8000'
+// const BASE_URL = 'http://localhost:8000'
 
 const UserProfile = () => {
     
+    const context = useContext(GlobalContext)
+    const profileID = localStorage.getItem('pvpk')
+    const [readOnly, setReadOnly] = useState(false)
     // eslint-disable-next-line
     const [profileData, pendingData, error, sendAxiosRequest] = useAxiosRequest()
-    const [readOnly, setReadOnly] = useState(false)
-    const context = useContext(GlobalContext)
+    const {refreshUserTokens} = useTokenRefresh()
+
 
 
     useEffect(()=>{
-        if (context.user?.first_name && context.user?.last_name){
-            document.title = context.user.first_name?.toUpperCase() +' '+ context.user.last_name?.toUpperCase()
-        }
-        else{
-            document.title = 'CELESUP | '+context.user?.username
-        }
+        "Fetches the profile data on first arrival"
         requestProfileData('/profile/view', 'POST', new FormData())
-        
-        if (context.user?.id === localStorage.getItem('pvpk')){
-            setReadOnly(true)
-        }
-        // eslint-disable-next-line 
+        // eslint-disable-next-line
     },[])
+
+    useEffect(()=>{
+        "Verifies a read-only permission to this profile and set the TAP title"
+        if (!context.user || !profileData) return
+
+        if (context.user.id !== profileID) setReadOnly(true);
+
+        if (profileData.first_name && profileData.last_name){
+            document.title = profileData.first_name.toUpperCase() +' '+ profileData.last_name.toUpperCase()
+            return
+        }
+
+        document.title = 'CELESUP | '+profileData.username.toUpperCase()
+
+        // eslint-disable-next-line 
+    },[context])
 
     useEffect(()=>{
         if (!profileData) return
 
-        if (!readOnly){
-            context.setUser({...context.user, avatar:BASE_URL+ profileData.avatar})
+        if (profileData && !readOnly){
+            const newTokens = refreshUserTokens()
+            console.log(newTokens);
+            // context.updateTokens({access: newTokens.access, refresh: newTokens.refresh})
         }
-
+    
         // eslint-disable-next-line
     },[profileData])
 
-
-
     function requestProfileData(url, method, form, config={}) {
-        const profileID =  localStorage.getItem('pvpk')
         form.append('Profile-Id', profileID)
         
         sendAxiosRequest({
@@ -66,8 +75,10 @@ const UserProfile = () => {
         input.addEventListener('change', ()=>{
             const config = {headers:{'Content-Type':'multipart/form-data'}}
             const form = new FormData()
+
             form.append(currentTarget.getAttribute('data-field'), input.files[0])
             requestProfileData('/profile/edit', 'PUT', form, config)
+            
         })
     }
 
@@ -79,12 +90,12 @@ const UserProfile = () => {
                             <div className="col-9-lg col-8-md" id='columnOne'>
                                 <div className="profile pos-relative">
                                     <div className="cover__image">
-                                        <img className='responsive' src={BASE_URL + profileData.cover_img} alt=""/>
+                                        <img className='responsive' src={CELESUP_BASE_URL + profileData.cover_img} alt=""/>
                                     </div>
-                                    {readOnly ?
+                                    {!readOnly ?
                                         <>
                                             <div onClick={editProfileImages} data-field='avatar' className="profile__avatar pos-absolute z-1">
-                                                <img src={BASE_URL + profileData.avatar} className='responsive' alt="" />
+                                                <img src={CELESUP_BASE_URL + profileData.avatar} className='responsive' alt="" />
                                             </div>
                                             <div onClick={editProfileImages} data-field='cover_img' className="edit__cover_image__btn br-full pos-absolute top-5 p-__ grey-lighten-2" style={{right: '2%'}}>
                                                     <span className="icon-wrapper d-flex align-items-center">
@@ -96,7 +107,7 @@ const UserProfile = () => {
                                             :
                                         <>
                                             <div data-field='avatar' className="profile__avatar pos-absolute z-1">
-                                                <img src={BASE_URL + profileData.avatar} className='responsive' alt="" />
+                                                <img src={CELESUP_BASE_URL + profileData.avatar} className='responsive' alt="" />
                                             </div>
                                         </>
                                     }

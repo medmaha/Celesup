@@ -43,11 +43,11 @@ def stream_post(sender, instance, created, **kwargs):
     profile = author.profile
 
 
-    friends = profile['profile'].friends.all()
+    friends = profile.friends.all()
     followers = None
 
-    if created and profile['type'] == 'celebrity':
-        followers = profile['profile'].followers.all() 
+    if created and profile.user_type == 'celebrity':
+        followers = profile.user_type.followers.all() 
 
         for friend in friends:
             friend_has_feed = False  
@@ -75,7 +75,7 @@ def stream_post(sender, instance, created, **kwargs):
                 feed = Feed.objects.create(user=follower, id=id)
                 feed.posts.add(instance)
 
-    if created and profile['type'] == 'supporter':
+    if created and profile.user_type == 'supporter':
         for friend in friends:
             follower_has_feed = False
             for feed in feeds:

@@ -4,6 +4,8 @@ import dayjs from 'dayjs'
 
 const baseURL = 'http://localhost:8000'
 
+export const CELESUP_BASE_URL = baseURL
+
 
 export const celesupApi = axios.create({
     baseURL: baseURL,
@@ -12,6 +14,7 @@ export const celesupApi = axios.create({
         'Content-type': 'application/json',
     }
 })
+
 
 celesupApi.interceptors.request.use((config)=>{
     const accessToken = localStorage.getItem('access')
@@ -47,7 +50,7 @@ celesupApi.interceptors.response.use(function (response) {
 const refreshAuthTokens = (config, refreshToken)=>{
     axios.post(baseURL+'/refresh/user/tokens', {
         refresh: refreshToken
-        },{'Content-Type': 'application/json', Accepts:'application/json'}
+        },{'Content-Type': 'application/json'}
         )
         .then((resp)=>{
             let data = resp.data

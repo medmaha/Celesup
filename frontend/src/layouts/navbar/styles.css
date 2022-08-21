@@ -2,14 +2,19 @@ nav {
     z-index: 100;
 }
 
+.nav-links .link.active svg {
+    fill: var(--primary) !important;
+}
+
 .navbar-dropdown {
     position: absolute;
-    top: 60px;
-    right: 0;
+    top: 50px;
+    right: -15px;
     min-width: 150px;
     min-height: fit-content;
     display: block;
     z-index: 100;
+    max-width: 250px !important;
 }
 
 .navbar-dropdown li {

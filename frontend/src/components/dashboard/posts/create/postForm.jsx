@@ -10,7 +10,6 @@ const PostForm = () => {
 	const [fileSelected, setFileSelected] = useState(false)
     const postModal = useRef()
     const postExcerpt = useRef()
-    const hiddenFileInput = useRef()
     const context = useContext(GlobalContext)
 
     useEffect(()=>{
@@ -27,8 +26,10 @@ const PostForm = () => {
     },[])
     
 	function uploadFile (){
-		hiddenFileInput.current.click()
-		hiddenFileInput.current.addEventListener('change', ({target})=>{
+        const hiddenFileInput = document.createElement('input')
+        hiddenFileInput.setAttribute('type', 'file')
+		hiddenFileInput.click()
+		hiddenFileInput.addEventListener('change', ({target})=>{
             if (target.files && target.files[0]){
                 updateFormData({
                     ...formData,

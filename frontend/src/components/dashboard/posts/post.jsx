@@ -56,7 +56,7 @@ const Post = ({post}) => {
     
 
     return (
-        <div ref={postMenu} className="post border-bottom-1 pos-relative">
+        <div ref={postMenu} className="post flat-card pos-relative">
             {/* author */}
             <div className="d-flex align-items-center pos-relative p-1">
                 <div onClick={visitAuthorProfile} className="d-flex align-items-center">

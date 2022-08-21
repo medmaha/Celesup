@@ -13,7 +13,7 @@ const NewPostCard = ({context}) => {
     }
 
     return (
-        <div className='card br-md mb-2 new__post'>
+        <div className='flat-card br-md mb-2 new__post'>
             <div className='d-flex align-items-center'>
                 <div className="profile-img-lg mr-1">
                     <img className=''  src={context.user?.avatar} alt="" />

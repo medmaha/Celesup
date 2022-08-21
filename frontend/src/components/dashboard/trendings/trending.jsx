@@ -10,25 +10,26 @@ const Trending = () => {
               Lorem ipsum dolor, sit amet ctetur adipisicing ipsum elit A aliquam! ctetur.
             </p>
         </div>
-        <div className="box-shadow overflow-hidden br-md p-0 suggestions">
-          <Trend/>
-          <Trend/>
-          <Trend/>
-          <Trend/>
+        <div className="suggestions mb-1 pb-__">
+          <Trend hint={'Technology'} instance={'#opensourse'} stats={'5,741 streams'} first={true}/>
+          <Trend hint={'Alpha Dem - trending'} instance={'@alpha123dem'} stats={'7,041 followers'}/>
+          <Trend hint={'Technology - trending'} instance={'#opensourse'} stats={'5,741 streams'}/>
+          <Trend hint={'Technology - trending'} instance={'#opensourse'} stats={'5,741 streams'} last={true}/>
+
         </div>
 
-        <div className="box-shadow overflow-hidden br-md mt-2  p-0 suggestions">
+        <div className="suggestions">
+          <Trend first={true}/>
           <Trend/>
           <Trend/>
           <Trend/>
-          <Trend/>
-          <Trend/>
+          <Trend last={true}/>
         </div>
 
         <div className="d-flex justify-content-center mt-3">
-          <span className="btn-outline-teal br-md teal-text text-hover-white">
+          <button className="btn-primary px-2 py-2 font-md br-md">
               Request Premium
-          </span>
+          </button>
         </div>
     </div>
   )

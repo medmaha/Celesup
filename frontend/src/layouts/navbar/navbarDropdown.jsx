@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate} from "react-router-dom"
 import {GlobalContext} from '../../App'
 
 const NavbarDropdown = () => {
@@ -19,10 +19,23 @@ const NavbarDropdown = () => {
         document.body.classList.toggle('light-mode')
         localStorage.setItem('theme', 'light-mode')
     }
-
+    
+    
     function userAccount(){
-        localStorage.setItem('pvpk', context.user.id)
-        navigate('/profile/'+context.user.username)
+        const pathName = window.location.pathname
+
+        if (pathName.split('/')[1] !== 'profile'){
+            localStorage.setItem('pvpk', context.user.id)
+            navigate('/profile/'+context.user.username)
+            return
+        }
+
+        if (pathName !== '/profile/'+context.user.username){
+            localStorage.setItem('pvpk', context.user.id)
+            window.location.reload()
+        }
+        
+
     }
     
     function logoutUser() {
@@ -41,7 +54,7 @@ const NavbarDropdown = () => {
         })
     }
   return (
-    <div className='navbar-dropdown box-shadow bg-color z-1'>
+    <div className='navbar-dropdown card bg-color z-1'>
         <ul className='text-color d-flex flex-column align-items-end'>
             <li className='m-1 mt-0 mb-0 p-1'  onClick={()=>dropDownDecorator(userAccount)}>Profile</li>
             <li className='m-1 mb-0 p-1' onClick={()=>dropDownDecorator(toggleTheme)}>Settings</li>                                       
