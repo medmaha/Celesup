@@ -1,17 +1,28 @@
 import { useState } from 'react'
 
-const useAxiosRequest = () => {
+const useComplexAxiosRequests = () => {
 	const [response, setResponse] = useState(null)
 	const [pending, setPending] = useState(false)
 	const [error, setError] = useState(null)
 
-	async function sendAxiosRequest({ axiosInstance, url, method, form, options }) {
+	async function sendAxiosRequest({
+		axiosInstance,
+		url,
+		method,
+		form,
+		options = {},
+		subsequentRequests = { arguments: [], func: null },
+	}) {
 		setPending(true)
 		if (method.toLowerCase() === 'get') {
-			const data = await axiosInstance[method.toLowerCase()](url).then(
+			axiosInstance[method.toLowerCase()](url).then(
 				(res) => {
 					setResponse(res.data)
 					setPending(false)
+
+					if (res.status >= 200 && subsequentRequests.arguments?.length > 0) {
+						subsequentRequests.func(...subsequentRequests.arguments)
+					}
 				},
 				(error) => {
 					const errorMsg =
@@ -23,18 +34,19 @@ const useAxiosRequest = () => {
 					setPending(false)
 				},
 			)
-			return data
-		}
-
-		if (
+		} else if (
 			method.toLowerCase() === 'post' ||
 			method.toLowerCase() === 'put' ||
 			method.toLowerCase() === 'delete'
 		) {
-			const data = await axiosInstance[method.toLowerCase()](url, form, options).then(
+			axiosInstance[method.toLowerCase()](url, form, options).then(
 				(res) => {
 					setResponse(res.data)
 					setPending(false)
+
+					if (res.status >= 200 && subsequentRequests.arguments?.length > 0) {
+						subsequentRequests.func(...subsequentRequests.arguments)
+					}
 				},
 				(error) => {
 					const errorMsg =
@@ -46,10 +58,10 @@ const useAxiosRequest = () => {
 					setPending(false)
 				},
 			)
-			return data
 		}
 	}
+
 	return [response, pending, error, sendAxiosRequest]
 }
 
-export default useAxiosRequest
+export default useComplexAxiosRequests
