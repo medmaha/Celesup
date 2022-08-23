@@ -1,8 +1,6 @@
 #Backends dependencies
 .vscode
 *venv
-
-*venv
 *__pycache__
 
 # frontend dependencies

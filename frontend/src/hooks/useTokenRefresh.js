@@ -2,12 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { CELESUP_BASE_URL } from "../axiosInstances";
 
-
-
 const useTokenRefresh = () => {
     const [tokens, setTokens] = useState()
     const controller = new AbortController()
-
     useEffect(()=>{
         if (!tokens) return 
         console.log(tokens);
