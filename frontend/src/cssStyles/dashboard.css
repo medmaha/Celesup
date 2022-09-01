@@ -4,32 +4,36 @@
     display: none;
   }
 } */
-@media (max-width: 960px) {
-  .activity{
-    display: none;
-  }
+
+.dashboard-container {
+	margin: 65px auto;
+	max-width: 1300px;
+	/* padding: 0 1px; */
 }
-@media (max-width: 600px) {
-  .trending{
-    display: none;
-  }
-  .posts{
-    width: 100% !important;
-  }
+
+@media (max-width: 960px) {
+	.activity {
+		display: none;
+	}
+}
+@media (max-width: 660px) {
+	.trending {
+		display: none;
+	}
+	.posts {
+		width: 100% !important;
+	}
 }
 @media (max-width: 500px) {
-  .posts{
-    width: 100% !important;
-  }
+	.posts {
+		width: 100% !important;
+	}
 }
 @media (max-width: 450px) {
-  .dashboard.container{
-    margin: 0;
-    padding: 0;
-    margin-top: 1rem;
-    width: 100% !important;
-  }
+	.dashboard.container {
+		margin: 0;
+		padding: 0;
+		margin-top: 1rem;
+		width: 100% !important;
+	}
 }
-
-
-

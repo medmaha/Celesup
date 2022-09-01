@@ -1,91 +1,87 @@
 /* CreatePost JSX */
 
 .create__post__container {
-    position: fixed;
-    background: rgba(0, 0, 0, .7);
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 101vh;
-    z-index: 100;
-    display: flex;
-    justify-content: center;
+	position: fixed;
+	background: rgba(0, 0, 0, 0.7);
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 101vh;
+	display: flex;
+	justify-content: center;
 }
 
 .create__post__container .post__modal {
-    width: 550px;
-    height: 420px;
-    max-height: 500px;
+	width: 550px;
+	height: 420px;
+	max-height: 500px;
 }
 
 .create__post__container .post__modal .header .icon-wrapper svg {
-    fill: white !important;
-    font-size: 1.1rem;
+	fill: white !important;
+	font-size: 1.1rem;
 }
-
 
 /* .create__post__container .post__modal textarea[name=excerpt], */
-.create__post__container .post__modal textarea[name=caption] {
-    border: none !important;
+.create__post__container .post__modal textarea[name='caption'] {
+	border: none !important;
 }
 
-.create__post__container .post__modal textarea[name=caption]::placeholder {
-    font-size: 1.1rem !important;
+.create__post__container .post__modal textarea[name='caption']::placeholder {
+	font-size: 1.1rem !important;
 }
-
 
 /*  */
 
 .selected-file {
-    max-height: 80vh;
+	max-height: 80vh;
 }
 
 .selected-file .wrapper {
-    min-width: 300px;
+	min-width: 300px;
 }
 
 .selected-file svg {
-    cursor: pointer;
-    transition: fill .5s, transform .5s;
+	cursor: pointer;
+	transition: fill 0.5s, transform 0.5s;
 }
 
 .selected-file svg:hover {
-    fill: var(--light--text)
+	fill: var(--light--text);
 }
 
 .selected-file .file {
-    max-height: 65vh;
-    overflow: hidden;
-    overflow-y: auto;
-    min-height: fit-content;
-    position: relative;
+	max-height: 65vh;
+	overflow: hidden;
+	overflow-y: auto;
+	min-height: fit-content;
+	position: relative;
 }
 
 .selected-file .file::-webkit-scrollbar {
-    width: .8rem;
+	width: 0.8rem;
 }
 
 .selected-file .file::-webkit-scrollbar-thumb {
-    background-color: #666;
-    border-radius: .5rem;
+	background-color: #666;
+	border-radius: 0.5rem;
 }
 
 .file::-webkit-scrollbar-track {
-    border-radius: .5rem;
-    background-color: #ccc;
+	border-radius: 0.5rem;
+	background-color: #ccc;
 }
-
 
 .selected-file .file canvas {
-    width: 100%;
-    object-fit: fill;
+	width: 100%;
+	object-fit: fill;
 }
 
-.selected-file .post-editor span input[type=range] {
-    width: 100%;
+.selected-file .post-editor span input[type='range'] {
+	width: 100%;
 }
 
 .selected-file span.active svg {
-    transform: scale(1.5);
-    fill: rgb(6, 190, 190);
+	transform: scale(1.5);
+	fill: rgb(6, 190, 190);
 }

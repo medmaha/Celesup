@@ -1,6 +1,18 @@
-const name = 'hello'
-const names = 'hello'
+document.addEventListener('click', e =>{
+	const isDropdownButton = e.target.matches(("[data-dropdown-button]"))
+	if (!isDropdownButton && e.target.closest(["[data-dropdown]"]) != null) return
+	
+	let currentDropdown
 
-const x = () => {
-	if (1 === 2) return
-}
+	if (isDropdownButton){
+		currentDropdown = e.target.closest("[data-dropdown]")
+		// if (currentDropdown){
+
+		// }
+		currentDropdown.classList.toggle("active")
+	}
+	document.querySelectorAll("[data-dropdown].active").forEach(dropdown=>{
+		if (dropdown === currentDropdown) return
+		dropdown.classList.remove('active')
+	})
+})

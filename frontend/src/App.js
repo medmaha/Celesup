@@ -1,10 +1,9 @@
+import Supcel from './cssStyles/supcel-CSS/supcel'
 import { useEffect, useState, createContext } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import jwtDecode from 'jwt-decode'
 import Navbar from './layouts/navbar/navbar'
 import MobileNavbarLinks from './layouts/navbar/mobileNavbarLinks'
-
-// hooks
 
 // route elements
 import Login from './routes/auth/signin/login'
@@ -71,10 +70,11 @@ function App() {
 		setUser,
 		updateTokens,
 		setFocusState,
+		supcelLibrary: Supcel,
 	}
 
 	return (
-		<div className='App'>
+		<div id='App'>
 			<GlobalContext.Provider value={contextValues}>
 				{/* <Navbar /> */}
 				<BrowserRouter>

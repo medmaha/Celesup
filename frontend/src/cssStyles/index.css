@@ -1,5 +1,6 @@
-@import'./supcel-CSS/supcel.css';
+@import './supcel-CSS/supcel.css';
 
 .App {
-    min-height: 100vh;
+	background-color: green !important;
+	min-height: 100%;
 }

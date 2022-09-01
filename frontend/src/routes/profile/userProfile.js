@@ -36,8 +36,7 @@ const UserProfile = () => {
 		if (context.user.id !== profileID) setReadOnly(true)
 
 		if (profileData.first_name && profileData.last_name) {
-			document.title =
-				profileData.first_name.toUpperCase() + ' ' + profileData.last_name.toUpperCase()
+			document.title = profileData.first_name.toUpperCase() + ' ' + profileData.last_name.toUpperCase()
 			return
 		}
 
@@ -89,36 +88,20 @@ const UserProfile = () => {
 	}
 
 	return (
-		<div className='container row justify-content-center gap-1 mt-2'>
+		<div className='container row justify-content-center'>
 			{profileData && (
 				<>
 					<div className='col-9-lg col-8-md' id='columnOne'>
-						<ProfileImages
-							readOnly={readOnly}
-							profile={profileData}
-							editProfileImages={editProfileImages}
-						/>
+						<ProfileImages readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
 
-						<ProfileInformation
-							readOnly={readOnly}
-							profile={profileData}
-							editProfileImages={editProfileImages}
-						/>
+						<ProfileInformation readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
 
-						<ProfileEngagements
-							readOnly={readOnly}
-							profile={profileData}
-							editProfileImages={editProfileImages}
-						/>
+						<ProfileEngagements readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
 					</div>
 
 					{/* Second columns */}
-					<div className='activities col-4-md col-3-lg columnTwo'>
-						<ProfileActivities
-							readOnly={readOnly}
-							profile={profileData}
-							editProfileImages={editProfileImages}
-						/>
+					<div className='activities col-4-md col-3-lg pl-__ columnTwo'>
+						<ProfileActivities readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
 					</div>
 				</>
 			)}

@@ -1,215 +1,145 @@
 /* Post Container */
 
 /* Post card */
-  .new__post .post__features > *{
-    align-items: center;
-  }
+
+.post__container {
+	max-width: 635px;
+}
+
 @media (max-width: 725px) {
-  .new__post .post__features > * span:nth-child(2){
-    font-size: .9rem;
-    margin-left: .3rem !important;
-  }
+	.new__post .post__features .tag-name {
+		font-size: 0.9rem;
+		margin-left: 0.3rem;
+	}
 }
 @media (max-width: 650px) {
-  .new__post .post__features .icon-wrapper{
-    max-width: 1rem !important;
-    max-height: 1rem !important;
-  }
-  .new__post .post__features > * span:nth-child(2){
-    font-size: .7rem;
-    margin-left: .3rem !important;
-  }
+	.new__post .post__features .icon-wrapper {
+		max-width: 1rem;
+		max-height: 1rem;
+	}
+	.new__post .post__features .tag-name {
+		font-size: 0.7rem;
+		margin-left: 0.3rem;
+	}
 }
 @media (max-width: 600px) {
-  .new__post .post__features{
-    padding: .3rem  0 !important;
-    margin: 0 !important;
-    margin-top: .5rem !important;
-    
-  }
-  .new__post .post__features .icon-wrapper{
-    max-width: 1.5rem !important;
-    max-height: 1.5rem !important;
-  }
-  .new__post .post__features > * span:nth-child(2){
-    font-size: 1rem;
-    margin-left: .5rem !important;
-  }
+	.new__post .post__features {
+		padding: 0.3rem 0;
+		margin: 0;
+		margin-top: 0.5rem;
+	}
+	.new__post .post__features .icon-wrapper {
+		max-width: 1.5rem;
+		max-height: 1.5rem;
+	}
+	.new__post .post__features .tag-name {
+		font-size: 1rem;
+		margin-left: 0.5rem;
+	}
 }
 @media (max-width: 500px) {
-  .new__post .post__features .icon-wrapper{
-    max-width: 1rem !important;
-    max-height: 1rem !important;
-  }
-  .new__post .post__features > * span:nth-child(2){
-    font-size: .9rem;
-    margin-left: .2rem !important;
-  }
+	.new__post .post__features .icon-wrapper {
+		max-width: 1rem;
+		max-height: 1rem;
+	}
+	.new__post .post__features .tag-name {
+		font-size: 0.9rem;
+		margin-left: 0.2rem;
+	}
 }
 @media (max-width: 450px) {
-  .new__post .post__features > * span:nth-child(2){
-    font-size: .7rem;
-  }
-  .post__container{
-    margin: 0 !important;
-  }
+	.new__post .post__features .tag-name {
+		font-size: 0.7rem;
+	}
+	.post__container {
+		margin: 0;
+	}
 }
 @media (max-width: 390px) {
-  .new__post{
-    min-width: 200px;
-  }
-  .new__post .post__features > * span:nth-child(2){
-    font-size: .8rem;
-  }
+	.new__post {
+		min-width: 200px;
+	}
+	.new__post .post__features .tag-name {
+		font-size: 0.8rem;
+	}
 }
 @media (max-width: 295px) {
-  .new__post .post__features .icon-wrapper{
-    max-width: .7rem !important;
-    max-height: .7rem !important;
-  }
-  .new__post .post__features > * span:nth-child(2){
-    font-size: .5rem;
-  }
+	.new__post .post__features .icon-wrapper {
+		max-width: 0.7rem;
+		max-height: 0.7rem;
+	}
+	.new__post .post__features .tag-name {
+		font-size: 0.5rem;
+	}
 }
 
-
-
-/* Post */
-.post__container{
-  align-items: stretch;
-}
-.post__menu__btn{
-  padding: .3rem .5rem;
-  cursor: pointer;
+.post__interactions .liked__by__users {
+	margin-bottom: 2rem;
 }
 
-.post__menu__btn .dot{
-  min-width: 6px;
-  min-height: 6px;
-  margin: 0 .15rem;
-  transition: .3s ease-in-out;
+.post__interactions .liked__by__users .user {
+	cursor: pointer;
 }
 
-/* Post Menu */
-.post__menu__btn:hover > *{
-  background-color:#888 !important;
-  transform: scale(1.1);
+.post__interactions .liked__by__users .user img {
+	border: 1px solid #999;
+	object-fit: fill;
 }
 
-.dark-mode .post__menu__btn:hover > *{
-  background-color:rgb(210, 209, 209);
-  transform: scale(1.1);
+.post__interactions .liked__by__users .user:nth-child(1) {
+	left: 0%;
+}
+.post__interactions .liked__by__users .user:nth-child(2) {
+	left: 20px;
+}
+.post__interactions .liked__by__users .user:nth-child(3) {
+	left: 40px;
+}
+.post__interactions .liked__by__users .user:nth-child(4) {
+	left: 60px;
+}
+.post__interactions .liked__by__users .user:nth-child(5) {
+	left: 80px;
+}
+.post__interactions .liked__by__users .user:nth-child(6) {
+	left: 100px;
 }
 
-.post__menu__wrapper{
-  transition-duration: 1s;
-  top: 6.5%;
-  transform: scale(0);
-  transform-origin: top right;
-  transition: background-color 1s;
-  z-index: -1;
-  font-size: small;
-  border-top-right-radius: 0;
+.post__interactions .recent__likes .__text {
+	font-size: 0.7rem;
 }
 
-.post__menu__wrapper.active{
-  transform: scale(1);
-  transition: .25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 1;
+/* .dark-mode .post__interactions .interact .icon-wrapper:hover svg {
+	fill: #eee;
 }
-
-.post__menu__wrapper::before{
-  position: absolute;
-  content: '';
-  top: -6.6%;
-  right: 1px;
-  border-left: 15px solid transparent;
-  border-bottom: 10px solid var(--text--color);
-  border-right: 5px solid transparent;
-  transform-origin: top right;
-  transition: transform .25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.post__menu__btn:hover .post__menu__wrapper::before{
-  transform: scale(1);
-}
-
-
-/* Post Interactiona */
-
-.post__interactions .liked__by__users{
-  margin-bottom: 2rem;
-}
-
-.post__interactions .liked__by__users .user{
-  cursor: pointer;
-}
-
-.post__interactions .liked__by__users .user img{
-  border: 1px solid #999;
-  object-fit: fill !important;
-}
-
-.post__interactions .liked__by__users .user:nth-child(1){
-  left: 0%;
-}
-.post__interactions .liked__by__users .user:nth-child(2){
-  left: 20px;
-}
-.post__interactions .liked__by__users .user:nth-child(3){
-  left: 40px;
-}
-.post__interactions .liked__by__users .user:nth-child(4){
-  left: 60px;
-}
-.post__interactions .liked__by__users .user:nth-child(5){
-  left: 80px;
-}
-.post__interactions .liked__by__users .user:nth-child(6){
-  left: 100px;
-}
-
-.post__interactions .recent__likes .__text{
-  font-size: .7rem;
-}
-
-.dark-mode .post__interactions .interact .icon-wrapper:hover svg{
-  fill: #eee !important;
-}
-.light-mode .post__interactions .interact .icon-wrapper:hover svg{
-  fill: teal !important;
-}
-
-
-
-
-
-
+.light-mode .post__interactions .interact .icon-wrapper:hover svg {
+	fill: teal;
+} */
 
 /* Posts paginator */
 
-.paginators > span{
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  gap: 2px;
+.paginators > span {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	gap: 2px;
 }
 
-.paginators svg{
-  aspect-ratio: 2;
-  border-radius: 100%;
-  background-color: gainsboro;
-  width: 2.5rem;
+.paginators svg {
+	aspect-ratio: 2;
+	border-radius: 100%;
+	background-color: gainsboro;
+	width: 2.5rem;
 }
 
 @media (max-width: 500px) {
-  .paginators{
-    display: none !important;
-  }
+	.paginators {
+		display: none;
+	}
 }
 
-.cought-up{
-  padding-top: 3px;
-  padding-bottom: 3px;
-  cursor: alias;
+.cought-up {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	cursor: alias;
 }
