@@ -1,0 +1,112 @@
+/* Post Container */
+
+/* Post card */
+
+/* .post__container {
+	width: 100%;
+	max-width: 540px;
+} */
+
+@media (max-width: 600px) {
+	.compose__new__post {
+		width: 100%;
+		margin-bottom: 0;
+	}
+	.compose__new__post section {
+		gap: 0.5rem;
+		margin: 0.15rem;
+		padding: 1.5rem 1rem;
+	}
+	.compose__new__post section .author__profile > span {
+		width: 3.45rem;
+		height: 3.45rem;
+	}
+
+	.compose__new__post section .post__items {
+		gap: 0.5rem;
+	}
+	.compose__new__post section .post__items > span input {
+		height: 2rem;
+		font-size: 1rem;
+	}
+	.compose__new__post section .post__items > span input::placeholder {
+		font-size: 0.85rem;
+	}
+}
+@media (max-width: 400px) {
+	#mainFeed .compose__new__post section {
+		padding: 1rem 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+}
+
+.post__interactions .liked__by__users {
+	margin-bottom: 2rem;
+}
+
+.post__interactions .liked__by__users .user {
+	cursor: pointer;
+}
+
+.post__interactions .liked__by__users .user img {
+	border: 1px solid #999;
+	object-fit: fill;
+}
+
+.post__interactions .liked__by__users .user:nth-child(1) {
+	left: 0%;
+}
+.post__interactions .liked__by__users .user:nth-child(2) {
+	left: 20px;
+}
+.post__interactions .liked__by__users .user:nth-child(3) {
+	left: 40px;
+}
+.post__interactions .liked__by__users .user:nth-child(4) {
+	left: 60px;
+}
+.post__interactions .liked__by__users .user:nth-child(5) {
+	left: 80px;
+}
+.post__interactions .liked__by__users .user:nth-child(6) {
+	left: 100px;
+}
+
+.post__interactions .recent__likes .__text {
+	font-size: 0.7rem;
+}
+
+/* .dark-mode .post__interactions .interact .icon-wrapper:hover svg {
+	fill: #eee;
+}
+.light-mode .post__interactions .interact .icon-wrapper:hover svg {
+	fill: teal;
+} */
+
+/* Posts paginator */
+
+.paginators > span {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	gap: 2px;
+}
+
+.paginators svg {
+	aspect-ratio: 2;
+	border-radius: 100%;
+	background-color: gainsboro;
+	width: 2.5rem;
+}
+
+@media (max-width: 500px) {
+	.paginators {
+		display: none;
+	}
+}
+
+.cought-up {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	cursor: alias;
+}

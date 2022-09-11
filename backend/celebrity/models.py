@@ -2,7 +2,8 @@
 
 from django.db import models
 from users.models import User
-
+from post.models import Post
+ 
 # class FanClub(models.Model):
 #     """
 #     Provides a fan base functionality for a celebrity user...
@@ -35,7 +36,6 @@ class Celebrity (models.Model):
 
     @property
     def posts(self):
-        from app_features.models import Post
         posts = Post.objects.filter(author=self.user)
         return posts.count()
 

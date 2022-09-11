@@ -1,29 +1,20 @@
-import email
+
 from django.db import models
 from django.contrib.auth.models import (
     AbstractUser, BaseUserManager
 )
 
-from utils.media_paths import (
-    avater_path, cover_img_path
+from utilities.media_paths import (
+    avatar_path, cover_img_path
 )
-
-
-class Admin(models.Model):
-    user = models.OneToOneField('User', on_delete=models.CASCADE)
-    profile_type = models.CharField(max_length=50, default='Admin', editable=False)
-
-    def __str__(self):
-        return self.user.email
-
 
 class UserManager(BaseUserManager):
     pass
 
 class User(AbstractUser):
     "Base the user class"
-    id = models.CharField(max_length=100, unique=True, primary_key=True)
-    avatar    = models.ImageField(upload_to=avater_path,default='profiles/avater-default.png')
+    id = models.CharField(max_length=100, primary_key=True, blank=True)
+    avatar    = models.ImageField(upload_to=avatar_path, default='profiles/avatar_default.png')
     email = models.EmailField(max_length=160, null=False, unique=True, blank=True)
     username = models.CharField(max_length=50, null=False, blank=False)
     first_name = models.CharField(max_length=100, null=True, blank=True)
@@ -31,8 +22,11 @@ class User(AbstractUser):
     gender = models.CharField(max_length=20, null=True, blank=True, default='Unspecified')
     city = models.CharField(max_length=100, null=True, blank=True, default='Unspecified')
     biography = models.CharField(max_length=350, null=True, blank=True)
-    cover_img = models.ImageField(upload_to=cover_img_path,default='profiles/cover-default.png')
+    cover_img = models.ImageField(upload_to=cover_img_path, default='profiles/cover_default.png')
     user_type = models.CharField(max_length=20, blank=True, default='Admin')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects: UserManager()
 
@@ -41,6 +35,7 @@ class User(AbstractUser):
 
     @property
     def profile(self):
+        from admin_users.models import Admin
         from celebrity.models import Celebrity
         from supporter.models import Supporter
 
@@ -64,15 +59,11 @@ class User(AbstractUser):
     
 
 
-    def save(self, *args, **kwargs):
-        try:
-            User.objects.get(email=self.email)
-            return super().save(*args, **kwargs)
-        except:
-            from utils.generators import uuid_generator
-            unique_id = uuid_generator(f'user --> {self.email}')
-            self.id = unique_id
-            return super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     id = uuid_generator(f'Post')
+    #     self.id = id
+    #     super().save(*args, **kwargs)
+        
 
 
     def __str__(self):
@@ -80,3 +71,4 @@ class User(AbstractUser):
 
     def __repr__(self):
         return self.email
+

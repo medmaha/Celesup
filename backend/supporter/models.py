@@ -2,6 +2,7 @@
 
 from django.db import models
 from users.models import User
+from post.models import Post
 
 class Supporter (models.Model):
     id = models.CharField(max_length=100, unique=True, primary_key=True)
@@ -17,7 +18,6 @@ class Supporter (models.Model):
 
     @property
     def posts(self):
-        from app_features.models import Post
         posts = Post.objects.filter(author=self.user)
         return posts.count()
 

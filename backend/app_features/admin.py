@@ -17,7 +17,7 @@ admin.site.register([
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['author', 'title', 'key']
+    list_display = ['author', 'caption', 'key']
     # prepopulated_fields = {'slug': ('name',)}
 
 

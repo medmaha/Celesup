@@ -10,7 +10,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    path('', include('api_celesup.urls', namespace='api')),
+    path('', include('api.urls', namespace='api')),
 
     # path('', include('website.urls')),
 ]

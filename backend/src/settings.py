@@ -27,19 +27,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'djoser',
+    # 'djoser',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
 
     # customs
     'users.apps.UsersConfig',
+    'admin_users.apps.AdminUserConfig',
     'celebrity.apps.CelebrityConfig',
     'supporter.apps.SupporterConfig',
-    'app_features.apps.AppFeaturesConfig',
 
-    # Apis
-    # "api_celesup.apps.ApiCelesupConfig",
+    'feed.apps.FeedConfig',
+    'post.apps.PostConfig',
+    'hashtags.apps.HashtagsConfig',
+    'features.apps.FeaturesConfig',
+    
+
 
     # dynamic website
     # 'website.apps.WebsiteConfig',
@@ -74,7 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'utils.processors.profile'
+                'utilities.processors.profile'
             ],
         },
     },
@@ -127,15 +131,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'staticfiles/',
-    BASE_DIR / 'api_celesup/build/static'
+    BASE_DIR / 'static/staticfiles/',
 ]
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'static/build/'
 
 
-MEDIA_URL = 'csmedia/'
-MEDIA_ROOT = BASE_DIR / 'mediafiles/'
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'static/mediafiles/'
 
 
 # Emailing
@@ -146,7 +149,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-from .api_settings import *
+from .api_setting import *
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

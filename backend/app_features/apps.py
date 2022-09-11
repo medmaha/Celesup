@@ -6,5 +6,5 @@ class AppFeaturesConfig(AppConfig):
     name = 'app_features'
 
     def ready(self) -> None:
-        from utils import (signals, resize)
+        from utilities import (signals, resize)
         return super().ready()

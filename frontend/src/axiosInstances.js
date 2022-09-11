@@ -34,9 +34,8 @@ export async function refreshAuthTokens(updateTokens) {
 export const celesupApi = axios.create({
 	baseURL: baseURL,
 	headers: {
-		Authorization:
-			'Celesup ' + localStorage.getItem('access')?.toString() || 'access not available',
-		'Content-type': 'application/json',
+		Authorization: 'Celesup ' + localStorage.getItem('access')?.toString() || 'access not available',
+		// 'Content-type': 'application/json',
 	},
 })
 

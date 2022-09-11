@@ -11,12 +11,11 @@ import Register from './routes/auth/register/register'
 
 // VIEWS
 import Index from './routes'
-import Dashboard from './routes/dashboard'
+import Dashboard from './routes/feed/dashboard'
 import UserProfile from './routes/profile/userProfile'
-import ExplorePosts from './routes/explorePosts'
+import ExplorePosts from './routes/explore/explorePosts'
 import PageNotFound from './routes/pageNotFound'
-import CreateNewPost from './components/dashboard/posts/create/createPost'
-import { celesupApi } from './axiosInstances'
+import CreateNewPost from './routes/feed/posts/create/createPost'
 
 export const GlobalContext = createContext({})
 
@@ -49,19 +48,10 @@ function App() {
 			localStorage.setItem('refresh', tokens.refresh)
 
 			const client = jwtDecode(localStorage.getItem('access'))
-			getUserData(client.id)
+			setUser(client)
 		}
 		// eslint-disable-next-line
 	}, [tokens])
-
-	function getUserData(user_id) {
-		const form = new FormData()
-		form.append('Profile-Id', user_id)
-
-		celesupApi.post('/profile/view', form).then((res) => {
-			setUser(res.data)
-		})
-	}
 
 	const contextValues = {
 		user,
@@ -74,7 +64,7 @@ function App() {
 	}
 
 	return (
-		<div id='App'>
+		<div id='App blue'>
 			<GlobalContext.Provider value={contextValues}>
 				{/* <Navbar /> */}
 				<BrowserRouter>

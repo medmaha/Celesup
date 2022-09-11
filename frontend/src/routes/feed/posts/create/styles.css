@@ -1,0 +1,73 @@
+/* CreatePost JSX */
+
+.create__post__container {
+	position: fixed;
+	background: rgba(0, 0, 0, 0.7);
+	top: 65px;
+	left: 0;
+	width: 100vw;
+	height: 101vh;
+	display: flex;
+	justify-content: center;
+}
+
+.create__post__container .post__modal {
+	width: 550px;
+	height: calc(fit-content + 1%);
+	max-height: 500px;
+	overflow: auto;
+}
+
+.create__post__container .post__modal .post__form__body {
+	display: block;
+	width: 100%;
+	/* height: 73%; */
+	overflow: hidden;
+	overflow-y: auto;
+}
+.create__post__container .post__modal .post__form__body__image {
+	display: block;
+	width: 100%;
+	height: 77%;
+	overflow: hidden;
+	overflow-y: auto;
+}
+.post__modal input {
+	font-size: calc(var(--baseFontSize--) * 0.9);
+}
+
+.cursor-pointer > * {
+	cursor: pointer;
+}
+.cursor-pointer > * > * {
+	cursor: pointer;
+}
+
+@media (max-width: 600px) {
+	.create__post__container {
+		padding-top: 1rem;
+	}
+	.create__post__container .post__modal {
+		width: 550px;
+		min-height: fit-content;
+		max-height: 500px;
+		overflow: auto;
+	}
+}
+/* .create__post__container .post__modal textarea[name=excerpt], */
+/* .create__post__container .post__modal textarea[name='excerpt'] {
+	box-shadow: none;
+}
+.create__post__container .post__modal textarea[name='excerpt']:focus {
+	box-shadow: 0 0 0 2px var(--onBackgroundColorMuted--);
+} */
+
+/*  */
+
+/* .selected-file .file {
+	max-height: 65vh;
+	overflow: hidden;
+	overflow-y: auto;
+	min-height: fit-content;
+	position: relative;
+} */
