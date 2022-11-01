@@ -1,10 +1,40 @@
-@import './supcel-CSS/supcel.css';
+@import "./supcel-CSS/supcel.css";
 
-.App {
-	background-color: green !important;
-	/* min-height: 100%; */
+/* body {
+    height: auto;
+} */
+
+.truncate {
+    overflow: hidden;
+    word-wrap: nowrap;
+    text-overflow: ellipsis;
 }
 
-body {
-	height: auto;
+.bg-none {
+    background-color: transparent;
+    outline: 1px solid #555;
+}
+
+.typography {
+    color: #333333;
+}
+.dark-mode .typography {
+    color: #c6c5c5;
+}
+.text-muted {
+    color: #7c7c7c;
+}
+.dark-mode .text-muted {
+    color: #888;
+}
+
+.flex-1 {
+    flex: 1 0;
+}
+
+.flex-50 {
+    flex-basis: 48%;
+}
+.flex-wrap {
+    flex-wrap: wrap;
 }

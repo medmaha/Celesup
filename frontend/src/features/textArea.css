@@ -1,0 +1,8 @@
+textarea[data-sp-textarea] {
+    height: 2rem;
+    resize: none;
+}
+
+textarea[data-sp-textarea]::-webkit-scrollbar {
+    width: 0;
+}

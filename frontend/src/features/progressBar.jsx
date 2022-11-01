@@ -1,11 +1,11 @@
-import'./progressBar.css'
+import "./progressBar.css"
 
-const ProgressBar = () => {
-  return (
-    <div className="loader-wrapper">
-        <span className="loader"></span>
-    </div>
-  )
+const ProgressBar = ({ className }) => {
+    return (
+        <div className={`loader-wrapper ${className}`}>
+            <span className="loader"></span>
+        </div>
+    )
 }
 
 export default ProgressBar

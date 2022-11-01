@@ -1,114 +1,165 @@
-import './styles.css'
-import { useEffect, useContext, useState } from 'react'
-import { celesupApi, refreshAuthTokens } from '../../axiosInstances'
+import "./styles.css"
+import { useEffect, useContext, useState } from "react"
+import { celesupApi, refreshAuthTokens } from "../../axiosInstances"
 
-import { GlobalContext } from '../../App'
+import { GlobalContext } from "../../App"
 
-import ProfileImages from './components/profileImages'
-import ProfileInformation from './components/profileInformation'
-import ProfileEngagements from './components/profileEngagements'
-import ProfileActivities from './components/profileActivities'
-import useComplexAxiosRequests from '../../hooks/useComplexRefresh'
+import ProfileImages from "./components/profileImages"
+import ProfileInformation from "./components/profileInformation"
+import ProfileEngagements from "./components/profileEngagements"
+import ProfileActivities from "./components/profileActivities"
+import useComplexAxiosRequests from "../../hooks/useComplexRefresh"
 
 const UserProfile = () => {
-	const context = useContext(GlobalContext)
-	const profileID = localStorage.getItem('pvpk')
-	const [readOnly, setReadOnly] = useState(false)
-	const [profileData, pendingData, error, sendAxiosRequest] = useComplexAxiosRequests()
+    const context = useContext(GlobalContext)
+    const profileID = localStorage.getItem("pvpk")
+    const [readOnly, setReadOnly] = useState(false)
+    const [profile, setProfile] = useState(null)
 
-	useEffect(() => {
-		const form = new FormData()
-		form.append('Profile-Id', profileID)
+    const [response, pendingData, error, sendAxiosRequest] =
+        useComplexAxiosRequests()
 
-		sendAxiosRequest({
-			axiosInstance: celesupApi,
-			url: '/profile/view',
-			method: 'POST',
-			form: form,
-		})
+    useEffect(() => {
+        const form = new FormData()
+        form.append("Profile-Id", profileID)
 
-		// eslint-disable-next-line
-	}, [])
+        sendAxiosRequest({
+            axiosInstance: celesupApi,
+            url: "/profile/view",
+            method: "POST",
+            form: form,
+        })
 
-	useEffect(() => {
-		if (!context.user || !profileData) return
+        // eslint-disable-next-line
+    }, [])
 
-		if (context.user.id !== profileID) setReadOnly(true)
+    useEffect(() => {
+        if (!context.user || !response) return
+        if (response.first_name && response.last_name) {
+            document.title =
+                response.first_name.toUpperCase() +
+                " " +
+                response.last_name.toUpperCase()
+            return
+        }
 
-		if (profileData.first_name && profileData.last_name) {
-			document.title = profileData.first_name.toUpperCase() + ' ' + profileData.last_name.toUpperCase()
-			return
-		}
+        document.title = "CELESUP | " + response.username.toUpperCase()
 
-		document.title = 'CELESUP | ' + profileData.username.toUpperCase()
+        // eslint-disable-next-line
+    }, [context])
 
-		// eslint-disable-next-line
-	}, [context])
+    useEffect(() => {
+        if (!response) return
 
-	useEffect(() => {
-		if (!profileData) return
+        if (response.id !== context.user.id) {
+            setReadOnly(true)
+        }
+        setProfile(response)
 
-		if (profileData && !readOnly) {
-			// const newTokens = refreshUserTokens()
-			// console.log(newTokens);
-			// context.updateTokens({access: newTokens.access, refresh: newTokens.refresh})
-		}
+        if (response.tokens) {
+            context.setUserTokens({
+                ...response.tokens,
+            })
+        }
+        // eslint-disable-next-line
+    }, [response])
 
-		// eslint-disable-next-line
-	}, [profileData])
+    async function editProfile(form, config) {
+        form.append("Profile-Id", profileID)
+        form.append("refreshToken", context.tokens.refresh)
 
-	async function editProfile(form, config) {
-		form.append('Profile-Id', profileID)
+        sendAxiosRequest({
+            axiosInstance: celesupApi,
+            url: "/profile/edit",
+            method: "PUT",
+            form: form,
+            options: config,
+        })
+    }
 
-		sendAxiosRequest({
-			axiosInstance: celesupApi,
-			url: '/profile/edit',
-			method: 'PUT',
-			form: form,
-			options: config,
-			subsequentRequests: { func: refreshAuthTokens, arguments: [context.updateTokens] },
-		})
-	}
+    function editProfileImages({ currentTarget }) {
+        const input = document.createElement("input")
+        input.setAttribute("type", "file")
+        input.click()
 
-	function editProfileImages({ currentTarget }) {
-		const input = document.createElement('input')
-		input.setAttribute('type', 'file')
-		input.click()
+        input.addEventListener("change", () => {
+            const form = new FormData()
+            form.append(
+                currentTarget.getAttribute("data-field"),
+                input.files[0],
+            )
 
-		input.addEventListener('change', () => {
-			const form = new FormData()
-			form.append(currentTarget.getAttribute('data-field'), input.files[0])
+            const config = {
+                headers: { "Content-Type": "multipart/form-data" },
+            }
 
-			const config = {
-				headers: { 'Content-Type': 'multipart/form-data' },
-			}
+            editProfile(form, config)
+        })
+    }
 
-			editProfile(form, config)
-		})
-	}
+    return (
+        <div className="d-flex justify-content-center">
+            <div className="maxwidth-750-px mx-__">
+                {!!profile && (
+                    <>
+                        <ProfileImages
+                            readOnly={readOnly}
+                            profile={profile}
+                            setProfile={setProfile}
+                            editProfileImages={editProfileImages}
+                        />
 
-	return (
-		<div className='container row justify-content-center'>
-			{profileData && (
-				<>
-					<div className='col-9-lg col-8-md' id='columnOne'>
-						<ProfileImages readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
+                        <ProfileInformation
+                            readOnly={readOnly}
+                            profile={profile}
+                            setProfile={setProfile}
+                            editProfileImages={editProfileImages}
+                        />
 
-						<ProfileInformation readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
+                        <ProfileEngagements
+                            readOnly={readOnly}
+                            profile={profile}
+                            setProfile={setProfile}
+                            editProfileImages={editProfileImages}
+                        />
+                    </>
+                )}
+            </div>
+        </div>
 
-						<ProfileEngagements readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
-					</div>
+        // <div className="container row justify-content-center">
+        //     {profileData && (
+        //         <>
+        //             <div className="col-9-lg col-8-md" id="columnOne">
+        //                 <ProfileImages
+        //                     readOnly={readOnly}
+        //                     profile={profileData}
+        //                     editProfileImages={editProfileImages}
+        //                 />
 
-					{/* Second columns */}
-					<div className='activities col-4-md col-3-lg pl-__ columnTwo'>
-						<ProfileActivities readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
-					</div>
-				</>
-			)}
-			{pendingData && <h1>Loading...</h1>}
-			{error && <h1>Oops an error occurred</h1>}
-		</div>
-	)
+        //                 <ProfileInformation
+        //                     readOnly={readOnly}
+        //                     profile={profileData}
+        //                     editProfileImages={editProfileImages}
+        //                 />
+
+        //                 <ProfileEngagements
+        //                     readOnly={readOnly}
+        //                     profile={profileData}
+        //                     editProfileImages={editProfileImages}
+        //                 />
+        //             </div>
+
+        //             {/* Second columns */}
+        //             {/* <div className='activities col-4-md col-3-lg pl-__ columnTwo'>
+        // 				<ProfileActivities readOnly={readOnly} profile={profileData} editProfileImages={editProfileImages} />
+        // 			</div> */}
+        //         </>
+        //     )}
+        //     {pendingData && <h1>Loading...</h1>}
+        //     {error && <h1>Oops an error occurred</h1>}
+        // </div>
+    )
 }
 
 export default UserProfile

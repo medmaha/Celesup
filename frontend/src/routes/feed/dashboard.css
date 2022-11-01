@@ -5,34 +5,21 @@
   }
 } */
 
-@media (max-width: 960px) {
-	#activityFeed {
-		display: none;
-	}
+@media (max-width: 739px) {
+    #trendingFeed {
+        display: none;
+    }
 
-	#trendingFeed {
-		flex-shrink: 2;
-	}
+    #mainFeed {
+        max-width: 500px;
+        padding: 0;
+    }
 
-	#feedsContainer {
-		gap: 2rem;
-	}
-}
-@media (max-width: 660px) {
-	#trendingFeed {
-		display: none;
-	}
+    #feedsContainer {
+        padding: 0 5px;
+    }
 
-	#mainFeed {
-		max-width: 500px;
-		padding: 0;
-	}
-
-	#feedsContainer {
-		padding: 0 5px;
-	}
-
-	/* .dashboard-container {
+    /* .dashboard-container {
 		display: flex;
 		justify-content: center;
 		padding: 0 0.5rem;

@@ -1,7 +1,7 @@
 import './dropdown.css'
 import { useRef, useEffect, useState } from 'react'
 
-function Dropdown({ identifier = '', button, btnParentClass = '', items = [], options = { left: null, top: null, boxShadow: true } }) {
+function Dropdown({ button, onDropped, identifier = '', btnParentClass = '', items = [], options = { left: null, top: null, boxShadow: true } }) {
 	const [isActive, setActive] = useState(false)
 	const content = useRef()
 
@@ -40,6 +40,10 @@ function Dropdown({ identifier = '', button, btnParentClass = '', items = [], op
 	}
 
 	function toggleDropDown() {
+		if (!onDropped === undefined) {
+			console.log(onDropped)
+			// onDropped()
+		}
 		setActive((prev) => !prev)
 	}
 

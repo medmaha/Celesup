@@ -1,25 +1,26 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import App from "./App"
 
-import './cssStyles/supcel-CSS/supcel.css'
+import "./cssStyles/index.css"
 
-const root = ReactDOM.createRoot(document.getElementById('root'))
+const root = ReactDOM.createRoot(document.getElementById("root"))
 
 if (window.screen.width < 480) {
-	alert('checkout our mobile')
+    alert("checkout our mobile")
 }
 
 root.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>,
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
 )
 
-if (localStorage.getItem('theme')) {
-	let theme = localStorage.getItem('theme')
-	document.body.classList.add(theme)
+if (localStorage.getItem("theme")) {
+    let theme = localStorage.getItem("theme")
+    document.body.classList.add(theme)
 } else {
-	localStorage.setItem('theme', 'light-mode')
-	document.body.classList.add('light-mode')
+    localStorage.setItem("theme", "dark-mode")
+    document.body.classList.add(localStorage.getItem("theme"))
 }
+

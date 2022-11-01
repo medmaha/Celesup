@@ -7,17 +7,23 @@ from users.models import User
 from .serializers import SupporterSerializer, CelebritySerializer, UserDetailSerializer
 from ...utils.user_profile import Profile
 
+
 class ProfileFollow(GenericAPIView):
     def post(self, request, *args, **kwargs):
-        user = get_object_or_404(User, id=request.data.get('profile_id'))
-        profile = user.profile
+        profile_user = get_object_or_404(User, id=request.data.get("profile_id"))
+        profile = profile_user.profile
 
-        if hasattr(profile, 'followers'):
+        if hasattr(profile, "followers"):
+            follower = request.user
+
             if request.user in profile.followers.all():
-                profile.followers.remove(request.user)
-            else:
-                profile.followers.add(request.user)
+                profile.followers.remove(follower)
+                follower.profile.following.remove(profile_user)
 
-        profile = Profile(user)
-        
+            else:
+                profile.followers.add(follower)
+                follower.profile.following.add(profile_user)
+
+        profile = Profile(profile_user)
+
         return Response(profile.data, status=200)
