@@ -11,22 +11,45 @@ import Register from "./routes/auth/register/register"
 
 // VIEWS
 import Index from "./routes"
-import Dashboard from "./routes/feed/dashboard"
 import UserProfile from "./routes/profile/userProfile"
 import ExplorePosts from "./routes/explore/explorePosts"
 import PageNotFound from "./routes/pageNotFound"
 import CreateNewPost from "./routes/feed/posts/create/createPost"
-import Modal from "./features/modal"
+import Messager from "./routes/messager/Messager"
+import useWebSocketHook from "./hooks/useWebSocketHook"
+import { celesupApi, refreshAuthTokens } from "./axiosInstances"
 
 export const GlobalContext = createContext({})
+
+function handleWebSocketCommunication(ev, updateUserTokens) {
+    const data = JSON.parse(ev.data)
+    if (data.type === "NOTIFY_USER") {
+        setTimeout(updateUserTokens, 1000)
+    }
+    console.log(data)
+}
 
 function App() {
     const [user, setUser] = useState(null)
     const [focusStates, setFocusState] = useState(null)
+
     const [tokens, updateTokens] = useState({
         access: localStorage.getItem("access"),
         refresh: localStorage.getItem("refresh"),
     })
+    const { initWebSocket, socket: webSocketMaster } = useWebSocketHook()
+
+    useEffect(() => {
+        if (!user) return
+        initWebSocket({
+            url: "/ws/master?user=" + user.id,
+            onMessage: (ev) =>
+                handleWebSocketCommunication(ev, updateUserTokens),
+            onConnect: (ev) => {
+                console.log("ws conn")
+            },
+        })
+    }, [user])
 
     useEffect(() => {
         if (
@@ -41,6 +64,7 @@ function App() {
 
     useEffect(() => {
         if (!user) return
+        // console.log(user)
     }, [user])
 
     useEffect(() => {
@@ -54,6 +78,7 @@ function App() {
             localStorage.setItem("access", tokens.access)
             localStorage.setItem("refresh", tokens.refresh)
             const client = jwtDecode(tokens.access)
+            console.log(client)
 
             setUser(client)
         }
@@ -61,18 +86,18 @@ function App() {
         // eslint-disable-next-line
     }, [tokens])
 
-    function setUserTokens(newTokens) {
-        // localStorage.setItem("access", newTokens.access)
-        // localStorage.setItem("refresh", newTokens.refresh)
+    async function updateUserTokens() {
+        await celesupApi
+            .post(
+                "/refresh/user/tokens",
+                { user_id: user.id },
+                (Headers = { "content-type": "application/json" }),
+            )
+            .then((res) => {
+                updateTokens(res.data)
+            })
 
-        updateTokens((prev) => {
-            return {
-                ...prev,
-                newTokens,
-            }
-        })
-        // const client = jwtDecode(localStorage.getItem("access"))
-        // setUser(client)
+        // await refreshAuthTokens(updateTokens)
     }
 
     const contextValues = {
@@ -82,21 +107,22 @@ function App() {
         setUser,
         updateTokens,
         setFocusState,
-        setUserTokens,
         supcelLibrary: Supcel,
+        webSocketMaster,
+        updateUserTokens,
     }
 
     return (
-        <div id="App blue">
+        <div>
             <GlobalContext.Provider value={contextValues}>
                 {/* <Navbar /> */}
                 <BrowserRouter>
                     <Navbar />
                     <Routes>
                         <Route path="/" exact element={<Index />} />
-                        <Route path={`/:username`} element={<UserProfile />} />
                         <Route path={`/explore`} element={<ExplorePosts />} />
-                        <Route path={`/messager`} element={<>Messages</>} />
+                        <Route path={`/messager`} element={<Messager />} />
+                        <Route path={`/:username`} element={<UserProfile />} />
 
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<Register />} />

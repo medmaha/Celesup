@@ -14,7 +14,15 @@ class AdminSerializer(serializers.ModelSerializer):
 class UserEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["cover_img", "avatar", "first_name", "last_name"]
+        fields = [
+            "cover_img",
+            "avatar",
+            "first_name",
+            "last_name",
+            "biography",
+            "city",
+            "gender",
+        ]
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -31,6 +39,12 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "biography",
             "date_joined",
         ]
+
+
+class UserMiniInfoSeriaLizer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "avatar", "full_name", "username"]
 
 
 class UserCreationSerializer(serializers.ModelSerializer):

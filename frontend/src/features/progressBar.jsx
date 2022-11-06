@@ -1,10 +1,21 @@
-import "./progressBar.css"
+import { useEffect, useRef } from "react"
 
-const ProgressBar = ({ className }) => {
+const ProgressBar = ({ className, width, height, animationEnd = "100vw" }) => {
+    const instance = useRef()
+
+    useEffect(() => {
+        instance.current.style["--animation-end"] = animationEnd
+        console.log(instance.current.style["--animation-end"])
+    })
+
     return (
-        <div className={`loader-wrapper ${className}`}>
-            <span className="loader"></span>
-        </div>
+        <>
+            {!!animationEnd && (
+                <div ref={instance} className={`loader-wrapper ${className}`}>
+                    <span className="loader"></span>
+                </div>
+            )}
+        </>
     )
 }
 

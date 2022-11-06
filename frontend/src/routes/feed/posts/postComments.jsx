@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext, useRef } from "react"
 import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import { GlobalContext } from "../../../App"
-import Textarea from "../../../features/textArea"
+import Textarea from "../../../features/TextArea"
 
 export default function PostComments({ post, toggle }) {
     const [controller, setController] = useState(new AbortController())
@@ -16,7 +16,6 @@ export default function PostComments({ post, toggle }) {
 
     useEffect(() => {
         if (!toggle) return
-        console.log(comments)
         toggleCommentForm()
 
         return () => {}
@@ -145,15 +144,12 @@ export default function PostComments({ post, toggle }) {
                             <div className="mt-__ d-flex parent__comment">
                                 <div className="d-flex comment__author">
                                     <img
-                                        src={
-                                            CELESUP_BASE_URL +
-                                            comment.author.avatar
-                                        }
+                                        src={comment.author.avatar}
                                         alt="avatar"
                                         className="width-35-px height-35-px br-full border"
                                     />
                                 </div>
-                                <div className="card typography">
+                                <div className="card typography pb-0">
                                     <div className="d-flex justify-content-between mb-__ time__data">
                                         <span>
                                             <b>@{comment.author.username}</b>
@@ -170,15 +166,17 @@ export default function PostComments({ post, toggle }) {
                                     </div>
                                     <p className="">{comment.content}</p>
 
-                                    <span className="divider"></span>
-                                    <div className="d-flex gap-1">
+                                    <span
+                                        className="divider"
+                                        style={{
+                                            paddingBottom: "0",
+                                            marginBottom: "0",
+                                        }}
+                                    ></span>
+                                    <div className="d-flex gap-1 align-items-center">
                                         <div className="d-flex align-items-center gap-3-px width-fit-content cursor-pointer">
-                                            <span style={{ fontSize: ".9rem" }}>
-                                                Like
-                                            </span>
                                             <span className="icon-wrapper">
                                                 <svg
-                                                    className="theme-primary-text"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 48 48"
                                                 >
@@ -189,19 +187,24 @@ export default function PostComments({ post, toggle }) {
                                         <div>|</div>
                                         <div className="d-flex align-items-center gap-3-px width-fit-content cursor-pointer">
                                             <span
-                                                style={{ fontSize: ".9rem" }}
+                                                className="icon-wrapper"
                                                 onClick={() =>
                                                     toggleCommentReply(
                                                         comment.id,
                                                     )
                                                 }
                                             >
-                                                Reply
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z" />
+                                                </svg>
                                             </span>
                                         </div>
                                     </div>
                                     <span
-                                        className="d-flex mt-1 d-none"
+                                        className="d-flex mt-1 pb-__ d-none"
                                         data-id={comment.id}
                                     >
                                         <div
@@ -240,14 +243,13 @@ export default function PostComments({ post, toggle }) {
                                                 <div className="d-flex comment__author">
                                                     <img
                                                         src={
-                                                            CELESUP_BASE_URL +
                                                             reply.author.avatar
                                                         }
                                                         alt="avatar"
                                                         className="width-35-px height-35-px br-full border"
                                                     />
                                                 </div>
-                                                <div className="card typography">
+                                                <div className="card pb-0 typography">
                                                     <div className="d-flex justify-content-between mb-__ time__data">
                                                         <span>
                                                             <b>
@@ -271,20 +273,17 @@ export default function PostComments({ post, toggle }) {
                                                     <p className="">
                                                         {reply.content}
                                                     </p>
-                                                    <span className="divider"></span>
+                                                    <span
+                                                        className="divider"
+                                                        style={{
+                                                            marginBottom: "0",
+                                                            paddingBottom: "0",
+                                                        }}
+                                                    ></span>
                                                     <div className="d-flex gap-1">
                                                         <div className="d-flex align-items-center gap-3-px width-fit-content cursor-pointer">
-                                                            <span
-                                                                style={{
-                                                                    fontSize:
-                                                                        ".9rem",
-                                                                }}
-                                                            >
-                                                                Like
-                                                            </span>
                                                             <span className="icon-wrapper">
                                                                 <svg
-                                                                    className="theme-primary-text"
                                                                     xmlns="http://www.w3.org/2000/svg"
                                                                     viewBox="0 0 48 48"
                                                                 >

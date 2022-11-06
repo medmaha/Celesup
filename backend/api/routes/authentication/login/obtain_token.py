@@ -1,7 +1,9 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from users.models import User
-from utilities.generators import get_profile_data
+
+from ...user.serializers import UserMiniInfoSeriaLizer
+from notification.models import Notification
+from messenging.models import Message
 
 
 class AccessTokenPayload(TokenObtainPairSerializer):
@@ -9,12 +11,17 @@ class AccessTokenPayload(TokenObtainPairSerializer):
 
     @classmethod
     def get_token(cls, user):
-        user = User.objects.get(id=user.id)
         token = super().get_token(user)
+        user_data = UserMiniInfoSeriaLizer(user).data
 
-        profile_data = get_profile_data(user)
+        token["has_alerts"] = Notification.objects.filter(
+            recipient=user, is_viewed=False
+        ).exists()
+        token["has_message"] = Message.objects.filter(
+            recipient=user, is_seen=False
+        ).exists()
 
-        for key, val in profile_data.items():
+        for key, val in user_data.items():
             token[str(key)] = val
 
         return token

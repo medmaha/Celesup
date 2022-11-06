@@ -4,39 +4,14 @@ import { GlobalContext } from "../../../App"
 import { celesupApi } from "../../../axiosInstances"
 
 export default function PostStatistics({ post }) {
-    const [postLikes, setPostLikes] = useState()
-    const [postShares, setPostShares] = useState()
-    const [postComments, setPostComments] = useState()
-    const [controller, setController] = useState(0)
-    const context = useContext(GlobalContext)
-
     useEffect(() => {
-        const controller = new AbortController()
-        getData()
-        return () => controller.abort("Request already send")
-    }, [post])
-
-    async function getData() {
-        await celesupApi
-            .get(`posts/stats?id=${post.key}`, {
-                signal: controller.signal,
-            })
-            .then(
-                (res) => {
-                    // console.log(res.data)
-                    setPostLikes(res.data.likes)
-                    setPostComments(res.data.comments)
-                    setPostShares(res.data.shares)
-                },
-                (err) => {},
-            )
-            .catch((err) => {})
-    }
+        // console.log(post.likes)
+    }, [])
 
     return (
         <div>
-            {!!postLikes && (
-                <div className="recent__likes mb-1">
+            {!!post && (
+                <div className="recent__likes my-__">
                     <div
                         className="d-flex justify-content-between align-items-center"
                         data-post-stats=""
@@ -46,9 +21,9 @@ export default function PostStatistics({ post }) {
                                 <span
                                     className="border br-full d-flex align-items-center justify-content-center"
                                     style={{
-                                        padding: "4px 5px",
+                                        minWidth: "25px",
+                                        minHeight: "25px",
                                         backgroundColor: "#3d3dfc",
-                                        zIndex: "10",
                                     }}
                                 >
                                     <svg
@@ -56,8 +31,8 @@ export default function PostStatistics({ post }) {
                                         viewBox="0 0 48 48"
                                         style={{
                                             fill: "#fff",
-                                            width: "16px",
-                                            height: "16px",
+                                            width: "14px",
+                                            height: "14px",
                                         }}
                                     >
                                         <path d="M2 42h8V18H2v24zm44-22c0-2.21-1.79-4-4-4H29.37l1.91-9.14c.04-.2.07-.41.07-.63 0-.83-.34-1.58-.88-2.12L28.34 2 15.17 15.17C14.45 15.9 14 16.9 14 18v20c0 2.21 1.79 4 4 4h18c1.66 0 3.08-1.01 3.68-2.44l6.03-14.1c.18-.46.29-.95.29-1.46v-3.83l-.02-.02L46 20z" />
@@ -67,8 +42,10 @@ export default function PostStatistics({ post }) {
                                     className="br-full d-flex align-items-center justify-content-center"
                                     style={{
                                         backgroundColor: "#db5e5e",
-                                        padding: "4px 6px",
-                                        transform: "translateX(-20%)",
+                                        minWidth: "25px",
+                                        minHeight: "25px",
+                                        transform: "translateX(-25%)",
+                                        zIndex: "-1",
                                     }}
                                 >
                                     <svg
@@ -76,26 +53,29 @@ export default function PostStatistics({ post }) {
                                         viewBox="0 0 2048 2048"
                                         style={{
                                             fill: "#fff",
-                                            width: "1em",
-                                            height: "1em",
+                                            width: "14px",
+                                            height: "14px",
                                         }}
                                     >
                                         <path d="M1889 287q53 53 88.5 116t53 131 17.5 138.5-17.5 138-53 130.5-88.5 116l-865 864-865-864q-53-53-88.5-116t-53-130.5T0 672.5 17.5 534t53-131T159 287q78-77 177-118t208-41 208 41 177 118l95 96 95-96q78-77 177-118t208-41 208 41 177 118z" />
                                     </svg>
                                 </span>
                             </a>
-                            <span>{postLikes}</span>
+                            <span>{post.likes.length}</span>
                         </div>
 
                         <div className="d-flex gap-5-px ">
                             <a href="#" className="cursor-pointer">
-                                <small>{postComments} comment</small>
+                                <small>
+                                    {post.comments}{" "}
+                                    {post.comments > 1 ? "comments" : "comment"}{" "}
+                                </small>
                             </a>
-                            {!!postShares && (
+                            {!!post.shares && (
                                 <>
                                     <small>.</small>
                                     <a href="#" className="cursor-pointer">
-                                        {postShares} reposts
+                                        {post.shares} reposts
                                     </a>
                                 </>
                             )}

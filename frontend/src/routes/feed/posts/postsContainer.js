@@ -1,17 +1,19 @@
-import { useEffect, useContext, useState } from "react"
+import { useEffect, useContext, useState, useMemo } from "react"
 import { GlobalContext } from "../../../App"
 import Post from "./post"
 import PostPlaceholder from "./postPlaceholder"
 
 import useAxiosRequest from "../../../hooks/useAxiosRequest"
-import { celesupApi } from "../../../axiosInstances"
+import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import ComposePost from "./compose"
 
-function PostsContainer() {
+function PostsContainer({}) {
     // const [paginatorLinks, setPaginatorLinks] = useState(posts.links)
     const context = useContext(GlobalContext)
-    const [postsData, pending, error, sendAxiosRequest] = useAxiosRequest()
-    const [posts, setPosts] = useState()
+    const [response, pending, error, sendAxiosRequest] = useAxiosRequest()
+    // const [posts, setPosts] = useState([])
+
+    const posts = useMemo(() => updatePost(response), [response])
 
     useEffect(() => {
         document.title = "Celesup | Home"
@@ -24,21 +26,17 @@ function PostsContainer() {
     }, [])
 
     useEffect(() => {
-        if ((posts || error) && pending) return
-        sendAxiosRequest({
-            axiosInstance: celesupApi,
-            url: "/posts/list",
-            method: "GET",
-        })
-
+        reFetchPosts()
         return () => {}
-        // context.reFetchPost = reFetchPost
-        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
-        setPosts(postsData)
-    }, [postsData])
+        updatePost()
+    }, [response])
+
+    function updatePost(response) {
+        return response
+    }
 
     async function reFetchPosts() {
         await sendAxiosRequest({
@@ -60,7 +58,7 @@ function PostsContainer() {
                 id="mainFeed"
                 className="post__container width-100 width-550-px"
             >
-                {error && (
+                {!!error && (
                     <header className="d-flex flex-column align-items-center my-3">
                         <p className="text-center pb-1">Something Went Wrong</p>
                         <span
@@ -72,10 +70,10 @@ function PostsContainer() {
                     </header>
                 )}
                 {/* {pending && <PostPlaceholder />} */}
-                {pending && <h1>Loading...</h1>}
+                {!!pending && <h1>Loading...</h1>}
 
                 {/* create Post Card */}
-                {posts?.data && (
+                {!!posts?.data && (
                     <>
                         <ComposePost
                             context={context}
@@ -86,7 +84,11 @@ function PostsContainer() {
                             className="width-100 width-550-px px-1 d-block"
                         >
                             {posts?.data?.map((post) => {
-                                return <Post post={post} key={post.key} />
+                                return (
+                                    <span key={post.key}>
+                                        {!!post && <Post post={post} />}
+                                    </span>
+                                )
                             })}
                         </div>
                     </>

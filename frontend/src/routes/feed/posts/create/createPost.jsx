@@ -42,12 +42,8 @@ function CreateNewPost() {
         // eslint-disable-next-line
     }, [data])
 
-    async function submitForm() {
-        if (
-            formData.caption === "" &&
-            formData.picture === null &&
-            formData.excerpt === ""
-        )
+    async function submitForm(ev) {
+        if (ev.currentTarget.classList.contains("disabled") || !formData.valid)
             return
 
         const form = new FormData()

@@ -13,24 +13,12 @@ class ProfileView(GenericAPIView):
     serializer_class = UserDetailSerializer
 
     def post(self, request, *args, **kwargs):
-        profile_id = request.data.get("Profile-Id")
+        username = request.data.get("username")
 
-        user = get_object_or_404(User, id=profile_id)
+        user = get_object_or_404(User, username__iexact=username)
 
-        profile_data = get_profile_data(user)
+        profile = get_profile_data(user)
+        serializer = self.get_serializer(user).data
 
-        profile_data["username"] = profile_data["username"].capitalize()
-
-        if profile_data["full_name"]:
-            profile_data["full_name"] = profile_data["full_name"].capitalize()
-
-        if profile_data.get("followers"):
-            profile_data["followers"] = profile_data["followers"]
-
-        if profile_data.get("following"):
-            profile_data["following"] = profile_data["following"]
-
-        # serialize_data = self.get_serializer(user)
-        # profile_data.update(serialize_data.data)
-
-        return Response(profile_data, status=200)
+        data = {**profile, **serializer}
+        return Response(data, status=200)

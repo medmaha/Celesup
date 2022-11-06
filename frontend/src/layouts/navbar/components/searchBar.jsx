@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import useAxiosRequest from "../../../hooks/useAxiosRequest"
-import PendingSpinner from "../../../features/pendingSpinner"
+import PendingSpinner from "../../../features/Spinner"
 
 function SearchBar() {
     const [isFocus, setIsFocus] = useState(false)

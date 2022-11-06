@@ -2,33 +2,36 @@ from rest_framework.response import Response
 from rest_framework.generics import UpdateAPIView
 from django.shortcuts import get_object_or_404
 from users.models import User
-from .serializers import UserEditSerializer
-from utilities.generators import get_profile_data, get_new_auth_tokens
-from ...utils.user_profile import Profile
+from .serializers import UserEditSerializer, UserDetailSerializer
+from utilities.generators import get_profile_data
 
 
 class ProfileEdit(UpdateAPIView):
     def update(self, request, *args, **kwargs):
-        profile_instance_id = request.data.get("Profile-Id")
-        del request.data["Profile-Id"]
+        user = get_object_or_404(User, id=request.data.get("profileId"))
 
-        user = get_object_or_404(User, id=profile_instance_id)
+        data = request.data.copy()
 
-        serializer = UserEditSerializer(instance=user, data=request.data)
+        if not data["avatar"]:
+            del data["avatar"]
 
+        if not data["cover_img"]:
+            del data["cover_img"]
+
+        if data.get("full_name"):
+            data["first_name"] = data["full_name"].split(" ")[0]
+            data["last_name"] = data["full_name"].split(" ")[1]
+
+        # ? setter
+        serializer = UserEditSerializer(instance=user, data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
+        # ? getter
+        self.serializer_class = UserDetailSerializer
         profile = get_profile_data(user)
+        serializer = self.get_serializer(user).data
 
-        refresh_token = request.data.get("refreshToken")
-        if refresh_token:
-            tokens = get_new_auth_tokens(refresh_token)
-            profile.update({"tokens": tokens})
+        data = {**profile, **serializer}
 
-        profile_data["username"] = profile_data["username"].capitalize()
-
-        if profile_data["full_name"]:
-            profile_data["full_name"] = profile_data["full_name"].capitalize()
-
-        return Response(profile, status=200)
+        return Response(data, status=200)

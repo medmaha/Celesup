@@ -3,12 +3,12 @@ import "./dashboard.css"
 // import { useNavigate } from 'react-router-dom'
 // #import { GlobalContext } from '../App'
 
-import Activity from "./activities/activity"
 import PostsContainer from "./posts/postsContainer"
-import Trending from "./trending/trending"
 import { useEffect, useContext } from "react"
 import { GlobalContext } from "../../App"
 import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { CELESUP_BASE_URL } from "../../axiosInstances"
 
 const Dashboard = () => {
     const context = useContext(GlobalContext)

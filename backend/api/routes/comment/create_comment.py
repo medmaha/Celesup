@@ -6,6 +6,7 @@ from comment.models import Comment
 from .serializers import CommentSerializer
 from utilities.generators import get_profile_data
 from django.shortcuts import get_object_or_404
+from ..user.serializers import UserMiniInfoSeriaLizer
 
 
 class PostCommentCreate(CreateAPIView):
@@ -58,11 +59,18 @@ class PostCommentList(ListAPIView):
                 post_id=comment["post"], parent_id=comment["id"]
             ).order_by("-created_at")[:3]
 
-            comment["author"] = get_profile_data(User.objects.get(id=comment["author"]))
-            comment["children"] = CommentSerializer(child_comments, many=True).data
+            self.serializer_class = UserMiniInfoSeriaLizer
+            comment["author"] = self.get_serializer(
+                User.objects.get(id=comment["author"])
+            ).data
+            self.serializer_class = CommentSerializer
+            comment["children"] = self.get_serializer(child_comments, many=True).data
 
             for child in comment["children"]:
-                child["author"] = get_profile_data(User.objects.get(id=child["author"]))
+                self.serializer_class = UserMiniInfoSeriaLizer
+                child["author"] = self.get_serializer(
+                    User.objects.get(id=child["author"])
+                ).data
 
         return data
 

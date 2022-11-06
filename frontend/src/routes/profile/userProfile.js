@@ -7,122 +7,87 @@ import { GlobalContext } from "../../App"
 import ProfileImages from "./components/profileImages"
 import ProfileInformation from "./components/profileInformation"
 import ProfileEngagements from "./components/profileEngagements"
-import ProfileActivities from "./components/profileActivities"
-import useComplexAxiosRequests from "../../hooks/useComplexRefresh"
+// import useAuthRequest from "../auth/useAuthRequest"
+import useAxiosRequest from "../../hooks/useAxiosRequest"
+import { useParams } from "react-router-dom"
 
 const UserProfile = () => {
     const context = useContext(GlobalContext)
-    const profileID = localStorage.getItem("pvpk")
-    const [readOnly, setReadOnly] = useState(false)
     const [profile, setProfile] = useState(null)
+    const [response, pendingData, error, sendAxiosRequest] = useAxiosRequest()
 
-    const [response, pendingData, error, sendAxiosRequest] =
-        useComplexAxiosRequests()
+    const params = useParams()
 
     useEffect(() => {
-        const form = new FormData()
-        form.append("Profile-Id", profileID)
-
-        sendAxiosRequest({
-            axiosInstance: celesupApi,
-            url: "/profile/view",
-            method: "POST",
-            form: form,
-        })
-
-        // eslint-disable-next-line
+        getProfile()
     }, [])
 
     useEffect(() => {
-        if (!context.user || !response) return
-        if (response.first_name && response.last_name) {
-            document.title =
-                response.first_name.toUpperCase() +
-                " " +
-                response.last_name.toUpperCase()
-            return
-        }
-
-        document.title = "CELESUP | " + response.username.toUpperCase()
-
-        // eslint-disable-next-line
-    }, [context])
+        if (!profile) return
+        document.title =
+            "Celesup | " + profile.full_name?.toUpperCase() ||
+            profile.username.toUpperCase()
+    }, [profile])
 
     useEffect(() => {
         if (!response) return
-
-        if (response.id !== context.user.id) {
-            setReadOnly(true)
-        }
         setProfile(response)
-
-        if (response.tokens) {
-            context.setUserTokens({
-                ...response.tokens,
-            })
-        }
-        // eslint-disable-next-line
     }, [response])
 
-    async function editProfile(form, config) {
-        form.append("Profile-Id", profileID)
-        form.append("refreshToken", context.tokens.refresh)
-
-        sendAxiosRequest({
-            axiosInstance: celesupApi,
-            url: "/profile/edit",
-            method: "PUT",
-            form: form,
-            options: config,
-        })
+    async function getProfile(refresh) {
+        const form = new FormData()
+        if (getProfileIdentifier) {
+            form.append("username", getProfileIdentifier())
+            await sendAxiosRequest({
+                url: "/profile/view",
+                method: "POST",
+                form: form,
+            })
+            if (refresh && profile.id === context.user.id) {
+                setTimeout(context.updateUserTokens, 500)
+            }
+        }
     }
 
-    function editProfileImages({ currentTarget }) {
-        const input = document.createElement("input")
-        input.setAttribute("type", "file")
-        input.click()
-
-        input.addEventListener("change", () => {
-            const form = new FormData()
-            form.append(
-                currentTarget.getAttribute("data-field"),
-                input.files[0],
-            )
-
-            const config = {
-                headers: { "Content-Type": "multipart/form-data" },
-            }
-
-            editProfile(form, config)
-        })
+    function getProfileIdentifier() {
+        if (params.username) {
+            return params.username.trim()
+        }
     }
 
     return (
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center user__profile">
             <div className="maxwidth-750-px mx-__">
                 {!!profile && (
                     <>
                         <ProfileImages
-                            readOnly={readOnly}
                             profile={profile}
                             setProfile={setProfile}
-                            editProfileImages={editProfileImages}
                         />
 
                         <ProfileInformation
-                            readOnly={readOnly}
                             profile={profile}
-                            setProfile={setProfile}
-                            editProfileImages={editProfileImages}
+                            setProfile={getProfile}
                         />
 
                         <ProfileEngagements
-                            readOnly={readOnly}
                             profile={profile}
                             setProfile={setProfile}
-                            editProfileImages={editProfileImages}
                         />
                     </>
+                )}
+
+                {!!error && (
+                    <header className="d-flex flex-column align-items-center my-3">
+                        <p className="text-center pb-1">Something Went Wrong</p>
+                        <p className="text-center pb-1">{error}</p>
+                        <span
+                            className="btn-blue btn br-lg"
+                            onClick={() => getProfile()}
+                        >
+                            Try again later
+                        </span>
+                    </header>
                 )}
             </div>
         </div>

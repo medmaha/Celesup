@@ -2,7 +2,7 @@ import axios from "axios"
 import jwtDecode from "jwt-decode"
 import dayjs from "dayjs"
 
-const baseURL = "http://localhost:8000"
+const baseURL = "http://127.0.0.1:8000"
 
 export async function refreshAuthTokens(updateTokens) {
     " function is called on the UI backend"

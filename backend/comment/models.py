@@ -2,6 +2,8 @@ from django.db import models
 from post.models import Post
 from users.models import User
 
+from utilities.media_paths import comment_picture_path, comment_file_path
+
 
 class Comment(models.Model):
     post = models.ForeignKey(
@@ -11,6 +13,9 @@ class Comment(models.Model):
         User, blank=True, related_name="comment_author", on_delete=models.CASCADE
     )
     content = models.TextField(max_length=1000)
+    file = models.FileField(null=True, blank=True, upload_to=comment_file_path)
+    picture = models.ImageField(null=True, blank=True, upload_to=comment_picture_path)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

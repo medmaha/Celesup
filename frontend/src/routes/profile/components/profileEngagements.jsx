@@ -44,7 +44,7 @@ export default function ProfileEngagements() {
                             onClick={changeTab}
                             data-tab-index="1"
                             tabIndex={1}
-                            className="title active"
+                            className="title"
                         >
                             Posts
                         </span>
@@ -81,12 +81,10 @@ export default function ProfileEngagements() {
                     </div>
                 </div>
 
-                <span className="divider"></span>
-
                 {/* Tab contents */}
                 <div className="mt-2">
                     {state.activeTab === 1 && (
-                        <div className="">
+                        <div className="d-flex justify-content-center width-100">
                             <PostWrapper />
                         </div>
                     )}

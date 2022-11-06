@@ -16,22 +16,22 @@ DEBUG = os.environ.get("DEBUG") == "1"
 
 ALLOWED_HOSTS = []
 if not DEBUG:
-    ALLOWED_HOSTS = ["localhost"]
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.121"]
 
 # Application definition
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third parties
-    # 'djoser',
+    # Third parties apps
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
-    # customs
+    # customs apps
     "users.apps.UsersConfig",
     "admin_users.apps.AdminUserConfig",
     "celebrity.apps.CelebrityConfig",
@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     "features.apps.FeaturesConfig",
     "notification.apps.NotificationConfig",
     "comment.apps.CommentConfig",
+    "messenging.apps.MessengingConfig",
     # dynamic website
     # 'website.apps.WebsiteConfig',
 ]
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  # custom Django cors headers
@@ -80,6 +82,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "src.wsgi.application"
+ASGI_APPLICATION = "src.asgi.application"
+
+# CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
 
 
 # Database
@@ -125,11 +139,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    BASE_DIR / "static/staticfiles/",
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static/staticfiles/",
+# ]
 
-STATIC_ROOT = BASE_DIR / "static/build/"
+# STATIC_ROOT = BASE_DIR / "static/build/"
 
 
 MEDIA_URL = "media/"

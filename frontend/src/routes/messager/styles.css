@@ -1,0 +1,116 @@
+.__messenger {
+    height: calc(100vh - 100px);
+    overflow: hidden;
+}
+
+.chats__box {
+    padding-top: 0.25rem;
+    border-right: 1px solid rgba(128, 128, 128, 0.765);
+}
+
+.chats__box h2 {
+    font-weight: lighter;
+    /* padding-bottom: 1rem; */
+}
+
+.individual__chats_wrapper {
+    max-height: 400px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.individual__chats_wrapper::-webkit-scrollbar {
+    width: 7px;
+}
+.individual__chats_wrapper::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+}
+
+.chats__box .individual__chats_wrapper .chat {
+    padding: 0.9rem 0.5rem;
+    cursor: pointer;
+    transition: background-color 150ms ease-in-out;
+    position: relative;
+}
+.chats__box .individual__chats_wrapper .chat:hover {
+    background-color: rgba(79, 79, 79, 0.295);
+}
+.chats__box .individual__chats_wrapper .chat.active,
+.chats__box .individual__chats_wrapper .chat.active:hover {
+    background-color: rgba(108, 108, 108, 0.468);
+}
+
+.chats__box .individual__chats_wrapper .chat.active::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 7px;
+    content: "";
+    background-color: teal;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.chats__box .individual__chats_wrapper .chat .last__chat p {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.messages__box {
+    max-height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.icon-wrapper,
+.icon-wrapper_ {
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 100%;
+    transition: background-color 150ms ease-in-out;
+}
+
+.icon-wrapper_ {
+    display: flex;
+    align-items: center;
+    border-radius: 0;
+    justify-content: center;
+    transform: translateX(1px);
+}
+
+.icon-wrapper svg {
+    width: 20px;
+    height: 20px;
+}
+.icon-wrapper_ svg {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-wrapper:hover {
+    background-color: #8080804e;
+}
+
+.people {
+    transition: background-color 125ms ease-in-out;
+}
+
+.people:hover {
+    background-color: rgba(128, 128, 128, 0.399);
+}
+
+@media (max-width: 670px) {
+    #Messenger .card {
+        max-width: 500px;
+    }
+    .chats__box {
+        border: none;
+        min-width: 100%;
+    }
+    .messages__box {
+        /* display: none; */
+        min-width: 100%;
+    }
+}

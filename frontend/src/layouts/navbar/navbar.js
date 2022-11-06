@@ -1,12 +1,12 @@
 import "./styles.css"
 import { useContext, useState, useEffect, useRef } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 import { GlobalContext } from "../../App"
 import { CELESUP_BASE_URL } from "../../axiosInstances"
 
 import "./components/styles.css"
-import Dropdown from "../../components/dropdown"
+import Dropdown from "../../features/Dropdown"
 import SearchBar from "./components/searchBar"
 import NavDrawerWrapper from "./components/navDrawer"
 import NavLinks from "./components/navLinks"
@@ -19,6 +19,7 @@ const Navbar = () => {
 
     const navigate = useNavigate()
     const context = useContext(GlobalContext)
+    const params = useParams()
 
     function toggleNavDropdown() {}
 
@@ -57,9 +58,7 @@ const Navbar = () => {
     }
 
     function userAccount() {
-        if (localStorage.getItem("pvpk") === context.user.id) return
-        localStorage.setItem("pvpk", context.user.id)
-        window.location.href = "/" + context.user.username
+        navigate(`/${context.user.username.toLowerCase()}`)
     }
 
     function logoutUser() {
@@ -130,7 +129,7 @@ const Navbar = () => {
 
                 <NavLinks />
 
-                {context.user && (
+                {!!context.user && (
                     <Dropdown
                         button={
                             <div
@@ -250,8 +249,7 @@ const Navbar = () => {
                                 context.setFocusState(null)
                             },
                             identify: "navbarDropdown",
-                            left: "-200px",
-                            top: "calc(100% + 1rem)",
+                            right: "0",
                         }}
                     />
                 )}

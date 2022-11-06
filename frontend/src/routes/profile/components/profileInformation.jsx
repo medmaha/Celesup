@@ -1,11 +1,12 @@
 import { useContext, useState } from "react"
 import { GlobalContext } from "../../../App"
 import { celesupApi } from "../../../axiosInstances"
-import Modal from "../../../features/modal"
-import ProfileUpdateForm from "./profileUpdateForm"
+import ProfileUpdateFormWrapper from "./profileUpdateForm"
 
-const ProfileInformation = ({ setProfile, profile, readOnly }) => {
+const ProfileInformation = ({ setProfile, profile }) => {
     const context = useContext(GlobalContext)
+    const [editProfile, setEditProfile] = useState(false)
+
     function followProfile() {
         const form = new FormData()
         form.append("profile_id", profile.id)
@@ -23,7 +24,7 @@ const ProfileInformation = ({ setProfile, profile, readOnly }) => {
             {!!profile && (
                 <>
                     <div className=" pos-absolute top-0 right-0">
-                        {readOnly ? (
+                        {!profile.id === context.user.id ? (
                             <>
                                 {!!profile.followers?.find(
                                     (id) => (id = context.user.id),
@@ -44,7 +45,12 @@ const ProfileInformation = ({ setProfile, profile, readOnly }) => {
                                 )}
                             </>
                         ) : (
-                            <button className="btn br-md m-1 mb-0 bg-none on-text-hover-white edit_profile__btn">
+                            <button
+                                className="btn br-md m-1 mb-0 bg-none on-text-hover-white edit_profile__btn"
+                                onClick={() => {
+                                    setEditProfile((prev) => !prev)
+                                }}
+                            >
                                 Edit profile
                             </button>
                         )}
@@ -59,20 +65,11 @@ const ProfileInformation = ({ setProfile, profile, readOnly }) => {
                                 </span>
                             </div>
                             <p className="typography profile__bio">
-                                <small>
-                                    {!!profile.biograp || (
-                                        <>
-                                            Lorem ipsum dolor sit amet
-                                            consectetur adipisicing elit. Facere
-                                            tempora quis autem quae accusamus
-                                            blanditiis!
-                                        </>
-                                    )}
-                                </small>
+                                <small>{profile.biography}</small>
                             </p>
-                            <div className="d-flex gap-1 typography">
+                            <div className="d-flex gap-2 typography">
                                 <div className="d-flex align-items-center gap-3-px text-muted">
-                                    <span className="icon_wrapper">
+                                    <span className="icon-wrapper">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 92 92"
@@ -144,15 +141,14 @@ const ProfileInformation = ({ setProfile, profile, readOnly }) => {
             )}
 
             {/* Edit Profile */}
-            <Modal
-                children={
-                    <ProfileUpdateForm
-                        profile={profile}
-                        editProfileImages={editProfileImages}
-                        readOnly={readOnly}
-                    />
-                }
-            />
+
+            {editProfile && (
+                <ProfileUpdateFormWrapper
+                    setEditProfile={setEditProfile}
+                    profile={profile}
+                    setProfile={setProfile}
+                />
+            )}
         </div>
     )
 }

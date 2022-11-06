@@ -1,13 +1,44 @@
 @import "./supcel-CSS/supcel.css";
-
+@import "../features/ztyles.css";
 /* body {
     height: auto;
 } */
 
+body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+:root {
+    --scroll-thumb-clr: rgb(94, 93, 93);
+    --scroll-track-clr: rgb(195, 190, 190);
+    --scroll-width: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scroll-thumb-clr);
+}
+::-webkit-scrollbar-track {
+    background-color: var(--scroll-track-clr);
+}
+::-webkit-scrollbar {
+    width: var(--scroll-width);
+    overflow-y: hidden;
+}
+
+.light-mode {
+    --scroll-thumb-clr: #999;
+    --scroll-thumb-clr: #333;
+}
+
 .truncate {
     overflow: hidden;
-    word-wrap: nowrap;
+    white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.justify-right {
+    justify-content: flex-end;
 }
 
 .bg-none {

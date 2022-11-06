@@ -7,6 +7,8 @@ from .serializers import PostDetailSerializer
 from django.shortcuts import get_object_or_404
 from users.models import User
 from utilities.generators import get_profile_data
+from comment.models import Comment
+from api.routes.user.serializers import UserDetailSerializer
 
 
 class PostsList(generics.ListAPIView):
@@ -42,11 +44,21 @@ class PostsList(generics.ListAPIView):
         for post in serializer.data:
             instance = Post.objects.get(key=post["key"])
 
-            post["me"] = request.user in instance.likes.all()
-            post["liked_by_users"] = PostLikedByUsers(instance, request.user).data
+            post_comments = Comment.objects.filter(post=instance)
 
-            user = User.objects.get(id=post["author"])
+            self.serializer_class = UserDetailSerializer
 
-            post["author"] = get_profile_data(user)
+            data = {
+                "bookmarks": 0,
+                "comments": post_comments.count(),
+                "shares": instance.shares.all().count(),
+                "likes": self.get_serializer(instance.likes.all(), many=True).data,
+                "author": {
+                    **get_profile_data(instance.author),
+                    **self.get_serializer(instance.author).data,
+                },
+            }
+
+            post.update(data)
 
         return self.get_paginated_response(serializer.data)
