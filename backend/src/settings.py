@@ -1,6 +1,8 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+import django_heroku
+import dj_database_url
 
 # CUSTOM USER MODEL
 AUTH_USER_MODEL = "users.User"
@@ -14,9 +16,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG") == "1"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 if not DEBUG:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.121"]
+    ALLOWED_HOSTS = os.environ.get("ALLOWED_HOST")
 
 # Application definition
 INSTALLED_APPS = [
@@ -139,15 +141,17 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "/static/"
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static/staticfiles/",
-# ]
+STATIC_ROOT = os.path.join(BASE_DIR, '"staticfiles"')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "static/build"),
+)
 
-# STATIC_ROOT = BASE_DIR / "static/build/"
+django_heroku.settings(locals())
 
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "static/mediafiles/"
+MEDIA_ROOT = BASE_DIR / "MEDIA_FILES/"
 
 
 # Emailing

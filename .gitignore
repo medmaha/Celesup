@@ -1,6 +1,13 @@
 #Backends dependencies
+
+# fast-escarpment-67223
+
 .vscode
 *venv
+*/**/DATABASE.db
+
+
+*MEDIA_FILES
 *__pycache__
 
 # frontend dependencies

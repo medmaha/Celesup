@@ -1,0 +1,13 @@
+{
+	"short_name": "Celesup App",
+	"name": "Celesup Social Networking",
+	"icons": [
+		{
+			"src": "celesup-logo.png",
+			"type": "image/png",
+			"sizes": "48x48"
+		}
+	],
+	"start_url": ".",
+	"display": "standalone"
+}
