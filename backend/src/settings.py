@@ -1,8 +1,6 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-import django_heroku
-import dj_database_url
 
 # CUSTOM USER MODEL
 AUTH_USER_MODEL = "users.User"
@@ -147,8 +145,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static/build"),
 )
 
-django_heroku.settings(locals())
-
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "MEDIA_FILES/"
@@ -162,6 +158,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
-from .api_setting import *
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+from .api_setting import *
