@@ -6,6 +6,10 @@
 
 .env
 
+*.db
+
+app_features/
+
 *__pycache__
 
 *WEB_SOCKETS
