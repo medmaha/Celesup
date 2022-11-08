@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import useAxiosRequest from "../../../hooks/useAxiosRequest"
 import PendingSpinner from "../../../features/Spinner"
+import { useNavigate } from "react-router-dom"
 
 function SearchBar() {
     const [isFocus, setIsFocus] = useState(false)
@@ -9,6 +10,7 @@ function SearchBar() {
     const [searchResponse, setSearchResponse] = useState([])
 
     const inputField = useRef()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (!response) return
@@ -21,6 +23,11 @@ function SearchBar() {
         inputField.current.addEventListener("input", handleQueryChanged)
         // eslint-disable-next-line
     }, [])
+
+    function visitResultProfile(username = "") {
+        console.log("clicked")
+        navigate("/" + username.toLowerCase())
+    }
 
     function handleQueryChanged({ target }) {
         const query = target.value.toLowerCase().trim()
@@ -91,8 +98,11 @@ function SearchBar() {
                     )}
                     {searchResponse?.map((result, idx) => {
                         return (
-                            <>
-                                <span key={idx} className="">
+                            <div
+                                key={idx}
+                                onClick={() => visitResultProfile(result.text)}
+                            >
+                                <span className="">
                                     <div className="d-flex align-items-center gap-7-px cursor-pointer width-fit-content">
                                         {result.object === "hashtag" && (
                                             <>
@@ -123,7 +133,7 @@ function SearchBar() {
                                 {searchResponse[idx + 1] && (
                                     <div className="divider"></div>
                                 )}
-                            </>
+                            </div>
                         )
                     })}
                     {pending && (

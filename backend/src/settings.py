@@ -20,7 +20,7 @@ if not DEBUG:
 
 # Application definition
 INSTALLED_APPS = [
-    "daphne",
+    # "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -34,8 +34,8 @@ INSTALLED_APPS = [
     # customs apps
     "users.apps.UsersConfig",
     "admin_users.apps.AdminUserConfig",
-    "celebrity.apps.CelebrityConfig",
-    "supporter.apps.SupporterConfig",
+    # "celebrity.apps.CelebrityConfig",
+    # "supporter.apps.SupporterConfig",
     "feed.apps.FeedConfig",
     "post.apps.PostConfig",
     "hashtags.apps.HashtagsConfig",
@@ -82,18 +82,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "src.wsgi.application"
-ASGI_APPLICATION = "src.asgi.application"
+# ASGI_APPLICATION = "src.asgi.application"
 
 # CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("localhost", 6379)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 6379)],
+#         },
+#     },
+# }
 
 
 # Database

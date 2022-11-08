@@ -1,6 +1,6 @@
 import Supcel from "./cssStyles/supcel-CSS/supcel"
 import { useEffect, useState, createContext } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
 import jwtDecode from "jwt-decode"
 import Navbar from "./layouts/navbar/navbar"
 import MobileNavbarLinks from "./layouts/navbar/mobileNavbarLinks"
@@ -38,18 +38,25 @@ function App() {
         refresh: localStorage.getItem("refresh"),
     })
     const { initWebSocket, socket: webSocketMaster } = useWebSocketHook()
+    const navigate = useNavigate()
 
-    useEffect(() => {
-        if (!user) return
-        initWebSocket({
-            url: "/ws/master?user=" + user.id,
-            onMessage: (ev) =>
-                handleWebSocketCommunication(ev, updateUserTokens),
-            onConnect: (ev) => {
-                console.log("ws conn")
-            },
-        })
-    }, [user])
+    // useEffect(() => {
+    //     if (!tokens.access || !tokens.refresh) {
+    //         navigate("/login")
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     if (!user) return
+    //     initWebSocket({
+    //         url: "/ws/master?user=" + user.id,
+    //         onMessage: (ev) =>
+    //             handleWebSocketCommunication(ev, updateUserTokens),
+    //         onConnect: (ev) => {
+    //             console.log("ws conn")
+    //         },
+    //     })
+    // }, [user])
 
     useEffect(() => {
         if (
@@ -78,8 +85,6 @@ function App() {
             localStorage.setItem("access", tokens.access)
             localStorage.setItem("refresh", tokens.refresh)
             const client = jwtDecode(tokens.access)
-            console.log(client)
-
             setUser(client)
         }
         return () => {}
@@ -113,27 +118,26 @@ function App() {
     }
 
     return (
-        <div>
+        <div className="d-flex justify-content-center">
             <GlobalContext.Provider value={contextValues}>
                 {/* <Navbar /> */}
-                <BrowserRouter>
-                    <Navbar />
-                    <Routes>
-                        <Route path="/" exact element={<Index />} />
-                        <Route path={`/explore`} element={<ExplorePosts />} />
-                        <Route path={`/messager`} element={<Messager />} />
-                        <Route path={`/:username`} element={<UserProfile />} />
 
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<Register />} />
+                <Navbar />
+                <Routes>
+                    <Route path="/" exact element={<Index />} />
+                    <Route path={`/explore`} element={<ExplorePosts />} />
+                    <Route path={`/messager`} element={<Messager />} />
+                    <Route path={`/:username`} element={<UserProfile />} />
 
-                        <Route path="*" element={<PageNotFound />} />
-                    </Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Register />} />
 
-                    {focusStates?.createPost && <CreateNewPost />}
+                    <Route path="*" element={<PageNotFound />} />
+                </Routes>
 
-                    <MobileNavbarLinks />
-                </BrowserRouter>
+                {focusStates?.createPost && <CreateNewPost />}
+
+                <MobileNavbarLinks />
             </GlobalContext.Provider>
         </div>
     )

@@ -1,4 +1,3 @@
-import "./style.css"
 import { useState, useEffect, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { celesupApi } from "../../../axiosInstances"
@@ -89,7 +88,7 @@ export default function Post({ post, postWebSocket }) {
     }
 
     return (
-        <article className="post">
+        <article className="post width-100 pos-relative" key={post.id}>
             {/* author */}
             <div className="d-flex align-items-center justify-content-between pb-__">
                 <header
@@ -132,7 +131,7 @@ export default function Post({ post, postWebSocket }) {
                         <small>{post.created_at.split("T")[0]}</small>
                     </p>
                 </header>
-                <div className="">
+                <div className="pos-absolute right-0 top-5-px">
                     <Dropdown
                         identifier={"dropdown___" + postData.key}
                         button={
@@ -221,9 +220,6 @@ export default function Post({ post, postWebSocket }) {
                 {postData.caption && (
                     <header className="post__caption pb-__">
                         <h3>{postData.caption}</h3>
-                        {/* <span className='' style={{ fontSize: '23px' }}>
-							Lorem ipsum dolor sit.
-						</span> */}
                     </header>
                 )}
                 {postData.hashtags && (
@@ -255,10 +251,10 @@ export default function Post({ post, postWebSocket }) {
 
                 {/* Post Interaction/activities */}
                 <div className="post__interactions">
-                    <PostStatistics post={postData} />
+                    {/* <PostStatistics post={postData} /> */}
                     <div
                         className="interact gap-1 d-flex justify-content-between align-items-center"
-                        style={{ maxWidth: "350px" }}
+                        style={{ maxWidth: "400px" }}
                     >
                         <div
                             className="d-flex align-items-center flex-column likes cursor-pointer"

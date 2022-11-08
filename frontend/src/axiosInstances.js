@@ -2,7 +2,12 @@ import axios from "axios"
 import jwtDecode from "jwt-decode"
 import dayjs from "dayjs"
 
-const baseURL = "http://localhost:8000"
+let baseURL = process.env.REACT_APP_CELESUP_BASE_URL
+
+// baseURL = "https//mahamedtoure.pythonanywhere.com"
+
+// if (!baseURL) {
+// }
 
 export async function refreshAuthTokens(updateTokens) {
     " function is called on the UI backend"
@@ -36,6 +41,16 @@ export async function refreshAuthTokens(updateTokens) {
     return data
 }
 
+export const celesupAuthApi = axios.create({
+    baseURL: baseURL,
+    headers: {
+        Authorization:
+            "Celesup " + localStorage.getItem("access")?.toString() ||
+            "access not available",
+        // 'Content-type': 'application/json',
+    },
+})
+
 export const celesupApi = axios.create({
     baseURL: baseURL,
     headers: {
@@ -50,6 +65,10 @@ celesupApi.interceptors.request.use((config) => {
     const accessToken = localStorage.getItem("access")
     const refreshToken = localStorage.getItem("refresh")
 
+    const controller = new AbortController()
+
+    config.signal = controller.signal
+
     if (accessToken && refreshToken) {
         const decodedAccessToken = jwtDecode(accessToken)
         const authTokenIsExpired =
@@ -58,6 +77,8 @@ celesupApi.interceptors.request.use((config) => {
         if (authTokenIsExpired) {
             return refreshRequestToken(config, refreshToken)
         }
+    } else {
+        controller.abort("not authorized for the request")
     }
 
     config.headers["Authorization"] = "Celesup " + accessToken

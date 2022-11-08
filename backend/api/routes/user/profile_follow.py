@@ -4,8 +4,7 @@ from rest_framework.generics import GenericAPIView
 
 from users.models import User
 
-from .serializers import SupporterSerializer, CelebritySerializer, UserDetailSerializer
-from ...utils.user_profile import Profile
+from .serializers import UserDetailSerializer
 from utilities.generators import get_profile_data
 
 

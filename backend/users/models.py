@@ -30,6 +30,14 @@ class User(AbstractUser):
     )
     user_type = models.CharField(max_length=20, blank=True, default="Admin")
 
+    friends = models.ManyToManyField("User", blank=True, related_name="user_friends")
+    followers = models.ManyToManyField(
+        "User", blank=True, related_name="user_followers"
+    )
+    following = models.ManyToManyField(
+        "User", blank=True, related_name="user_following"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

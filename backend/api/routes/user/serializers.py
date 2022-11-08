@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from users.models import User
 from admin_users.models import Admin
-from supporter.models import Supporter
-from celebrity.models import Celebrity
+
+# from supporter.models import Supporter
+# from celebrity.models import Celebrity
 
 
 class AdminSerializer(serializers.ModelSerializer):
@@ -37,6 +38,9 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "gender",
             "city",
             "biography",
+            "friends",
+            "following",
+            "followers",
             "date_joined",
         ]
 
@@ -63,13 +67,13 @@ class UserCreationSerializer(serializers.ModelSerializer):
         ]
 
 
-class CelebritySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Celebrity
-        fields = ["posts", "friends", "following", "followers"]
+# class CelebritySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Celebrity
+#         fields = ["posts", "friends", "following", "followers"]
 
 
-class SupporterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Supporter
-        fields = ["posts", "friends", "following", "followers"]
+# class SupporterSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Supporter
+#         fields = ["posts", "friends", "following", "followers"]

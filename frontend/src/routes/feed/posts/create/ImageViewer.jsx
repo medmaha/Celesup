@@ -30,7 +30,11 @@ const ImageViewer = ({ backToPostForm }) => {
     return (
         <div className="image__viewer height-100">
             <ul className="header d-flex py-1 px-1 justify-content-between align-items-center">
-                <li title="Go Back" className="icon-wrapper cursor-pointer">
+                <li
+                    title="Go Back"
+                    className="icon-wrapper cursor-pointer"
+                    onClick={backToPostForm}
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 512 512"
@@ -63,7 +67,7 @@ const ImageViewer = ({ backToPostForm }) => {
                 <li
                     title="Publish Post"
                     className="cursor-pointer"
-                    onClick={() => submitForm()}
+                    onClick={submitForm}
                 >
                     <span className="theme-primary py-__ px-1 br-lg font-sm">
                         Publish

@@ -1,3 +1,4 @@
+// import "./style.css"
 import { useEffect, useContext, useState, useMemo } from "react"
 import { GlobalContext } from "../../../App"
 import Post from "./post"
@@ -6,6 +7,15 @@ import PostPlaceholder from "./postPlaceholder"
 import useAxiosRequest from "../../../hooks/useAxiosRequest"
 import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import ComposePost from "./compose"
+
+const postWrapperStyles = {
+    width: "100%",
+    minWidth: "100vw",
+    display: "flex",
+    justifyContent: "center",
+    padding: "0 5px",
+    overflow: "hidden",
+}
 
 function PostsContainer({}) {
     // const [paginatorLinks, setPaginatorLinks] = useState(posts.links)
@@ -54,9 +64,10 @@ function PostsContainer({}) {
 
     return (
         <>
-            <section
+            <div
                 id="mainFeed"
-                className="post__container width-100 width-550-px"
+                style={postWrapperStyles}
+                // className="post__container width-100_ maxwidth-600-px width-450-px"
             >
                 {!!error && (
                     <header className="d-flex flex-column align-items-center my-3">
@@ -75,25 +86,30 @@ function PostsContainer({}) {
                 {/* create Post Card */}
                 {!!posts?.data && (
                     <>
-                        <ComposePost
-                            context={context}
-                            reFetchPosts={reFetchPosts}
-                        />
+                        <div>
+                            {/* <ComposePost
+                                context={context}
+                                reFetchPosts={reFetchPosts}
+                            /> */}
+                        </div>
                         <div
                             id="postsWrapper"
-                            className="width-100 width-550-px px-1 d-block"
+                            className="width-100 d-block maxwidth-600-px"
                         >
-                            {posts?.data?.map((post) => {
+                            {posts?.data?.map((post, idx) => {
                                 return (
-                                    <span key={post.key}>
-                                        {!!post && <Post post={post} />}
-                                    </span>
+                                    <section key={post.key} className="mt-__">
+                                        <Post post={post} />
+                                        {/* {posts.data.length !== idx + 1 && (
+                                            <span className="divider mb-1"></span>
+                                        )} */}
+                                    </section>
                                 )
                             })}
                         </div>
                     </>
                 )}
-            </section>
+            </div>
 
             {/* Page Paginators */}
             {/* <div className="paginators d-flex justify-content-evenly mt-1 pb-2">

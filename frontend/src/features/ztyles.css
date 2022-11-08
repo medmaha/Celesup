@@ -63,15 +63,16 @@
     transform: translateY(var(--starting-point-Ycor));
     transition: transform var(--transition-duration) ease-in-out,
         opacity var(--transition-duration) ease-in-out;
-
     width: max-content;
-
     top: var(--TOP);
     padding: 0.8rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 0.25rem;
     opacity: 0;
     pointer-events: none;
+
+    min-width: 100px;
+    min-height: 100px;
 
     display: flex;
     flex-direction: column;

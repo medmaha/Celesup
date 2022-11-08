@@ -1,10 +1,6 @@
-from ..routes.user.serializers import (
-    SupporterSerializer,
-    CelebritySerializer,
-    UserDetailSerializer
-)
+from ..routes.user.serializers import UserDetailSerializer
 
-BASE_URL = 'http://localhost:8000'
+BASE_URL = "http://localhost:8000"
 
 
 class PostLikedByUsers:
@@ -14,15 +10,13 @@ class PostLikedByUsers:
         self.user = user
 
         for postData in self.post:
-            postData['avatar'] = BASE_URL+postData['avatar']
-
+            postData["avatar"] = BASE_URL + postData["avatar"]
 
     def remove_admin_from_likes(self):
         for idx, user in enumerate(self.post):
-            if user.get('id') == self.admin.id or user.get('id') == self.user.id:
+            if user.get("id") == self.admin.id or user.get("id") == self.user.id:
                 del self.post[idx]
         return self.post
-
 
     @property
     def data(self):

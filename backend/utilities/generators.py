@@ -2,14 +2,12 @@ import os
 import json
 import uuid
 import requests
-from django.shortcuts import get_object_or_404
+from features.models import UniqueId
 
 BASE_URL = os.environ.get("BASE_URL")
 
 
 def id_generator(used_for=str):
-    from features.models import UniqueId
-
     """Generate a unique uuid for each model object
 
     Args:
@@ -35,35 +33,34 @@ def id_generator(used_for=str):
 
 
 def get_profile_data(user):
-    from admin_users.models import Admin, User
-    from celebrity.models import Celebrity
-    from supporter.models import Supporter
+    # from admin_users.models import Admin
 
-    user = get_object_or_404(User, id=user.id)
+    # from celebrity.models import Celebrity
+    # from supporter.models import Supporter
 
     from api.routes.user.serializers import (
-        AdminSerializer,
-        CelebritySerializer,
-        SupporterSerializer,
+        # AdminSerializer,
+        # CelebritySerializer,
+        # SupporterSerializer,
         UserDetailSerializer,
     )
 
-    profile = user.get_profile()
-    profile_serializer = None
+    # profile = user.get_profile()
+    # profile_serializer = None
 
-    if isinstance(profile, Admin):
-        profile_serializer = AdminSerializer(profile).data
+    # if isinstance(profile, Admin):
+    #     profile_serializer = AdminSerializer(profile).data
 
-    if isinstance(profile, Celebrity):
-        profile_serializer = CelebritySerializer(profile).data
+    # if isinstance(profile, Celebrity):
+    #     profile_serializer = CelebritySerializer(profile).data
 
-    if isinstance(profile, Supporter):
-        profile_serializer = SupporterSerializer(profile).data
+    # if isinstance(profile, Supporter):
+    #     profile_serializer = SupporterSerializer(profile).data
 
-    user_serializer = UserDetailSerializer(user).data
-    profile_serializer.update(user_serializer)
+    # user_serializer = UserDetailSerializer(user).data
+    # profile_serializer.update(user_serializer)
 
-    return profile_serializer
+    return UserDetailSerializer(user).data
 
 
 def get_auth_tokens(email: str, password: str):

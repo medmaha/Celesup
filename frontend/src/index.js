@@ -1,18 +1,21 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
+import { BrowserRouter } from "react-router-dom"
 import App from "./App"
 
 import "./cssStyles/index.css"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 
-if (window.screen.width < 480) {
-    alert("checkout our mobile")
-}
+// if (window.screen.width < 480) {
+//     alert("checkout our mobile")
+// }
 
 root.render(
     <React.StrictMode>
-        <App />
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </React.StrictMode>,
 )
 

@@ -43,7 +43,7 @@ const SignupExtraData = () => {
 
         localStorage.removeItem("sn-st")
         localStorage.removeItem("code")
-        navigate(`/${user.username}`)
+        navigate(`/${user.username.toLowerCase()}`)
 
         // eslint-disable-next-line
     }, [user])
@@ -103,7 +103,6 @@ const SignupExtraData = () => {
     }
 
     function submitForm() {
-        console.log(formData.full_name)
         if (!formData.full_name) return
 
         const form = new FormData()

@@ -17,19 +17,19 @@ export default function Messager() {
     const [mobileView, setMobileView] = useState({ state: false })
     const { initWebSocket, socket: chatSocket } = useWebSocketHook()
 
-    useEffect(() => {
-        if (!context.user) return
+    // useEffect(() => {
+    //     if (!context.user) return
 
-        initWebSocket({
-            url: `/ws/chat/threads?id=${context.user.id}`,
-            onMessage: (ev) => {
-                console.log(ev)
-            },
-            onError: (ev) => {},
-            onConnect: (ev) => {},
-            onDisconnect: (ev) => {},
-        })
-    }, [context])
+    //     initWebSocket({
+    //         url: `/ws/chat/threads?id=${context.user.id}`,
+    //         onMessage: (ev) => {
+    //             console.log(ev)
+    //         },
+    //         onError: (ev) => {},
+    //         onConnect: (ev) => {},
+    //         onDisconnect: (ev) => {},
+    //     })
+    // }, [context])
 
     useEffect(() => {
         if (window.outerWidth <= 670) {

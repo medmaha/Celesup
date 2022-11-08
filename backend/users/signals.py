@@ -3,8 +3,9 @@ from django.db.models.signals import post_save, pre_save
 
 from users.models import User
 from admin_users.models import Admin
-from celebrity.models import Celebrity
-from supporter.models import Supporter
+
+# from celebrity.models import Celebrity
+# from supporter.models import Supporter
 
 from utilities.generators import id_generator
 
@@ -31,14 +32,14 @@ def assign_user_id(sender, instance, *args, **kwargs):
         instance.gender = instance.gender.capitalize()
 
 
-@receiver(post_save, sender=User)
-def differentiate_user_types(sender, instance, created, **kwargs):
-    if created:
-        if instance.user_type.lower().startswith("cel"):
-            Celebrity.objects.create(user=instance, id=instance.id)
+# @receiver(post_save, sender=User)
+# def differentiate_user_types(sender, instance, created, **kwargs):
+#     if created:
+#         if instance.user_type.lower().startswith("cel"):
+#             Celebrity.objects.create(user=instance, id=instance.id)
 
-        if instance.user_type.lower().startswith("sup"):
-            Supporter.objects.create(user=instance, id=instance.id)
+#         if instance.user_type.lower().startswith("sup"):
+#             Supporter.objects.create(user=instance, id=instance.id)
 
-        if instance.user_type.lower() == ("admin"):
-            Admin.objects.create(user=instance)
+#         if instance.user_type.lower() == ("admin"):
+#             Admin.objects.create(user=instance)

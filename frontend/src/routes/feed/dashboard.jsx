@@ -12,13 +12,6 @@ import { CELESUP_BASE_URL } from "../../axiosInstances"
 
 const Dashboard = () => {
     const context = useContext(GlobalContext)
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        if (!context.tokens.access || !context.tokens.refresh) {
-            navigate("/login")
-        }
-    })
 
     useEffect(() => {
         localStorage.removeItem("pvpk")
@@ -27,7 +20,7 @@ const Dashboard = () => {
     return (
         <main
             id="feedsContainer"
-            className="p-1 gap-3 d-flex justify-content-center container"
+            className="d-flex justify-content-center mb-2 width-100"
         >
             {/* <Activity /> */}
             <PostsContainer />

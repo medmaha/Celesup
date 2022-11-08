@@ -14,8 +14,9 @@ const Login = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!user) return
-        navigate(`/`, { replace: true })
+        if (user) {
+            navigate(`/`, { replace: true })
+        }
         // eslint-disable-next-line
     }, [user])
 
