@@ -14,11 +14,11 @@ def assign_feed_id(sender, instance, *args, **kwargs):
         instance.id = feed_id
 
 
-# @receiver(pre_save, sender=FeedObjects)
-# def assign_feed_object_id(sender, instance, *args, **kwargs):
-#     if not instance.id:
-#         feed_id = id_generator("Feed Object")
-#         instance.id = feed_id
+@receiver(pre_save, sender=FeedObjects)
+def assign_feed_id(sender, instance, *args, **kwargs):
+    if not instance.id:
+        feed_id = id_generator("Feed Item")
+        instance.id = feed_id
 
 
 @receiver(post_save, sender=User)
@@ -42,6 +42,7 @@ def add_to_user_feeds(sender, created, instance, *args, **kwargs):
             user_feed, created = Feed.objects.get_or_create(user=user)
 
             objects = FeedObjects.objects.create(
-                object=instance, object_id=instance.key
+                object=instance,
+                object_id=instance.key,
             )
             user_feed.feed_objects.add(objects)

@@ -2,7 +2,7 @@ import axios from "axios"
 import jwtDecode from "jwt-decode"
 import dayjs from "dayjs"
 
-let baseURL = process.env.REACT_APP_CELESUP_BASE_URL
+let baseURL = "http://mahamedtoure.pythonanywhere.com"
 
 // baseURL = "https//mahamedtoure.pythonanywhere.com"
 
@@ -78,7 +78,7 @@ celesupApi.interceptors.request.use((config) => {
             return refreshRequestToken(config, refreshToken)
         }
     } else {
-        controller.abort("not authorized for the request")
+        controller.abort("not authorized for this request")
     }
 
     config.headers["Authorization"] = "Celesup " + accessToken

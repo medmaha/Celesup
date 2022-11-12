@@ -12,9 +12,6 @@ from utilities.generators import get_profile_data
 
 def get_post_json(post: Post, view: GenericAPIView) -> dict:
 
-    print(post)
-    print(view)
-
     view.serializer_class = PostDetailSerializer
     post_comments = Comment.objects.filter(post=post)
 
@@ -26,6 +23,7 @@ def get_post_json(post: Post, view: GenericAPIView) -> dict:
 
     data = {
         **post_serializer,
+        "key": post.key,
         "bookmarks": 0,
         "comments": post_comments.count(),
         "shares": post.shares.all().count(),

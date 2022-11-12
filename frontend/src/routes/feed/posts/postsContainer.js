@@ -37,7 +37,6 @@ function PostsContainer({}) {
 
     useEffect(() => {
         reFetchPosts()
-        return () => {}
     }, [])
 
     useEffect(() => {
@@ -45,13 +44,14 @@ function PostsContainer({}) {
     }, [response])
 
     function updatePost(response) {
+        if (!response) return
         return response
     }
 
     async function reFetchPosts() {
         await sendAxiosRequest({
             axiosInstance: celesupApi,
-            url: "/posts/list",
+            url: "/feeds",
             method: "GET",
         })
         context.setFocusState((prev) => {

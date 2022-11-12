@@ -15,7 +15,7 @@ function reducer(state, action) {
     }
 }
 
-export default function ProfileEngagements() {
+export default function ProfileEngagements({ profile }) {
     const [state, dispatch] = useReducer(reducer, { activeTab: 1 })
 
     function changeTab(ev) {
@@ -85,7 +85,7 @@ export default function ProfileEngagements() {
                 <div className="mt-2">
                     {state.activeTab === 1 && (
                         <div className="d-flex justify-content-center width-100">
-                            <PostWrapper />
+                            <PostWrapper profile={profile} />
                         </div>
                     )}
                     {state.activeTab === 2 && (
@@ -112,16 +112,17 @@ export default function ProfileEngagements() {
     )
 }
 
-function PostWrapper() {
+function PostWrapper({ profile }) {
     const context = useContext(GlobalContext)
     const [posts, setPostItems] = useState([])
 
     useEffect(() => {
+        if (!profile) return
         getPosts()
-    }, [])
+    }, [profile])
 
     const getPosts = async () => {
-        await celesupApi.get(`posts/list?id=${context.user.id}`).then((res) => {
+        await celesupApi.get(`/posts?id=${profile.id}`).then((res) => {
             setPostItems(res.data.data)
         })
     }

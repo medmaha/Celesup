@@ -8,9 +8,13 @@ import PostStatistics from "./postStatistics"
 
 import useWebSocketHook from "../../../hooks/useWebSocketHook"
 
+import DateTime from "../../../hooks/getDateTime"
+
 export default function Post({ post, postWebSocket }) {
     const [postData, setPostData] = useState(post)
     const [postComments, setPostComment] = useState(false)
+
+    const POST_DATE = new DateTime(postData.created_at)
 
     const context = useContext(GlobalContext)
     const navigate = useNavigate()
@@ -124,15 +128,21 @@ export default function Post({ post, postWebSocket }) {
                         <section className="username px-1 cursor-pointer">
                             {post.author.id === context.user.id ? (
                                 <span className="d-flex flex-column gap-5-px">
-                                    <b>Me</b>@
-                                    {postData.author.username.toLowerCase()}
+                                    <b>Me</b>
+                                    <span className="text-muted">
+                                        @
+                                        {postData.author.username.toLowerCase()}
+                                    </span>
                                 </span>
                             ) : (
                                 <>
                                     {postData.author.full_name ? (
                                         <span className="d-flex flex-column gap-5-px">
-                                            <b>{postData.author.full_name}</b>@
-                                            {postData.author.username.toLowerCase()}
+                                            <b>{postData.author.full_name}</b>
+                                            <span className="text-muted">
+                                                @
+                                                {postData.author.username.toLowerCase()}
+                                            </span>
                                         </span>
                                     ) : (
                                         <span>
@@ -144,7 +154,9 @@ export default function Post({ post, postWebSocket }) {
                         </section>
                     </div>
                     <p style={{ alignSelf: "flex-end" }}>
-                        <small>{post.created_at.split("T")[0]}</small>
+                        <small className="text-muted">
+                            {POST_DATE.format()}
+                        </small>
                     </p>
                 </header>
                 <div className="pos-absolute right-0 top-5-px">

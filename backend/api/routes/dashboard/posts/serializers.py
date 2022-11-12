@@ -1,6 +1,14 @@
 from rest_framework import serializers
 from post.models import Post
 
+from feed.models import FeedObjects
+
+
+class FeedPost(serializers.ModelSerializer):
+    class Meta:
+        model = FeedObjects
+        fields = ["object"]
+
 
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
