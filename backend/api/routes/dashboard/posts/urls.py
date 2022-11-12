@@ -7,12 +7,14 @@ from . import (
     PostUpdate,
     PostRetrieve,
     LikePost,
+    PostsFeed,
     PostStatistics,
 )
 
 posts_url_patterns = [
     # feed
-    path("posts/list", PostsList.as_view()),
+    path("posts", PostsList.as_view()),
+    path("posts/list", PostsFeed.as_view()),
     path("posts/create", PostCreate.as_view()),
     path("posts/delete", PostDelete.as_view()),
     path("posts/update", PostUpdate.as_view()),

@@ -1,11 +1,7 @@
 from rest_framework import generics
 
-from feed.models import Feed
 from post.models import Post
-from api.utils.post_liked_by import PostLikedByUsers
 from .serializers import PostDetailSerializer
-from django.shortcuts import get_object_or_404
-from users.models import User
 from utilities.generators import get_profile_data
 from comment.models import Comment
 from api.routes.user.serializers import UserDetailSerializer
@@ -14,31 +10,15 @@ from api.routes.user.serializers import UserDetailSerializer
 class PostsList(generics.ListAPIView):
     """Gets all post related to the authenticated user"""
 
+    queryset = Post.objects.filter().order_by("-created_at")
     serializer_class = PostDetailSerializer
-
-    def get_queryset(self, user_id):
-        try:
-            user_feeds = Feed.objects.get(user=self.request.user)
-            if user_id:
-                user = get_object_or_404(User, id=user_id)
-                return user_feeds.posts.filter(author=user).order_by("-created_at")
-            return user_feeds.posts.all().order_by("-created_at")
-        except:
-            if user_id:
-                user = get_object_or_404(User, id=user_id)
-                return Post.objects.filter(author=user).order_by("-created_at")
-
-            return Post.objects.filter().order_by("-created_at")
 
     def list(self, request, *args, **kwargs):
 
-        path = request.get_full_path()
-        user_id = None
-        if len(path.split("?")) > 1:
-            user_id = path.split("?")[1].split("=")[1]
+        posts = super().list(request, *args, **kwargs)
 
-        query = self.filter_queryset(self.get_queryset(user_id))
-        page = self.paginate_queryset(query)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
 
         for post in serializer.data:
