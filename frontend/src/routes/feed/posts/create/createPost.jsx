@@ -112,9 +112,12 @@ function CreateNewPost() {
     }
 
     return (
-        <div ref={createPostContainer} className="create__post__container pt-1">
+        <div
+            ref={createPostContainer}
+            className="create__post__container pt-1 "
+        >
             {/* <h1>Render ME</h1> */}
-            <div className="post__modal mx-__ card p-0 pos-relative">
+            <div className="post__modal mx-__ card p-0 pos-relative border">
                 <PostContext.Provider
                     value={{
                         formData,

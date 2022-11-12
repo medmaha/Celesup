@@ -174,7 +174,8 @@ const Navbar = () => {
                                 icon: (
                                     <div className="typography">
                                         <span className="d-block center font-sm">
-                                            You're logged in as
+                                            {context.user.full_name ||
+                                                context.user.username}
                                         </span>
                                         <h3>
                                             <strong>

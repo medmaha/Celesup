@@ -91,9 +91,9 @@ const ImageViewer = ({ backToPostForm }) => {
                     {/* </div> */}
                 </div>
             </div>
-            {edit && (
+            {/* {edit && (
                 <ImageEditor image={image} updateFormData={updateFormData} />
-            )}
+            )} */}
         </div>
     )
 }

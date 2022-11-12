@@ -76,6 +76,22 @@ export default function Post({ post, postWebSocket }) {
         setPostComment(true)
     }
 
+    async function followProfile() {
+        const form = new FormData()
+        form.append("profile_id", postData.author.id)
+        await celesupApi
+            .post("profile/follow", form, {
+                headers: { "Content-type": "application/json" },
+            })
+            .then(async () => {
+                await celesupApi
+                    .get("/posts/retrieve?=" + postData.key)
+                    .then((res) => {
+                        setPostData(res.data)
+                    })
+            })
+    }
+
     function togglePostMenuDropdown(toggler, option) {
         console.log(option)
         if (option.toString().toLowerCase() === "follow") {
@@ -91,12 +107,12 @@ export default function Post({ post, postWebSocket }) {
         <article className="post width-100 pos-relative" key={post.id}>
             {/* author */}
             <div className="d-flex align-items-center justify-content-between pb-__">
-                <header
-                    onClick={gotoAuthorProfile}
-                    className="d-flex align-items-center justify-content-between width-100"
-                >
+                <header className="d-flex align-items-center justify-content-between width-100">
                     <div className="d-flex align-items-center">
-                        <div className="profile-img width-50-px height-50-px">
+                        <div
+                            onClick={gotoAuthorProfile}
+                            className="profile-img width-50-px height-50-px"
+                        >
                             {!!postData && (
                                 <img
                                     src={postData.author.avatar}
@@ -159,7 +175,11 @@ export default function Post({ post, postWebSocket }) {
                             // 	onClicked: togglePostDropdownMenu,
                             // },
                             {
-                                text: "unFollow",
+                                text: postData.author.followers.find(
+                                    (id) => id === context.user.id,
+                                )
+                                    ? "Unfollow"
+                                    : "Follow",
                                 icon: (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -168,7 +188,7 @@ export default function Post({ post, postWebSocket }) {
                                         <path d="M274.7 304H173.3C77.61 304 0 381.6 0 477.3C0 496.5 15.52 512 34.66 512h378.7C432.5 512 448 496.5 448 477.3C448 381.6 370.4 304 274.7 304zM224 256c70.7 0 128-57.31 128-128S294.7 0 224 0C153.3 0 96 57.31 96 128S153.3 256 224 256zM577.9 223.1l47.03-47.03c9.375-9.375 9.375-24.56 0-33.94s-24.56-9.375-33.94 0L544 190.1l-47.03-47.03c-9.375-9.375-24.56-9.375-33.94 0s-9.375 24.56 0 33.94l47.03 47.03l-47.03 47.03c-9.375 9.375-9.375 24.56 0 33.94c9.373 9.373 24.56 9.381 33.94 0L544 257.9l47.03 47.03c9.373 9.373 24.56 9.381 33.94 0c9.375-9.375 9.375-24.56 0-33.94L577.9 223.1z" />
                                     </svg>
                                 ),
-                                onClicked: togglePostMenuDropdown,
+                                onClicked: followProfile,
                             },
                             {
                                 text: "Report Post",
@@ -251,7 +271,7 @@ export default function Post({ post, postWebSocket }) {
 
                 {/* Post Interaction/activities */}
                 <div className="post__interactions">
-                    {/* <PostStatistics post={postData} /> */}
+                    <PostStatistics post={postData} />
                     <div
                         className="interact gap-1 d-flex justify-content-between align-items-center"
                         style={{ maxWidth: "400px" }}

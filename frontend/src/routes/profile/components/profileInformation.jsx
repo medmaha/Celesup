@@ -24,7 +24,16 @@ const ProfileInformation = ({ setProfile, profile }) => {
             {!!profile && (
                 <>
                     <div className=" pos-absolute top-0 right-0">
-                        {!profile.id === context.user.id ? (
+                        {profile.id === context.user.id ? (
+                            <button
+                                className="btn br-md m-1 mb-0 bg-none on-text-hover-white edit_profile__btn"
+                                onClick={() => {
+                                    setEditProfile((prev) => !prev)
+                                }}
+                            >
+                                Edit profile
+                            </button>
+                        ) : (
                             <>
                                 {!!profile.followers?.find(
                                     (id) => (id = context.user.id),
@@ -44,15 +53,6 @@ const ProfileInformation = ({ setProfile, profile }) => {
                                     </button>
                                 )}
                             </>
-                        ) : (
-                            <button
-                                className="btn br-md m-1 mb-0 bg-none on-text-hover-white edit_profile__btn"
-                                onClick={() => {
-                                    setEditProfile((prev) => !prev)
-                                }}
-                            >
-                                Edit profile
-                            </button>
                         )}
                     </div>
 
