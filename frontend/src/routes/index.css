@@ -1,0 +1,23 @@
+#homepage {
+    height: calc(100vh - 65px);
+    position: relative;
+}
+
+#homepage img {
+    width: 100%;
+    height: 100%;
+    background-position: left;
+    object-fit: cover;
+    clear: #55a3f6;
+}
+
+#homepage [data-celesup] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: background-color 150ms ease-in-out,
+        backdrop-filter 150ms ease-in-out;
+    backdrop-filter: blur(2px);
+}

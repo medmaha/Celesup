@@ -1,0 +1,33 @@
+.lOADER.progress-bar {
+    --top: 0;
+    --startPos: calc(-100%);
+    --endPos: calc(100%);
+
+    left: 0;
+    width: 100%;
+    height: 10px;
+    top: var(--top);
+    position: absolute;
+    pointer-events: none;
+}
+
+.lOADER.progress-bar .animator {
+    --animator-width: calc(100% / 4);
+    --animator-height: 100%;
+    --background: red;
+    background-color: var(--background);
+
+    width: var(--animator-width);
+    height: var(--animator-height);
+    transform: translateX(var(--startPos));
+    animation: progressBar 1s ease-in-out 50ms infinite;
+}
+
+@keyframes progressBar {
+    0% {
+        transform: translateX(var(--startPos));
+    }
+    100% {
+        transform: translateX(var(--endPos));
+    }
+}

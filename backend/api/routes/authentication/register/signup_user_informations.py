@@ -68,7 +68,11 @@ class SignupUserInformations(CreateAPIView):
                     status=201,
                 )
 
-            tokens = get_auth_tokens(user.email, client.get("password"))
+            tokens = get_auth_tokens(
+                url=request.headers["host"],
+                email=user.email,
+                password=client.get("password"),
+            )
             temporal_database.delete_record(code=client.get("code"))
             return Response(
                 {"message": "Successful User created", "tokens": tokens}, status=201

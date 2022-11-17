@@ -36,10 +36,17 @@ function CreateNewPost() {
 
     useEffect(() => {
         if (!data) return
-        context.state.reFetchPosts()
-        context.setFocusState(null)
-        // reFetchPosts()
-        // eslint-disable-next-line
+
+        if (!context.state.reFetchPosts()) {
+            if (window.location.href === "/") {
+                window.location.reload()
+            } else {
+                window.location.href = "/"
+            }
+        } else {
+            context.state.reFetchPosts()
+            context.setFocusState(null)
+        }
     }, [data])
 
     async function submitForm(ev) {

@@ -1,8 +1,13 @@
 from rest_framework.response import Response
-from rest_framework.generics import UpdateAPIView
+from rest_framework import status
+from rest_framework.generics import UpdateAPIView, GenericAPIView
 from django.shortcuts import get_object_or_404
 from users.models import User
-from .serializers import UserEditSerializer, UserDetailSerializer
+from .serializers import (
+    UserEditSerializer,
+    UserDetailSerializer,
+    UserMETADATASeriaLizer,
+)
 from utilities.generators import get_profile_data
 
 
@@ -35,3 +40,23 @@ class ProfileEdit(UpdateAPIView):
         data = {**profile, **serializer}
 
         return Response(data, status=200)
+
+
+class AccountEdit(GenericAPIView):
+
+    serializer_class = UserMETADATASeriaLizer
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        if not isinstance(user, User):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.filter_queryset(self.get_queryset(user))
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        data = request.data.copy()
+
+        return super().put(request, *args, **kwargs)

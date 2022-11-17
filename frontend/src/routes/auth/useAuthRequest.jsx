@@ -24,11 +24,15 @@ function useAuthRequest() {
                     setData(res.data)
                 },
                 (error) => {
-                    const errorMsg =
-                        error.response.data?.detail ||
-                        error.response.data?.email ||
-                        error.response.data?.avatar ||
-                        error.message
+                    let errorMsg = {
+                        message: "An error occurred",
+                    }
+
+                    if (error.code === "ERR_NETWORK") {
+                        errorMsg.message = "Unable to connect to celesup server"
+                    } else if (error.code === "ERR_BAD_REQUEST") {
+                        errorMsg = error.response.data
+                    }
                     setError(errorMsg)
                 },
             )

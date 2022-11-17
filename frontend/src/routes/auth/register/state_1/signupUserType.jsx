@@ -4,7 +4,7 @@ import SignupForm from "./signupForm"
 const SignupUserType = () => {
     // const [userType, setUserType] = useState(false)
 
-    const [userType, setUserType] = useState("Register for free")
+    const [userType, setUserType] = useState("Signup for free")
 
     if (userType) return <SignupForm userType={userType} />
 
@@ -14,7 +14,7 @@ const SignupUserType = () => {
 
     return (
         // TODO mobile responsive mood setup
-        <div className="d-flex justify-content-center pt-2">
+        <div className="d-flex justify-content-center">
             <div className="card center" style={{ maxWidth: "400px" }}>
                 <h2 className="py-1">Signup For Free!!!</h2>
                 <h5 className="">How would you want to use Celesup?</h5>

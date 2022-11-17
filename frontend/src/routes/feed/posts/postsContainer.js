@@ -4,6 +4,8 @@ import { GlobalContext } from "../../../App"
 import Post from "./post"
 import PostPlaceholder from "./postPlaceholder"
 
+import "./style.css"
+
 import useAxiosRequest from "../../../hooks/useAxiosRequest"
 import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import ComposePost from "./compose"
@@ -85,13 +87,12 @@ function PostsContainer({}) {
 
                 {/* create Post Card */}
                 {!!posts?.data && (
-                    <>
-                        <div>
-                            {/* <ComposePost
-                                context={context}
-                                reFetchPosts={reFetchPosts}
-                            /> */}
-                        </div>
+                    <div className="d-flex flex-column align-items-center width-100 maxwidth-550-px">
+                        <ComposePost
+                            context={context}
+                            reFetchPosts={reFetchPosts}
+                        />
+                        <span className="divider"></span>
                         <div
                             id="postsWrapper"
                             className="width-100 d-block maxwidth-600-px"
@@ -107,7 +108,7 @@ function PostsContainer({}) {
                                 )
                             })}
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
 

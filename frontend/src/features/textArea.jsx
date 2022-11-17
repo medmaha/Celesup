@@ -1,4 +1,3 @@
-import { Children } from "react"
 import { useRef, useEffect, useState } from "react"
 
 export default function Textarea({
@@ -6,9 +5,12 @@ export default function Textarea({
     children = "",
     placeholder = "",
     childrenClassName = "",
+    height = "2rem",
     onSubmit = undefined,
     submitOnEnter = undefined,
     id = `abhshvstfwtftwgs${Math.random()}`,
+    value = "",
+    onChange,
 }) {
     const instanceRef = useRef(`ref${id}`)
 
@@ -22,7 +24,7 @@ export default function Textarea({
             checkSubmit(ev)
             return
         }
-        ev.target.style.height = "2rem"
+        ev.target.style.height = height
         const scrollHeight = ev.target.scrollHeight
         ev.target.style.height = `${scrollHeight}px`
     }
@@ -42,12 +44,17 @@ export default function Textarea({
     return (
         <span className="pos-relative width-100">
             <textarea
+                style={{ "--height": height }}
                 data-id={id}
                 ref={instanceRef}
                 className={`border-0 outline-0` + className}
                 onKeyDown={handleTextarea}
                 data-sp-textarea=""
                 placeholder={placeholder}
+                value={value}
+                onChange={(ev) => {
+                    onChange(ev)
+                }}
             ></textarea>
             <span className={`pos-absolute ${childrenClassName}`}>
                 {children}

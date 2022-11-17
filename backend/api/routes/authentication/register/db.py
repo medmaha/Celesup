@@ -22,12 +22,7 @@ class Database:
         os.path.join(BASE_DIR, "api/routes/authentication/register/DUMMYUSERS.db"),
         check_same_thread=False,
     )
-    # connection = sqlite3.connect(
-    #     os.path.join("api/routes/authentication/register/DUMMYUSERS.db"),
-    #     check_same_thread=False,
-    # )
 
-    # connection = sqlite3.connect(' DUMMYUSERS.db')
     db_query = connection.cursor()
 
     def __init__(self, table_name=None):
@@ -189,6 +184,3 @@ class Database:
         import random
 
         return str(random.randrange(1000000, 9000000))
-
-
-db = Database("Dd")

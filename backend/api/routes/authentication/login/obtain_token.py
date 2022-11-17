@@ -11,7 +11,8 @@ class AccessTokenPayload(TokenObtainPairSerializer):
 
     @classmethod
     def get_token(cls, user):
-        token = super().get_token(user)
+        # token = super().get_token(user)
+        token = cls.token_class.for_user(user)
         user_data = UserMiniInfoSeriaLizer(user).data
 
         token["has_alerts"] = Notification.objects.filter(

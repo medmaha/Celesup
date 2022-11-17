@@ -1,10 +1,6 @@
-import os
-import json
 import uuid
 import requests
 from features.models import UniqueId
-
-BASE_URL = os.environ.get("BASE_URL")
 
 
 def id_generator(used_for=str):
@@ -63,21 +59,12 @@ def get_profile_data(user):
     return UserDetailSerializer(user).data
 
 
-def get_auth_tokens(email: str, password: str):
+def get_auth_tokens(url: str, email: str, password: str):
 
     data = {"email": str(email), "password": str(password)}
     headers = {"Content-Type": "Application/json"}
 
     token = requests.post(
-        url=BASE_URL + "/obtain/user/tokens", json=data, headers=headers
+        url="http://{}/obtain/user/tokens".format(url), json=data, headers=headers
     )
     return token.json()
-
-
-def get_new_auth_tokens(token, headers):
-    data = {"refresh": str(token)}
-    tokens = requests.post(BASE_URL + "/refresh/user/tokens", json=data)
-    if tokens:
-        return tokens.json()
-
-    return {}

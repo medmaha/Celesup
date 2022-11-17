@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
+from rest_framework import status
 
 from django.shortcuts import get_object_or_404
 from users.models import User
@@ -16,6 +17,19 @@ class ProfileView(GenericAPIView):
         username = request.data.get("username")
 
         user = get_object_or_404(User, username__iexact=username)
+
+        profile = get_profile_data(user)
+        serializer = self.get_serializer(user).data
+
+        data = {**profile, **serializer}
+        return Response(data, status=200)
+
+    # ? Public Profile Route
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        if not isinstance(user, User):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         profile = get_profile_data(user)
         serializer = self.get_serializer(user).data

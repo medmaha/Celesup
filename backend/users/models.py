@@ -14,7 +14,12 @@ class User(AbstractUser):
     avatar = models.ImageField(
         upload_to=avatar_path, default="profiles/avatar_default.png"
     )
-    email = models.EmailField(max_length=160, null=False, unique=True, blank=True)
+    email = models.EmailField(
+        max_length=160,
+        null=False,
+        unique=True,
+        blank=True,
+    )
     username = models.CharField(max_length=50, null=False, blank=False)
     first_name = models.CharField(max_length=100, null=True, blank=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
@@ -37,6 +42,16 @@ class User(AbstractUser):
     following = models.ManyToManyField(
         "User", blank=True, related_name="user_following"
     )
+
+    email_2 = models.EmailField(max_length=100, null=True, blank=True)
+    email_3 = models.EmailField(
+        max_length=100,
+        null=True,
+        blank=True,
+    )
+    public_email = models.EmailField(max_length=100, null=True, blank=True, unique=True)
+    notification_email = models.EmailField(max_length=100, null=True, blank=True)
+    email_privacy = models.BooleanField(default=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -62,12 +77,19 @@ class User(AbstractUser):
 
     @property
     def full_name(self):
-        if not self.first_name:
-            return
-        if not self.last_name:
-            return
-
         return self.first_name.capitalize() + " " + self.last_name.capitalize()
+
+    @property
+    def emails(self):
+        e = [self.email, self.email_2, self.email_3]
+
+        for i, email in enumerate(e):
+            if not email:
+                e.pop(i)
+            elif len(email) < 3:
+                e.pop(i)
+
+        return e
 
     def get_profile(self):
         return self.profile

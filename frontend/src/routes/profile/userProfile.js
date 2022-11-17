@@ -57,7 +57,7 @@ const UserProfile = () => {
 
     return (
         <div className="d-flex justify-content-center user__profile">
-            <div className="maxwidth-750-px mx-__">
+            <div className="maxwidth-850-px mx-__ width-100">
                 {!!profile && (
                     <>
                         <ProfileImages

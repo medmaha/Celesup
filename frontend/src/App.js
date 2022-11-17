@@ -15,9 +15,10 @@ import UserProfile from "./routes/profile/userProfile"
 import ExplorePosts from "./routes/explore/explorePosts"
 import PageNotFound from "./routes/pageNotFound"
 import CreateNewPost from "./routes/feed/posts/create/createPost"
-import Messager from "./routes/messager/Messager"
+import Messenger from "./routes/messenger/Messenger"
 import useWebSocketHook from "./hooks/useWebSocketHook"
 import { celesupApi, refreshAuthTokens } from "./axiosInstances"
+import Settings from "./routes/settings/Settings"
 
 export const GlobalContext = createContext({})
 
@@ -118,17 +119,32 @@ function App() {
     }
 
     return (
-        <div className="d-flex justify-content-center">
+        <div className="">
             <GlobalContext.Provider value={contextValues}>
                 {/* <Navbar /> */}
 
                 <Navbar />
+
                 <Routes>
                     <Route path="/" exact element={<Index />} />
-                    <Route path={`/explore`} element={<ExplorePosts />} />
-                    <Route path={`/messager`} element={<Messager />} />
-                    <Route path={`/:username`} element={<UserProfile />} />
 
+                    {!!user && (
+                        <>
+                            <Route
+                                path={`/explore`}
+                                element={<ExplorePosts />}
+                            />
+                            <Route
+                                path={`/messenger`}
+                                element={<Messenger />}
+                            />
+                            <Route path={`/settings`} element={<Settings />} />
+                            <Route
+                                path={`/:username`}
+                                element={<UserProfile />}
+                            />
+                        </>
+                    )}
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
 
@@ -144,4 +160,3 @@ function App() {
 }
 
 export default App
-

@@ -1,8 +1,13 @@
 @import "./supcel-CSS/supcel.css";
 @import "../features/ztyles.css";
+@import "./palletes.css";
 /* body {
     height: auto;
 } */
+
+:root {
+    --primary-color: teal;
+}
 
 body {
     width: 100%;
@@ -29,6 +34,19 @@ body {
 .light-mode {
     --scroll-thumb-clr: #999;
     --scroll-thumb-clr: #333;
+}
+
+.invalid-text {
+    color: #ee4848;
+}
+.invalid-bg {
+    background-color: #ee4848;
+}
+.success-text {
+    color: #49f16d;
+}
+.success-bg {
+    background-color: #49f16d;
 }
 
 .truncate {
@@ -68,4 +86,12 @@ body {
 }
 .flex-wrap {
     flex-wrap: wrap;
+}
+
+.flex {
+    flex: 1;
+}
+
+.shrink {
+    flex-shrink: 1;
 }

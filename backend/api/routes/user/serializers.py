@@ -6,10 +6,16 @@ from admin_users.models import Admin
 # from celebrity.models import Celebrity
 
 
-class AdminSerializer(serializers.ModelSerializer):
+class UserMETADATASeriaLizer(serializers.ModelSerializer):
     class Meta:
-        model = Admin
-        fields = ["profile_type", "user"]
+        model = User
+        fields = "__all__"
+
+
+class UserMiniInfoSeriaLizer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "avatar", "full_name", "username", "public_email      "]
 
 
 class UserEditSerializer(serializers.ModelSerializer):
@@ -23,6 +29,11 @@ class UserEditSerializer(serializers.ModelSerializer):
             "biography",
             "city",
             "gender",
+            "email_2",
+            "email_3",
+            "public_email",
+            "email_privacy",
+            "notification_email",
         ]
 
 
@@ -35,6 +46,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "avatar",
             "username",
             "full_name",
+            "public_email",
             "gender",
             "city",
             "biography",
@@ -43,12 +55,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "followers",
             "date_joined",
         ]
-
-
-class UserMiniInfoSeriaLizer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "avatar", "full_name", "username"]
 
 
 class UserCreationSerializer(serializers.ModelSerializer):
@@ -77,3 +83,9 @@ class UserCreationSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Supporter
 #         fields = ["posts", "friends", "following", "followers"]
+
+
+# class AdminSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Admin
+#         fields = ["profile_type", "user"]

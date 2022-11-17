@@ -1,22 +1,16 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 
 # CUSTOM USER MODEL
 AUTH_USER_MODEL = "users.User"
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = "django-insecure-!ww8*_0$j*cl2^$vmon#aoh-&hv+t8uq#u446w*r0v+$*1z3=m"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG") == "1"
+DEBUG = 1
 
 ALLOWED_HOSTS = ["*"]
-if not DEBUG:
-    ALLOWED_HOSTS = os.environ.get("ALLOWED_HOST")
 
 # Application definition
 INSTALLED_APPS = [
@@ -34,8 +28,6 @@ INSTALLED_APPS = [
     # customs apps
     "users.apps.UsersConfig",
     "admin_users.apps.AdminUserConfig",
-    # "celebrity.apps.CelebrityConfig",
-    # "supporter.apps.SupporterConfig",
     "feed.apps.FeedConfig",
     "post.apps.PostConfig",
     "hashtags.apps.HashtagsConfig",
@@ -82,18 +74,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "src.wsgi.application"
-# ASGI_APPLICATION = "src.asgi.application"
-
-# CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
-
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": [("localhost", 6379)],
-#         },
-#     },
-# }
 
 
 # Database
@@ -152,12 +132,13 @@ MEDIA_ROOT = BASE_DIR / "MEDIA_FILES/"
 
 # Emailing
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS = 1
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "celesup00@gmail.com"
+EMAIL_HOST_PASSWORD = "obszcndtjnpqrjxa"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
