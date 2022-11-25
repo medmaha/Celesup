@@ -145,8 +145,8 @@ const SignupForm = ({ userType }) => {
             <div className="d-flex justify-content-center font-md my-2 cursor-pointer">
                 Already a member?
                 <Link to="/login">
-                    <span className="teal-text-lighten-2 pl-__ hint-text  text-hover-blue-lighten-3">
-                        Login
+                    <span className="text-secondary pl-__  text-hover-blue">
+                        Log in
                     </span>
                 </Link>
             </div>

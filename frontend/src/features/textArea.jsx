@@ -5,18 +5,19 @@ export default function Textarea({
     children = "",
     placeholder = "",
     childrenClassName = "",
-    height = "2rem",
-    onSubmit = undefined,
-    submitOnEnter = undefined,
+    row = 1,
     id = `abhshvstfwtftwgs${Math.random()}`,
-    value = "",
-    onChange,
+    value = null,
+    onSubmit = () => {},
+    onChange = (ev = EventTarget) => {},
 }) {
     const instanceRef = useRef(`ref${id}`)
+    const height = 2
 
-    if (submitOnEnter) {
-        onSubmit = submitOnEnter
-    }
+    useEffect(() => {
+        if (!instanceRef.current) return
+        instanceRef.current.style.height = `${height * row}rem`
+    }, [instanceRef.current])
 
     function handleTextarea(ev) {
         if (ev.code === "Enter") {
@@ -24,7 +25,7 @@ export default function Textarea({
             checkSubmit(ev)
             return
         }
-        ev.target.style.height = height
+        ev.target.style.height = `${height * row}rem`
         const scrollHeight = ev.target.scrollHeight
         ev.target.style.height = `${scrollHeight}px`
     }
@@ -32,7 +33,7 @@ export default function Textarea({
     function checkSubmit(ev) {
         if (ev.code === "Enter" && !!onSubmit) {
             const content = instanceRef.current.value
-            onSubmit(content, id, cb)
+            onSubmit(content, cb, id)
         }
 
         function cb() {
@@ -44,14 +45,12 @@ export default function Textarea({
     return (
         <span className="pos-relative width-100">
             <textarea
-                style={{ "--height": height }}
                 data-id={id}
                 ref={instanceRef}
                 className={`border-0 outline-0` + className}
                 onKeyDown={handleTextarea}
                 data-sp-textarea=""
                 placeholder={placeholder}
-                value={value}
                 onChange={(ev) => {
                     onChange(ev)
                 }}

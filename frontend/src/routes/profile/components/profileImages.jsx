@@ -7,6 +7,7 @@ const ProfileImages = ({ profile }) => {
         <div className="profile pos-relative width-100">
             <div className="cover__image">
                 <img
+                    crossOrigin="anonymous"
                     onClick={viewImage}
                     className=""
                     src={profile.cover_img}
@@ -15,6 +16,7 @@ const ProfileImages = ({ profile }) => {
             </div>
             <div data-field="avatar" className="profile__avatar pos-absolute">
                 <img
+                    crossOrigin="anonymous"
                     onClick={viewImage}
                     src={profile.avatar}
                     className="responsive"

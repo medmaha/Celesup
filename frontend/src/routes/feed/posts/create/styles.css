@@ -1,58 +1,43 @@
 /* CreatePost JSX */
 
 .create__post__container {
-	position: fixed;
-	background: rgba(0, 0, 0, 0.7);
-	top: 65px;
-	left: 0;
-	width: 100vw;
-	height: 101vh;
-	display: flex;
-	justify-content: center;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.7);
+    top: 65px;
+    left: 0;
+    width: 100vw;
+    height: 101vh;
+    display: flex;
+    justify-content: center;
 }
 
-.create__post__container .post__modal {
-	width: 550px;
-	height: calc(fit-content + 1%);
-	max-height: 500px;
-	overflow: auto;
-}
-
-.create__post__container .post__modal .post__form__body {
-	display: block;
-	width: 100%;
-	/* height: 73%; */
-	overflow: hidden;
-	overflow-y: auto;
-}
-.create__post__container .post__modal .post__form__body__image {
-	display: block;
-	width: 100%;
-	height: 77%;
-	overflow: hidden;
-	overflow-y: auto;
-}
-.post__modal input {
-	font-size: calc(var(--baseFontSize--) * 0.9);
+.post__form__body__image {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    max-height: 410px;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 .cursor-pointer > * {
-	cursor: pointer;
+    cursor: pointer;
 }
 .cursor-pointer > * > * {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 @media (max-width: 600px) {
-	.create__post__container {
-		padding-top: 1rem;
-	}
-	.create__post__container .post__modal {
-		width: 550px;
-		min-height: fit-content;
-		max-height: 500px;
-		overflow: auto;
-	}
+    .create__post__container {
+        padding-top: 1rem;
+    }
+    .create__post__container .post__modal {
+        width: 550px;
+        min-height: fit-content;
+        max-height: 500px;
+        overflow: auto;
+    }
 }
 /* .create__post__container .post__modal textarea[name=excerpt], */
 /* .create__post__container .post__modal textarea[name='excerpt'] {

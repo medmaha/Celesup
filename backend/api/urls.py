@@ -15,14 +15,18 @@ from .routes.authentication.login import (
 )
 
 from .routes.dashboard.posts import posts_url_patterns
+from .routes.dashboard.feed import feed_url_urlpatterns
 from .routes.user import users_url_patterns
 from .routes.query import query_url_patterns
 from .routes.notification.urls import notifications_url_patterns
 from .routes.comment.urls import comment_url_patterns
 from .routes.messenging.urls import messenging_url_patterns
 
+from django.views.generic import TemplateView
+
 urlpatterns = [
     # registration
+    # path("", TemplateView.as_view(template_name="index.html")),
     path("signup/user", SignupUser.as_view()),
     path("signup/user/verification", SignupUserVerification.as_view()),
     path("signup/user/informations", SignupUserInformations.as_view()),
@@ -40,3 +44,4 @@ urlpatterns += users_url_patterns
 urlpatterns += query_url_patterns
 urlpatterns += notifications_url_patterns
 urlpatterns += messenging_url_patterns
+urlpatterns += feed_url_urlpatterns

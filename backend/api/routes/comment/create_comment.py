@@ -1,5 +1,6 @@
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
+from rest_framework import status
 from users.models import User
 from post.models import Post
 from comment.models import Comment
@@ -13,16 +14,20 @@ class PostCommentCreate(CreateAPIView):
     def create(self, request, *args, **kwargs):
 
         data = request.data.copy()
-        author_id = data.get("author")
-        post_id = data.get("post")
 
-        get_object_or_404(Post, key=post_id)
-        user = get_object_or_404(User, id=author_id)
+        if not isinstance(request.user, User):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        user = request.user
+        post = get_object_or_404(Post, key=data.get("post"))
+        data["author"] = user.id
 
         serializer = CommentSerializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         self.perform_create(serializer)
+        post.activity_rate += 1
+        post.save()
         headers = self.get_success_headers(serializer.data)
 
         return Response(status=201, headers=headers)
@@ -83,7 +88,7 @@ class PostCommentReplyCreate(CreateAPIView):
         comment_id = data.get("parent")
         comment_author_id = data.get("author")
 
-        get_object_or_404(Post, key=post_id)
+        post = get_object_or_404(Post, key=post_id)
         get_object_or_404(User, id=comment_author_id)
         get_object_or_404(Comment, id=comment_id)
 
@@ -91,6 +96,8 @@ class PostCommentReplyCreate(CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         self.perform_create(serializer)
+        post.activity_rate += 2
+        post.save()
         headers = self.get_success_headers(serializer.data)
 
         return Response(status=201, headers=headers)

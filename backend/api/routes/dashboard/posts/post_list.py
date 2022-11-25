@@ -23,9 +23,11 @@ class PostsList(generics.ListAPIView):
 
             print(user_id)
             user = get_object_or_404(User, id=user_id)
-            self.queryset = Post.objects.filter(author=user).order_by("-created_at")
+            self.queryset = (
+                Post.objects.filter(author=user).order_by("-created_at").distinct()
+            )
         except:
-            self.queryset = Post.objects.filter().order_by("-created_at")
+            self.queryset = Post.objects.filter().order_by("-created_at").distinct()
 
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)

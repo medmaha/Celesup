@@ -9,6 +9,27 @@ import "./style.css"
 import useAxiosRequest from "../../../hooks/useAxiosRequest"
 import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import ComposePost from "./compose"
+import { useRef } from "react"
+
+function infiniteScrollIntersection(instance, response, updatePost) {
+    const e = instance.querySelectorAll("section[data-post]")
+    const elem = [...e][e.length - 1]
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                if (response.links.next) {
+                    updatePost(response.links.next)
+                }
+                observer.unobserve(entry.target)
+            }
+        })
+    })
+
+    if (elem) {
+        observer.observe(elem)
+    }
+}
 
 const postWrapperStyles = {
     width: "100%",
@@ -23,37 +44,57 @@ function PostsContainer({}) {
     // const [paginatorLinks, setPaginatorLinks] = useState(posts.links)
     const context = useContext(GlobalContext)
     const [response, pending, error, sendAxiosRequest] = useAxiosRequest()
-    // const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState({
+        links: null,
+        posts_count: null,
+        data: [],
+    })
 
-    const posts = useMemo(() => updatePost(response), [response])
+    // const posts = useMemo(() => updatePost(response), [response])
+
+    const postWrapperRef = useRef()
 
     useEffect(() => {
-        document.title = "Celesup | Home"
-        context.setFocusState((prev) => {
-            return {
-                ...prev,
-                reFetchPosts: reFetchPosts,
-            }
-        })
+        if (!postWrapperRef.current) return
+        if (postWrapperRef.current && posts.data.length) {
+            infiniteScrollIntersection(
+                postWrapperRef.current,
+                response,
+                reFetchPosts,
+            )
+        }
+    }, [posts.data])
+
+    useEffect(() => {
+        return () => {
+            document.title = "Celesup | Home"
+            context.setFocusState((prev) => {
+                return {
+                    ...prev,
+                    reFetchPosts: reFetchPosts,
+                }
+            })
+        }
     }, [])
 
     useEffect(() => {
-        reFetchPosts()
+        return () => reFetchPosts()
     }, [])
 
     useEffect(() => {
-        updatePost()
+        if (!response) return
+        if (response.page_index > 1) {
+            const data = [...posts.data, ...response.data]
+            setPosts({ ...response, data: data })
+        } else {
+            setPosts(response)
+        }
     }, [response])
 
-    function updatePost(response) {
-        if (!response) return
-        return response
-    }
-
-    async function reFetchPosts() {
+    async function reFetchPosts(url = "/feeds") {
         await sendAxiosRequest({
             axiosInstance: celesupApi,
-            url: "/feeds",
+            url: url,
             method: "GET",
         })
         context.setFocusState((prev) => {
@@ -68,6 +109,7 @@ function PostsContainer({}) {
         <>
             <div
                 id="mainFeed"
+                className=""
                 style={postWrapperStyles}
                 // className="post__container width-100_ maxwidth-600-px width-450-px"
             >
@@ -82,25 +124,34 @@ function PostsContainer({}) {
                         </span>
                     </header>
                 )}
-                {/* {pending && <PostPlaceholder />} */}
-                {!!pending && <h1>Loading...</h1>}
 
                 {/* create Post Card */}
-                {!!posts?.data && (
+                {!!posts.data && (
                     <div className="d-flex flex-column align-items-center width-100 maxwidth-550-px">
-                        <ComposePost
-                            context={context}
-                            reFetchPosts={reFetchPosts}
-                        />
+                        <div className="width-100">
+                            <ComposePost
+                                context={context}
+                                reFetchPosts={reFetchPosts}
+                            />
+                        </div>
                         <span className="divider"></span>
                         <div
                             id="postsWrapper"
                             className="width-100 d-block maxwidth-600-px"
+                            ref={postWrapperRef}
                         >
-                            {posts?.data?.map((post, idx) => {
+                            {posts.data?.map((post, idx) => {
                                 return (
-                                    <section key={post.key} className="mt-__">
-                                        <Post post={post} />
+                                    <section
+                                        data-post
+                                        key={post.key}
+                                        className="mt-__"
+                                    >
+                                        <Post
+                                            post={post}
+                                            response={response}
+                                            updatePost={reFetchPosts}
+                                        />
                                         {/* {posts.data.length !== idx + 1 && (
                                             <span className="divider mb-1"></span>
                                         )} */}
@@ -108,23 +159,12 @@ function PostsContainer({}) {
                                 )
                             })}
                         </div>
+                        {!!pending && <h5>Loading...</h5>}
                     </div>
                 )}
             </div>
 
             {/* Page Paginators */}
-            {/* <div className="paginators d-flex justify-content-evenly mt-1 pb-2">
-                <span className='mx-1 text-color' onClick={e=>postsPaginator(e.currentTarget, setPosts, setLoading)} data-href={posts.links.prev ? posts.links.prev : '/'}>
-                    <svg className='teal'  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path d="M9.375 233.4l128-128c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L109.3 224H480c17.69 0 32 14.31 32 32s-14.31 32-32 32H109.3l73.38 73.38c12.5 12.5 12.5 32.75 0 45.25c-12.49 12.49-32.74 12.51-45.25 0l-128-128C-3.125 266.1-3.125 245.9 9.375 233.4z"/></svg>
-                    <span>Prev</span>
-                </span>
-                <span className='mx-1 text-color' onClick={e=>postsPaginator(e.currentTarget, setPosts, setLoading)} data-href={posts.links.next}>
-                    <svg className='teal ' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path d="M502.6 278.6l-128 128c-12.51 12.51-32.76 12.49-45.25 0c-12.5-12.5-12.5-32.75 0-45.25L402.8 288H32C14.31 288 0 273.7 0 255.1S14.31 224 32 224h370.8l-73.38-73.38c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l128 128C515.1 245.9 515.1 266.1 502.6 278.6z"/></svg>
-                    <span>Next</span>
-                </span>
-            </div> */}
         </>
     )
 }

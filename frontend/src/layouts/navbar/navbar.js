@@ -156,6 +156,7 @@ const Navbar = () => {
                                 }`}
                             >
                                 <img
+                                    crossOrigin="anonymous"
                                     className=""
                                     src={CELESUP_BASE_URL + context.user.avatar}
                                     alt=""
@@ -175,6 +176,7 @@ const Navbar = () => {
                                     <div className="d-flex justify-content-between align-items-center">
                                         <div className="profile-img">
                                             <img
+                                                crossOrigin="anonymous"
                                                 src={
                                                     CELESUP_BASE_URL +
                                                     context.user.avatar

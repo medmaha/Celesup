@@ -19,6 +19,7 @@ import Messenger from "./routes/messenger/Messenger"
 import useWebSocketHook from "./hooks/useWebSocketHook"
 import { celesupApi, refreshAuthTokens } from "./axiosInstances"
 import Settings from "./routes/settings/Settings"
+import PostDetail from "./routes/feed/posts/postDetail"
 
 export const GlobalContext = createContext({})
 
@@ -67,8 +68,20 @@ function App() {
             setUser(null)
             updateTokens(null)
         }
+        // window.addEventListener("beforeunload", alertUser)
+
+        return () => {
+            window.removeEventListener("beforeunload", alertUser)
+        }
+
         // eslint-disable-next-line
     }, [])
+
+    const alertUser = (e) => {
+        e.preventDefault()
+        e.returnValue = ""
+        // return "We strongly recommends NOT closing this window yet."
+    }
 
     useEffect(() => {
         if (!user) return
@@ -142,6 +155,10 @@ function App() {
                             <Route
                                 path={`/:username`}
                                 element={<UserProfile />}
+                            />
+                            <Route
+                                path={`/post/:postId`}
+                                element={<PostDetail />}
                             />
                         </>
                     )}

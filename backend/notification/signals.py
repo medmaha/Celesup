@@ -98,6 +98,8 @@ class Utils:
             return post.hashtags[:20]
         elif post.picture:
             return post.picture
+        elif post.video:
+            return post.video
 
     def get_comment_field(self, comment: Comment):
         if comment.parent and comment.parent.content:
@@ -108,8 +110,13 @@ class Utils:
             return comment.picture
 
     def resize_hint_img(self, post: Post):
+        if post.video and post.picture:
+            return post.video.url
+        elif post.picture:
+            return post.picture.url
+        else:
+            return ""
 
-        return post.picture.url
         path, ext = "", ""
         path_list = post.picture.path.split(".")
         url_path_list = post.picture.path.split(".")

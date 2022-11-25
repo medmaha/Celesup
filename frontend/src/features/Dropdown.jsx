@@ -105,8 +105,8 @@ function Dropdown({
         setActive((prev) => !prev)
     }
 
-    function handleItemClicked(item) {
-        item.onClicked()
+    function handleItemClicked(ev, item) {
+        item.onClicked(ev)
         setActive(false)
     }
 
@@ -120,18 +120,19 @@ function Dropdown({
                 {button}
             </span>
             <div ref={content} className="dropdown-menu border">
-                {items.map((item, idx) => {
-                    return (
-                        <div
-                            key={idx}
-                            className="dropdown-item"
-                            onClick={() => handleItemClicked(item)}
-                        >
-                            <span>{item.text}</span>
-                            <span>{item.icon}</span>
-                        </div>
-                    )
-                })}
+                {items.map((item, idx) => (
+                    <span key={idx}>
+                        {item && (
+                            <div
+                                className="dropdown-item"
+                                onClick={(ev) => handleItemClicked(ev, item)}
+                            >
+                                <span>{item.text}</span>
+                                <span>{item.icon}</span>
+                            </div>
+                        )}
+                    </span>
+                ))}
                 {!!isActive && (
                     <>
                         {!items.length && !!jsxContent && (

@@ -17,7 +17,11 @@ export default class DateTime {
 
     getTime() {
         const hr = this.date.getHours() + 1
-        const min = this.date.getMinutes() + 1
+        let min = this.date.getMinutes() + 1
+
+        if (min < 10) {
+            min = `0${min}`
+        }
 
         return `${hr}:${min}`
     }

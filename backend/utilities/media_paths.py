@@ -9,7 +9,7 @@ def comment_file_path(instance, filename):
 
 # Posts
 def post_thumbnail_path(instance, filename):
-    return f"posts/{instance.author.username}/id__{instance.title[:7]}__/thumbn__{filename}"
+    return f"posts/{instance.author.username}/id__{instance.caption[:7]}__/thumbn__{filename}"
 
 
 def post_img_path(instance, filename):

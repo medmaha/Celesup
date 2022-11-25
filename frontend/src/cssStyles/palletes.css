@@ -1,7 +1,15 @@
+:root {
+    --primaryColor--: var(--primary);
+    --secondaryColor--: var(--secondary);
+    --onSurfaceColor--: var(--card);
+    --onSuccessColor--: var(--primary-text);
+    --onBackgroundColor--: var(--primary-text);
+}
+
 .dark-mode {
-    --primary: #0c9191;
+    --primary: #15adad;
     --primary-text: #dddddd;
-    --secondary: #0d5db9;
+    --secondary: #4a92d1;
     --secondary-text: #e2dede;
     --card: #16181c;
     --card-secondary: #4e5053;
@@ -13,9 +21,9 @@
 }
 
 .light-mode {
-    --primary: #0c9191;
+    --primary: #15adad;
     --primary-text: #dddddd;
-    --secondary: #0d5db9;
+    --secondary: #4a92d1;
     --secondary-text: #e2dede;
     --card: #fff;
     --card-secondary: #999;

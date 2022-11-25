@@ -15,7 +15,7 @@ class UserMETADATASeriaLizer(serializers.ModelSerializer):
 class UserMiniInfoSeriaLizer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "avatar", "full_name", "username", "public_email      "]
+        fields = ["id", "avatar", "full_name", "username", "public_email"]
 
 
 class UserEditSerializer(serializers.ModelSerializer):

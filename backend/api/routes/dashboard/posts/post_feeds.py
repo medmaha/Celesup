@@ -1,33 +1,28 @@
 from rest_framework import generics
 from rest_framework.response import Response
 
-from feed.models import Feed, FeedObjects
+from feed.models import Feed
+from rest_framework import status
 from post.models import Post
-from .serializers import PostDetailSerializer, FeedPost
+from .serializers import PostDetailSerializer
 from users.models import User
 from utilities.api_utils import get_post_json
-import random
+from django.shortcuts import get_object_or_404
 
 
 class PostsFeed(generics.ListAPIView):
     """Gets all post related to the authenticated user"""
 
     def get_queryset(self):
+
         feed = Feed.objects.get(user=self.request.user)
-        objects = feed.feed_objects.all().order_by("-timestamp")
+        queryset = feed.posts.all().order_by("activity_rate")
 
-        data = []
-
-        for f in objects:
-            feed: FeedObjects = f
-            data.append(feed.object)
-
-        data = [*data, *Post.objects.filter(author=self.request.user)]
-
-        random.shuffle(data)
-        return data
+        return queryset
 
     def list(self, request, *args, **kwargs):
+        if not isinstance(request.user, User):
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         self.serializer_class = PostDetailSerializer
 
@@ -37,10 +32,6 @@ class PostsFeed(generics.ListAPIView):
 
         feed = []
         for post in serializer.data:
-
-            if not post.get("key"):
-                continue
-
             instance = Post.objects.get(key=post["key"])
 
             data = get_post_json(instance, self)

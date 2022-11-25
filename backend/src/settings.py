@@ -57,8 +57,8 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            BASE_DIR / "api_celesup/routes/authentication/register",
-            BASE_DIR / "api_celesup/build",
+            BASE_DIR / "api/routes/authentication/register",
+            BASE_DIR / "build",
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -83,6 +83,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "DATABASE.db",
+        "OPTIONS": {
+            "timeout": 20,
+        },
     }
 }
 
@@ -122,7 +125,8 @@ STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, '"staticfiles"')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, "static/build"),
+    os.path.join(BASE_DIR, "build/static"),
+    os.path.join(BASE_DIR, "build"),
 )
 
 

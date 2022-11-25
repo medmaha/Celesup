@@ -78,7 +78,7 @@ body {
 }
 
 .flex-1 {
-    flex: 1 0;
+    flex-grow: 1;
 }
 
 .flex-50 {
@@ -88,10 +88,20 @@ body {
     flex-wrap: wrap;
 }
 
-.flex {
-    flex: 1;
-}
-
 .shrink {
     flex-shrink: 1;
+}
+
+.svg-wrapper {
+    width: 30px;
+    height: 30px;
+}
+
+.rm-default {
+    background: none;
+    border: none;
+}
+
+.btn:focus {
+    outline: 1px solid var(--textColor);
 }

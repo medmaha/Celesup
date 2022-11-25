@@ -56,6 +56,8 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    rating = models.BigIntegerField(default=0)
+
     objects: UserManager()
 
     USERNAME_FIELD = "email"

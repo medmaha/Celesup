@@ -3,7 +3,7 @@ import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import { GlobalContext } from "../../../App"
 import Textarea from "../../../features/TextArea"
 
-export default function PostComments({ post, toggle }) {
+export default function PostComments({ post, toggle, cardView = true }) {
     const [controller, setController] = useState(new AbortController())
     const [comments, setComments] = useState([])
     const context = useContext(GlobalContext)
@@ -21,12 +21,6 @@ export default function PostComments({ post, toggle }) {
         return () => {}
     }, [toggle])
 
-    function toggleCommentForm() {
-        commentFormRef.current.classList.remove("d-none")
-        commentFormRef.current.querySelector(`[data-id="${post.key}"]`).focus()
-        getComments()
-    }
-
     async function getComments() {
         await celesupApi
             .get(`comments?id=${post.key}`, {
@@ -42,30 +36,56 @@ export default function PostComments({ post, toggle }) {
             .catch(() => {})
     }
 
-    async function createComment(comment, id, callback) {
+    async function sendComment(url, form, callback) {
+        await celesupApi
+            .post("comments" + url, form, {
+                headers: {
+                    "Content-type": "application/json",
+                },
+                signal: controller?.signal,
+            })
+            .then(
+                (res) => {
+                    if (res.status === 201) {
+                        getComments()
+                        callback()
+                    }
+                },
+                (error) => {
+                    console.log(error)
+                },
+            )
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    async function createComment(comment, callback) {
         if (comment.length >= 2) {
-            console.log(comment)
+            const form = new FormData()
+            form.append("post", post.key)
+            form.append("content", comment)
+
+            await sendComment("/create", form, callback)
+        }
+    }
+
+    async function replyComment(comment, callback, commentId) {
+        if (comment.length >= 2) {
             const form = new FormData()
             form.append("post", post.key)
             form.append("content", comment)
             form.append("author", context.user.id)
+            form.append("parent", String(commentId).split("--")[1])
 
-            await celesupApi
-                .post("comments/create", form, {
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                    signal: controller?.signal,
-                })
-                .then(
-                    (res) => {
-                        getComments()
-                        callback()
-                    },
-                    (error) => {},
-                )
-                .catch(() => {})
+            await sendComment("/reply", form, callback)
         }
+    }
+
+    function toggleCommentForm() {
+        commentFormRef.current.classList.remove("d-none")
+        commentFormRef.current.querySelector(`[data-id="${post.key}"]`).focus()
+        getComments()
     }
 
     function toggleCommentReply(id) {
@@ -76,37 +96,13 @@ export default function PostComments({ post, toggle }) {
             .querySelector(`[data-id="${post.key}--${id}"]`)
             .focus()
     }
-    async function replyComment(comment, commentId, callback) {
-        if (comment.length >= 2) {
-            const form = new FormData()
-            form.append("post", post.key)
-            form.append("content", comment)
-            form.append("author", context.user.id)
-            form.append("parent", String(commentId).split("--")[1])
-
-            await celesupApi
-                .post("comments/reply", form, {
-                    headers: {
-                        "Content-type": "application/json",
-                    },
-                    signal: controller?.signal,
-                })
-                .then(
-                    (res) => {
-                        getComments()
-                        callback()
-                    },
-                    (error) => {},
-                )
-                .catch(() => {})
-        }
-    }
 
     return (
         <div className="mt-1 pr-1 d-none" ref={commentFormRef}>
             <div className="d-flex">
                 <div className="d-flex" style={{ minWidth: "3rem" }}>
                     <img
+                        crossOrigin="anonymous"
                         src={CELESUP_BASE_URL + context.user.avatar}
                         alt="avatar"
                         className="width-35-px height-35-px br-full border"
@@ -116,7 +112,8 @@ export default function PostComments({ post, toggle }) {
                     <Textarea
                         id={post.key}
                         placeholder={"Add a comment..."}
-                        submitOnEnter={createComment}
+                        onSubmit={createComment}
+                        onChange={(ev) => {}}
                     />
                 </div>
             </div>
@@ -138,18 +135,24 @@ export default function PostComments({ post, toggle }) {
                         </svg>
                     </div>
                 )}
-                {comments?.slice(0, 2)?.map((comment, idx) => {
+
+                {comments?.slice(0, 2)?.map((comment) => {
                     return (
-                        <span key={idx} className="comment__group">
+                        <span key={comment.id} className="comment__group">
                             <div className="mt-__ d-flex parent__comment">
                                 <div className="d-flex comment__author">
                                     <img
+                                        crossOrigin="anonymous"
                                         src={comment.author.avatar}
                                         alt="avatar"
                                         className="width-35-px height-35-px br-full border"
                                     />
                                 </div>
-                                <div className="card typography pb-0">
+                                <div
+                                    className={`${
+                                        cardView ? "card" : ""
+                                    } typography pb-0`}
+                                >
                                     <div className="d-flex justify-content-between mb-__ time__data">
                                         <span>
                                             <b>@{comment.author.username}</b>
@@ -212,6 +215,7 @@ export default function PostComments({ post, toggle }) {
                                             style={{ minWidth: "3rem" }}
                                         >
                                             <img
+                                                crossOrigin="anonymous"
                                                 src={
                                                     CELESUP_BASE_URL +
                                                     context.user.avatar
@@ -224,7 +228,8 @@ export default function PostComments({ post, toggle }) {
                                             <Textarea
                                                 id={`${post.key}--${comment.id}`}
                                                 placeholder={"make a reply..."}
-                                                submitOnEnter={replyComment}
+                                                onSubmit={replyComment}
+                                                onChange={(ev) => {}}
                                             />
                                         </div>
                                     </span>
@@ -242,6 +247,7 @@ export default function PostComments({ post, toggle }) {
                                             >
                                                 <div className="d-flex comment__author">
                                                     <img
+                                                        crossOrigin="anonymous"
                                                         src={
                                                             reply.author.avatar
                                                         }
@@ -249,7 +255,11 @@ export default function PostComments({ post, toggle }) {
                                                         className="width-35-px height-35-px br-full border"
                                                     />
                                                 </div>
-                                                <div className="card pb-0 typography">
+                                                <div
+                                                    className={`${
+                                                        cardView ? "card" : ""
+                                                    } typography pb-0`}
+                                                >
                                                     <div className="d-flex justify-content-between mb-__ time__data">
                                                         <span>
                                                             <b>

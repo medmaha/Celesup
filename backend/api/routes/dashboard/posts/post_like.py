@@ -5,9 +5,9 @@ from rest_framework.generics import GenericAPIView
 from post.models import Post
 from .serializers import PostDetailSerializer
 
-from utilities.generators import get_profile_data
+from utilities.api_utils import get_post_json
 from comment.models import Comment
-
+from feed.models import FeedObjects
 from api.routes.user.serializers import UserDetailSerializer
 
 
@@ -22,21 +22,14 @@ class LikePost(GenericAPIView):
 
         if request.user in post.likes.all():
             post.likes.remove(request.user)
+            post.activity_rate -= 1
+            post.save()
         else:
             post.likes.add(request.user)
+            post.activity_rate += 2
+            post.save()
 
-        serializer = self.get_serializer(post)
-
-        self.serializer_class = UserDetailSerializer
-
-        data = {
-            **serializer.data,
-            "likes": self.get_serializer(post.likes.all(), many=True).data,
-            "comments": Comment.objects.filter(post=post).count(),
-            "bookmarks": 0,
-            "shares": post.shares.all().count(),
-            "author": self.get_serializer(post.author).data,
-        }
+        data = get_post_json(post, self)
 
         return Response(
             data,

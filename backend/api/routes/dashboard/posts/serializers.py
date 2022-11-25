@@ -13,7 +13,15 @@ class FeedPost(serializers.ModelSerializer):
 class PostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ["author", "excerpt", "hashtags", "caption", "picture"]
+        fields = [
+            "author",
+            "excerpt",
+            "hashtags",
+            "caption",
+            "picture",
+            "video",
+            "thumbnail",
+        ]
 
 
 class PostUpdateSerializer(serializers.ModelSerializer):
@@ -31,6 +39,8 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "caption",
             "excerpt",
             "hashtags",
+            "video",
             "picture",
             "created_at",
+            "thumbnail",
         ]

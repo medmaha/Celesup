@@ -1,38 +1,32 @@
 import "./styles.css"
 import { useState, useEffect, createContext, useContext, useRef } from "react"
-import { celesupApi } from "../../../../axiosInstances"
+import { celesupApi, CELESUP_BASE_URL } from "../../../../axiosInstances"
 import { GlobalContext } from "../../../../App"
 import PostForm from "./postForm"
 import useAxiosRequest from "../../../../hooks/useAxiosRequest"
+import Modal from "../../../../features/Modal"
+import ImageViewer from "./ImageViewer"
+import VideoFileViewer from "./VideoFileViewer"
+import PostPreview from "./postPreview"
 
 export const PostContext = createContext({})
 
 function CreateNewPost() {
     const context = useContext(GlobalContext)
-    const [data, pending, error, sendAxiosRequest] = useAxiosRequest()
-    const [formData, updateFormData] = useState({
-        caption: "",
-        excerpt: "",
-        hashtags: "",
-        picture: "",
-    })
-    const createPostContainer = useRef()
-
-    function closePostWindow({ currentTarget, target }) {
-        // TODO
-        if (currentTarget === target) context.setFocusState(null)
-        context.setFocusState({
-            ...context.state,
-        })
-    }
+    // const [data, pending, error, sendAxiosRequest] = useAxiosRequest()
+    const [formData, updateFormData] = useState({})
+    const [previewPost, setPreviewPost] = useState(false)
+    const [data, setData] = useState(null)
+    const [pending, setPending] = useState(false)
+    const [error, setError] = useState(undefined)
 
     useEffect(() => {
-        const modalWrapper = createPostContainer.current
-        modalWrapper.addEventListener("click", closePostWindow)
-        return () => modalWrapper.removeEventListener("click", closePostWindow)
+        if (!error) return
 
-        // eslint-disable-next-line
-    }, [])
+        const timeout = setTimeout(() => setError(undefined), 5000)
+
+        return () => clearTimeout(timeout)
+    }, [error])
 
     useEffect(() => {
         if (!data) return
@@ -49,95 +43,150 @@ function CreateNewPost() {
         }
     }, [data])
 
+    useEffect(() => {
+        if (!!!formData)
+            return () =>
+                updateFormData({
+                    ...formData,
+                    VALID:
+                        formData.caption?.length > 2 ||
+                        formData.excerpt?.length > 2 ||
+                        formData.picture ||
+                        formData.video,
+                })
+    }, [formData])
+
     async function submitForm(ev) {
-        if (ev.currentTarget.classList.contains("disabled") || !formData.valid)
-            return
+        if (!formData.VALID) return
 
         const form = new FormData()
 
-        form.append("caption", formData.caption)
-        form.append("excerpt", formData.excerpt)
-        form.append("hashtags", formData.hashtags)
-        form.append("picture", formData.picture)
+        form.append("caption", formData.caption || "")
+        form.append("excerpt", formData.excerpt || "")
+        form.append("hashtags", formData.hashtags || "")
 
-        await sendAxiosRequest({
-            axiosInstance: celesupApi,
-            url: "/posts/create",
-            method: "POST",
-            form: form,
-            options: { headers: { "Content-Type": "multipart/form-data" } },
-        })
-        // if (!formData.valid) return
+        if (formData.picture) {
+            if (typeof formData === Blob) {
+                formData.picture = new File(
+                    [formData.picture],
+                    `picture${formData.picture.size}`,
+                    { type: formData.picture.type },
+                )
+            }
+            form.append("picture", formData.picture)
+        }
+        if (formData.video) {
+            form.append("video", formData.video)
+        }
+        if (formData.thumbnail) {
+            formData.thumbnail = new File(
+                [formData.thumbnail],
+                `thumbnail${formData.thumbnail.size}.jpg`,
+                { type: "image/jpg" },
+            )
+            form.append("thumbnail", formData.thumbnail)
+        }
 
-        // const form = new FormData()
+        console.log(formData)
 
-        // form.append('caption', formData.caption)
-        // form.append('excerpt', formData.excerpt)
-        // form.append('hashtags', formData.hashtags)
-        // form.append('picture', formData.picture)
+        celesupApi
+            .post("/posts/create", form, {
+                headers: { "Content-Type": "multipart/form-data" },
+            })
+            .then(
+                (res) => {
+                    setData(res.data)
+                },
+                (err) => {
+                    console.log(err)
+                    setError(err.response?.data)
+                },
+            )
+            .catch((err) => {
+                console.log(err)
+                setError(err.message)
+            })
 
-        // if (formData.picture) {
-        // 	form.append('picture', formData.picture, formData.picture.name)
-        // }
-
-        // sendAxiosRequest({
-        // 	axiosInstance: celesupApi,
-        // 	url: '/posts/create',
-        // 	method: 'POST',
-        // 	form: form,
-        // 	options: {
-        // 		headers: { 'Content-Type': 'Application/json' },
-        // 	},
+        // await sendAxiosRequest({
+        //     axiosInstance: celesupApi,
+        //     url: "/posts/create",
+        //     method: "POST",
+        //     form: form,
+        //     options: { headers: { "Content-Type": "multipart/form-data" } },
         // })
+    }
 
-        // if (!formData.picture) {
-        // 	const postDataJson = {
-        // 		caption: formData.caption,
-        // 		excerpt: formData.excerpt,
-        // 		hashtags: formData.hashtags,
-        // 	}
-        // 	sendAxiosRequest({
-        // 		axiosInstance: celesupApi,
-        // 		url: '/posts/create',
-        // 		method: 'POST',
-        // 		form: JSON.stringify(postDataJson),
-        // 		options: { headers: { 'Content-Type': 'application/json' } },
-        // 	})
-        // 	return 0
-        // } else if (formData.picture) {
-        // 	const postDataMultiPart = {
-        // 		picture: formData.picture,
-        // 	}
-        // 	sendAxiosRequest({
-        // 		axiosInstance: celesupApi,
-        // 		url: '/posts/create',
-        // 		method: 'POST',
-        // 		form: JSON.stringify(postDataMultiPart),
-        // 		options: { headers: { 'Content-Type': 'application/json' } },
-        // 	})
-        // }
+    function exitPostCreation() {
+        context.setFocusState({
+            ...context.state,
+            createPost: null,
+        })
+    }
+
+    function handleModalActions(exit, action) {
+        if (exit) {
+            exitPostCreation()
+        } else if (action) {
+            if (!formData.VALID)
+                return setError(
+                    "Ops! Post must either contain a caption excerpt or a file.",
+                )
+            else {
+                setPreviewPost({
+                    id: "aaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    author: {
+                        ...context.user,
+                        avatar: CELESUP_BASE_URL + context.user.avatar,
+                    },
+                    caption: formData.caption,
+                    excerpt: formData.excerpt,
+                    created_at: new Date().toUTCString(),
+                    video:
+                        formData.video && URL.createObjectURL(formData.video),
+                    picture:
+                        formData.picture &&
+                        URL.createObjectURL(formData.picture),
+                    thumbnail:
+                        formData.thumbnail &&
+                        URL.createObjectURL(formData.thumbnail),
+                })
+            }
+        }
     }
 
     return (
-        <div
-            ref={createPostContainer}
-            className="create__post__container pt-1 "
-        >
-            {/* <h1>Render ME</h1> */}
-            <div className="post__modal mx-__ card p-0 pos-relative border">
-                <PostContext.Provider
-                    value={{
-                        formData,
-                        updateFormData,
-                        submitForm,
-                        pending,
-                        error,
-                    }}
-                >
-                    <PostForm />
-                </PostContext.Provider>
-            </div>
-        </div>
+        <>
+            <PostContext.Provider
+                value={{
+                    error,
+                    pending,
+                    formData,
+                    submitForm,
+                    updateFormData,
+                    handleModalActions,
+                }}
+            >
+                {previewPost ? (
+                    <PostPreview post={previewPost} />
+                ) : (
+                    <>
+                        {formData.picture ? (
+                            <ImageViewer />
+                        ) : formData.video ? (
+                            <VideoFileViewer />
+                        ) : (
+                            <Modal
+                                title="Create post"
+                                action="next"
+                                children={<PostForm />}
+                                // options={{ maxHeight: true }}
+                                callBack={handleModalActions}
+                            />
+                        )}
+                    </>
+                )}
+            </PostContext.Provider>
+        </>
     )
 }
 

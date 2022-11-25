@@ -15,15 +15,36 @@ import { useEffect, useRef } from "react"
 export default function Modal({
     title,
     action,
-    callBack,
+    callBack = (exit = Boolean, data = Boolean) => {},
     children,
-    options = { maxHeight: false },
+    options = {},
 }) {
     const instance = useRef()
+    const OPTIONS = {
+        maxHeight: false,
+        maxWidth: false,
+        ...options,
+    }
 
     useEffect(() => {
-        if (options.maxHeight) {
-            instance.current.style.height = "100%"
+        if (OPTIONS.maxHeight) {
+            instance.current.style.setProperty(
+                "--modal-body-height",
+                "var(--modal-wrapper-height)",
+            )
+        }
+        if (OPTIONS.maxWidth) {
+            instance.current.style.setProperty(
+                "--modal-body-width",
+                "calc(--modal-wrapper-width - 100px)",
+            )
+        }
+    }, [])
+
+    useEffect(() => {
+        document.body.style.setProperty("overflow", "hidden")
+        return () => {
+            document.body.style.setProperty("overflow-y", "auto")
         }
     }, [])
     return (
@@ -32,18 +53,20 @@ export default function Modal({
                 <div ref={instance} className="__modal card p-0 border">
                     <div className="modal__header d-flex justify-content-between align-items-center px-__">
                         <div className="d-flex gap-2 align-items-center">
-                            <span
-                                className="font-lg cursor-pointer on-text-hover-red"
+                            <button
+                                aria-label="Close Panel"
+                                className="font-lg cursor-pointer on-text-hover-red rm-default"
                                 onClick={() => callBack(true, undefined)}
                             >
                                 &times;
-                            </span>
+                            </button>
                             <span>
                                 <b>{title}</b>
                             </span>
                         </div>
                         <div className="d-flex">
                             <button
+                                aria-label="Next"
                                 className="btn br-md"
                                 onClick={() => callBack(undefined, true)}
                             >
@@ -51,6 +74,7 @@ export default function Modal({
                             </button>
                         </div>
                     </div>
+                    {/* <span className="divider"></span> */}
                     <div className="__content">{children}</div>
                 </div>
             </div>

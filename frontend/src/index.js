@@ -26,4 +26,3 @@ if (localStorage.getItem("theme")) {
     localStorage.setItem("theme", "dark-mode")
     document.body.classList.add(localStorage.getItem("theme"))
 }
-

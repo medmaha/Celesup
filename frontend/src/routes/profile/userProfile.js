@@ -10,6 +10,7 @@ import ProfileEngagements from "./components/profileEngagements"
 // import useAuthRequest from "../auth/useAuthRequest"
 import useAxiosRequest from "../../hooks/useAxiosRequest"
 import { useParams } from "react-router-dom"
+import PageNotFound from "../pageNotFound"
 
 const UserProfile = () => {
     const context = useContext(GlobalContext)
@@ -19,7 +20,7 @@ const UserProfile = () => {
     const params = useParams()
 
     useEffect(() => {
-        getProfile()
+        return () => getProfile()
     }, [])
 
     useEffect(() => {
@@ -55,6 +56,7 @@ const UserProfile = () => {
         }
     }
 
+    if (error === "Request failed with status code 404") return <PageNotFound />
     return (
         <div className="d-flex justify-content-center user__profile">
             <div className="maxwidth-850-px mx-__ width-100">

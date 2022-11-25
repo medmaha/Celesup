@@ -73,7 +73,7 @@ const Login = () => {
                         style={{ letterSpacing: "1px", lineHeight: "30px" }}
                     >
                         Never miss out from your favorite stars with{" "}
-                        <span className="theme-color">CELESUP</span>{" "}
+                        <span className="text-primary">CELESUP</span>{" "}
                     </h2>
                 </div>
                 <div className="d-flex justify-content-center flex-column align-items-center">
@@ -184,9 +184,9 @@ const Login = () => {
                             <span className="font-sm">New to Celesup?</span>
                             <Link
                                 to={"/signup"}
-                                className="teal-text-lighten-2 font-md cursor-pointer"
+                                className="text-secondary on-text-hover-blue font-md cursor-pointer"
                             >
-                                Signup
+                                Sign up
                             </Link>
                         </div>
                     </div>

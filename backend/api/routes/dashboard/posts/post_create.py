@@ -11,13 +11,7 @@ class PostCreate(CreateAPIView):
     serializer_class = PostCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        data = request.data.copy()
-        if not data.get("picture") and not data.get("caption"):
-            return Response(
-                {"message": "cannot initialize an empty post data"}, status=400
-            )
-        data["author"] = request.user.pk
-        serializers = self.get_serializer(data=data)
-        serializers.is_valid(raise_exception=True)
-        post = serializers.save()
-        return Response(PostDetailSerializer(post).data, status=201)
+        request.data["author"] = request.user.id
+
+        print(request.data)
+        return super().create(request, *args, **kwargs)

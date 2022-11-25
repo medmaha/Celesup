@@ -5,9 +5,12 @@ export default function AlertMessage({ asError, asSuccess, message }) {
 
     if (asError)
         return (
-            <div ref={alertWrapper} className={`alert-msg py-__`}>
-                <p className="p-__ center invalid-text br-md mx-1 d-flex flex-column gap-5-px">
-                    <span className="icon-wraaper">
+            <div
+                ref={alertWrapper}
+                className={`alert-msg z-index-1-plus px-__ m-0`}
+            >
+                <p className="p-__ center invalid-text br-md d-flex flex-column gap-2-px m-0">
+                    <span className="">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"

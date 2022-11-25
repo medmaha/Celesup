@@ -17,29 +17,25 @@ from django.db import transaction
 
 class ProfileFollow(GenericAPIView):
     def post(self, request, *args, **kwargs):
-        profile = get_object_or_404(User, id=request.data.get("profile_id"))
-
-        client = request.user
-
-        try:
-            get_object_or_404(User, id=profile.id)
-        except AttributeError:
-            pass
-
-        if not isinstance(client, User):
+        if not isinstance(request.user, User):
             return Response(status=status.HTTP_404)
+        profile = get_object_or_404(User, id=request.data.get("profile_id"))
+        user = request.user
 
-        if client in profile.followers.all():
-            profile.followers.remove(client)
-            client.following.remove(profile)
+        if user.id == profile.id:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-            FollowThread(profile, client, "onFollow")
+        if user in profile.followers.all():
+            profile.followers.remove(user)
+            user.following.remove(profile)
+
+            FollowThread(profile, user, "onFollow")
 
         else:
-            profile.followers.add(client)
-            client.following.add(profile)
+            profile.followers.add(user)
+            user.following.add(profile)
 
-            FollowThread(profile, client)
+            FollowThread(profile, user)
 
         self.serializer_class = UserDetailSerializer
 
@@ -55,26 +51,30 @@ import threading
 
 
 class FollowThread(threading.Thread):
-    def __init__(self, user, client, task="Follow"):
+    def __init__(self, profile: User, user: User, task="Follow"):
+        self.profile = profile
         self.user = user
-        self.client = client
         self.task_action = task
         threading.Thread.__init__(self)
         self.start()
 
     def run(self):
-        client_feed = Feed.objects.get(user=self.client)
-        user_posts = Post.objects.filter(author=self.user)
+        client_feed = Feed.objects.get(user=self.user)
 
         with transaction.atomic():
+            user_posts = Post.objects.filter(author=self.profile)
             if self.task_action == "Follow":
                 for post in user_posts:
-                    feed = FeedObjects(object=post, id=post.key)
-                    feed.save()
-                    client_feed.feed_objects.add(feed)
+                    client_feed.posts.add(post)
+
+                self.profile.rating += 2
+                self.profile.save()
 
             elif self.task_action == "onFollow":
-                for feed in client_feed.feed_objects.all():
-                    for post in user_posts:
-                        if feed.object == post:
-                            client_feed.feed_objects.remove(feed)
+                user_posts = client_feed.posts.filter(author=self.profile)
+                for post in user_posts:
+                    client_feed.posts.remove(post)
+                    post.feed_set.clear()
+
+                self.profile.rating -= 1
+                self.profile.save()
