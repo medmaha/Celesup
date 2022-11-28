@@ -49,6 +49,7 @@ class SignupUser(APIView):
         )
 
     def post(self, request: HttpRequest, format=None):
+
         serializer = UserCreationSerializer(data=request.data)
         data = request.data.copy()
 
@@ -59,8 +60,6 @@ class SignupUser(APIView):
         serializer.is_valid(raise_exception=True)
 
         EMAIL_VERIFICATION_CODE = self.temporal_database.create_unique_validation_code()
-
-        print(EMAIL_VERIFICATION_CODE)
 
         send_mail = send_email_verification_code(
             code=EMAIL_VERIFICATION_CODE,
@@ -111,7 +110,7 @@ def checkError(data):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    if len(data.get("password", "") < 6):
+    if data.get("password") and len(data.get("password")) < 6:
         return Response(
             {"message": "password this too short"},
             status=status.HTTP_400_BAD_REQUEST,

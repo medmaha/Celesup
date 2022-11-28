@@ -1,17 +1,19 @@
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
 
-from django.http import QueryDict
-
-from .serializers import PostCreateSerializer, PostDetailSerializer
+from .serializers import PostCreateSerializer
 
 
 class PostCreate(CreateAPIView):
     serializer_class = PostCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        request.data["author"] = request.user.id
+        data = request.data.copy()
+        data["author"] = request.user.id
 
-        print(request.data)
-        return super().create(request, *args, **kwargs)
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(status=status.HTTP_201_CREATED)

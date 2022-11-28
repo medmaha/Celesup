@@ -11,6 +11,8 @@ from .serializers import ThreadSerializer, MessageSerializer
 from utilities.generators import get_profile_data
 from django.shortcuts import get_list_or_404
 
+from api.routes.user.serializers import UserMiniInfoSeriaLizer
+
 
 class ThreadRetrieve(RetrieveAPIView):
     def get_queryset(self):
@@ -34,23 +36,17 @@ class ThreadRetrieve(RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         queryset = self.get_queryset()
 
-        serializer = ThreadSerializer(queryset)
+        self.serializer_class = ThreadSerializer
+        thread_serializer = self.get_serializer(queryset)
+        data = thread_serializer.data
 
-        s_data = get_profile_data(User.objects.get(id=serializer.data["sender"]))
-        r_data = get_profile_data(User.objects.get(id=serializer.data["recipient"]))
+        self.serializer_class = UserMiniInfoSeriaLizer
 
-        data = serializer.data
+        sender_serializer = self.get_serializer(User.objects.get(id=data["sender"]))
+        recipient_serializer = self.get_serializer(
+            User.objects.get(id=data["recipient"])
+        )
 
-        data["sender"] = {
-            "avatar": s_data["avatar"],
-            "full_name": s_data["full_name"],
-            "username": s_data["username"],
-            "id": s_data["id"],
-        }
-        data["recipient"] = {
-            "avatar": r_data["avatar"],
-            "full_name": r_data["full_name"],
-            "username": r_data["username"],
-            "id": r_data["id"],
-        }
+        data["sender"] = sender_serializer.data
+        data["recipient"] = recipient_serializer.data
         return Response(data)
