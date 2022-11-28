@@ -78,6 +78,7 @@ export default function ChatBox({
                                     )}
                                     <div className="client br-full border profile-img-lg">
                                         <img
+                                            crossOrigin="anonymous"
                                             src={activeThread.recipient.avatar}
                                             alt="client"
                                         />
@@ -103,7 +104,7 @@ export default function ChatBox({
                                 ></span>
                             )}
 
-                            <div className="height-100 p-1 overflow-hidden overflow-y-auto">
+                            <div className="height-100 p-__ overflow-hidden overflow-y-auto">
                                 {messages?.map((message) => {
                                     return (
                                         <div

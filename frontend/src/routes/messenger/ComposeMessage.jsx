@@ -70,6 +70,7 @@ export default function ComposeMessage({ setCompose, setActiveThread }) {
                                     >
                                         <span className="profile-img">
                                             <img
+                                                crossOrigin="anonymous"
                                                 src={
                                                     CELESUP_BASE_URL +
                                                     people.avatar

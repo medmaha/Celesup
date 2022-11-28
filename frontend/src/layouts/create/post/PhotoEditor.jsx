@@ -1,70 +1,38 @@
 import { useEffect, useState, useContext, useRef } from "react"
-import { PostContext } from "./createPost"
+import { PostContext } from "./create"
 
-var defaultImageStyles = {
-    brightness: { value: 100, prefix: "%" },
-    saturate: { value: 100, prefix: "%" },
-    contrast: { value: 100, prefix: "%" },
-    blur: { value: 0, prefix: "px" },
-    sepia: { value: 0, prefix: "%" },
-    grayscale: { value: 0, prefix: "%" },
-    "hue-rotate": { value: 0, prefix: "deg" },
-}
+const FILTERS = {}
 
-const ImageEditor = ({ image, previewDefaultImage }) => {
-    // const {updateFormData} = useContext(PostContext)
-    const [selectedFilter, setSelectedFilter] = useState(null)
-    const [imageStyles, setImageStyles] = useState(null)
-    const [previewDefault, setDefaultPreview] = useState(false)
+const PhotoEditor = ({ photo, canvas, canvasContext, renderImage }) => {
+    const [filters, setFilters] = useState(null)
+    const [setCurrentFilter, setSelectedFilter] = useState(null)
+
+    const editorContainerRef = useRef()
     const slider = useRef()
 
     useEffect(() => {
-        "Adding a eventlistener on the preview btn... Fires when the page reloads or first time the component gets rendered"
+        if (!editorContainerRef.current) return
 
-        // const toggleButton = previewDefaultImage.current
-
-        function seeDefault() {
-            " Toggles the previewImageOriginalFilter state to allow user to view there progress"
-            setDefaultPreview((prev) => !prev)
-        }
-
-        // toggleButton?.addEventListener('click', seeDefault)
-        // return () => toggleButton?.removeEventListener('click', seeDefault)
-
-        // eslint-disable-next-line
-    }, [])
+        const brightness =
+            editorContainerRef.current.querySelector("span[data-filter]")
+        setSelectedFilter(brightness)
+        selectFilter({ currentTarget: brightness })
+    }, [editorContainerRef.current])
 
     useEffect(() => {
         "Fires when the handleSliderChange() method updates the imageStyles state"
-        if (!image || !imageStyles) return
-        if (imageStyles) {
-            image.current.style.filter = getImgStyles(imageStyles)
-            changeFormDataPicture()
-        }
 
-        // eslint-disable-next-line
-    }, [imageStyles])
+        if (canvas && canvasContext && photo)
+            // return () => applyFilters()
+            return () => renderImage(generateFilters())
+    }, [filters])
 
-    useEffect(() => {
-        "Fires every time the previewDefaultImage button gets a clicked event"
-
-        if (!imageStyles || !image) return
-
-        if (previewDefault) {
-            image.current.style.filter = getImgStyles(defaultImageStyles)
-            changeFormDataPicture()
-            return
-        }
-        image.current.style.filter = getImgStyles(imageStyles)
-        // eslint-disable-next-line
-    }, [previewDefault])
-
-    function chooseFilter({ currentTarget }) {
+    function selectFilter({ currentTarget }) {
         " Assigns a filter style to the slider for event effects to take place"
 
         if (
-            selectedFilter &&
-            selectedFilter.getAttribute("data-filter") ===
+            setCurrentFilter &&
+            setCurrentFilter.getAttribute("data-filter") ===
                 currentTarget.getAttribute("data-filter")
         )
             return
@@ -72,7 +40,7 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
         if (slider.current) {
             slider.current.parentNode.classList.remove("hide")
             currentTarget.classList.add("active")
-            selectedFilter?.classList.remove("active")
+            setCurrentFilter?.classList.remove("active")
             setSelectedFilter(currentTarget)
 
             slider.current.max = currentTarget.getAttribute("data-max")
@@ -83,62 +51,60 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
 
     function handleSliderChange({ target }) {
         " Updates the imageStyle variable "
-        selectedFilter.setAttribute("data-value", target.value)
-        setImageStyles({
-            ...imageStyles,
-            [selectedFilter.getAttribute("data-filter")]: {
-                value: selectedFilter.getAttribute("data-value"),
-                prefix: selectedFilter.getAttribute("data-unit"),
+        setCurrentFilter.setAttribute("data-value", target.value)
+        setFilters({
+            ...filters,
+            [setCurrentFilter.getAttribute("data-filter")]: {
+                value: setCurrentFilter.getAttribute("data-value"),
+                prefix: setCurrentFilter.getAttribute("data-unit"),
             },
         })
     }
-    // <QueryDict: {'caption': [''], 'hashtags': [''], 'picture': [<InMemoryUploadedFile: 08D78L0001.jpg (image/jpeg)>]}>
-    // <QueryDict: {'caption': [''], 'hashtags': [''], 'picture': [<InMemoryUploadedFile: 66E63BDB-5ED7-473F-A257-93753DFCF749L0001~2.jpg (image/jpeg)>]}>
 
-    function changeFormDataPicture() {
-        // const canvas = document.createElement('canvas')
-        // const context = canvas.getContext('2d')
-        // context.filter = getImgStyles(imageStyles)
-        // context.drawImage(
-        //     image.current, 0, 0, image.current.width, image.current.height
-        // )
-        // const pictureUri = canvas.toDataURL('image/jpeg')
-        // updateFormData(prev=>{
-        //     const picture = prev['picture']
-        //     const editedImg = new File([pictureUri], picture.name, {type: picture.type})
-        //     console.log(editedImg);
-        //     return {
-        //         ...prev,
-        //         picture: editedImg
-        //     }
-        // })
-    }
-
-    function getImgStyles(objectData) {
+    function generateFilters() {
         " Iterates over a givin object and stringifies the key value pairs "
-        if (!objectData) return ""
+
+        if (!filters) return "none"
+
         let styles = ""
-        if (!objectData) return
-        for (const prop in objectData) {
-            const property = objectData[prop]
-            styles = styles + `${prop}(${property.value}${property.prefix}) `
+
+        if (!filters) return
+
+        for (const key in filters) {
+            const property = filters[key]
+            styles += `${key}(${property.value}${property.prefix}) `
         }
-        return styles
+
+        return styles.trim()
     }
 
     return (
-        <div className="d-flex flex-column justify-content-evenly px-2 height-4-rem">
-            <span className="_hide d-flex justify-content-center">
+        <div
+            id="photoEditor"
+            ref={editorContainerRef}
+            className="d-flex flex-column justify-content-evenly py-__ mx-1"
+        >
+            <p
+                className="typography center"
+                style={{ textTransform: "capitalize" }}
+            >
+                {setCurrentFilter?.getAttribute("data-filter")}{" "}
+                {Math.floor(slider.current?.value || 0.0)}
+                {"%"}
+            </p>
+            <div className="_hide d-flex justify-content-center pt-__ pb-1">
                 <input
+                    style={{ width: "90%" }}
                     ref={slider}
                     type="range"
                     min={0}
                     max={200}
+                    step="any"
                     onChange={handleSliderChange}
                 />
-            </span>
+            </div>
 
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between mx-1">
                 <span
                     data-filter="brightness"
                     data-unit="%"
@@ -146,7 +112,7 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
                     data-min="0"
                     data-max="200"
                     data-value="100"
-                    onClick={chooseFilter}
+                    onClick={selectFilter}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +130,7 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
                     data-min="0"
                     data-max="200"
                     data-value="100"
-                    onClick={chooseFilter}
+                    onClick={selectFilter}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +148,7 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
                     data-min="0"
                     data-max="100"
                     data-value="0"
-                    onClick={chooseFilter}
+                    onClick={selectFilter}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +166,7 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
                     data-min="0"
                     data-max="100"
                     data-value="0"
-                    onClick={chooseFilter}
+                    onClick={selectFilter}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -216,9 +182,9 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
                     data-unit="%"
                     data-index="4"
                     data-min="0"
-                    data-max="100"
+                    data-max="200"
                     data-value="100"
-                    onClick={chooseFilter}
+                    onClick={selectFilter}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -234,9 +200,9 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
                     data-unit="px"
                     data-index="5"
                     data-min="0"
-                    data-max="100"
+                    data-max="25"
                     data-value="0"
-                    onClick={chooseFilter}
+                    onClick={selectFilter}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -254,7 +220,7 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
                     data-min="0"
                     data-max="100"
                     data-value="0"
-                    onClick={chooseFilter}
+                    onClick={selectFilter}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -270,4 +236,4 @@ const ImageEditor = ({ image, previewDefaultImage }) => {
     )
 }
 
-export default ImageEditor
+export default PhotoEditor

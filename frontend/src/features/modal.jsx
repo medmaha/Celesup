@@ -21,8 +21,9 @@ export default function Modal({
 }) {
     const instance = useRef()
     const OPTIONS = {
-        maxHeight: false,
-        maxWidth: false,
+        maxHeight: undefined,
+        maxWidth: undefined,
+        setHeader: undefined,
         ...options,
     }
 
@@ -36,7 +37,7 @@ export default function Modal({
         if (OPTIONS.maxWidth) {
             instance.current.style.setProperty(
                 "--modal-body-width",
-                "calc(--modal-wrapper-width - 100px)",
+                "var(--modal-body-widthMAX)",
             )
         }
     }, [])
@@ -51,29 +52,33 @@ export default function Modal({
         <div className="modal__wrapper">
             <div className="modal__content">
                 <div ref={instance} className="__modal card p-0 border">
-                    <div className="modal__header d-flex justify-content-between align-items-center px-__">
-                        <div className="d-flex gap-2 align-items-center">
-                            <button
-                                aria-label="Close Panel"
-                                className="font-lg cursor-pointer on-text-hover-red rm-default"
-                                onClick={() => callBack(true, undefined)}
-                            >
-                                &times;
-                            </button>
-                            <span>
-                                <b>{title}</b>
-                            </span>
+                    {OPTIONS.setHeader ? (
+                        <>{OPTIONS.setHeader}</>
+                    ) : (
+                        <div className="modal__header pull-content d-flex justify-content-between align-items-center px-__">
+                            <div className="d-flex gap-2 align-items-center">
+                                <button
+                                    aria-label="Close Panel"
+                                    className="font-lg cursor-pointer on-text-hover-red rm-default"
+                                    onClick={() => callBack(true, undefined)}
+                                >
+                                    &times;
+                                </button>
+                                <span>
+                                    <b>{title}</b>
+                                </span>
+                            </div>
+                            <div className="d-flex">
+                                <button
+                                    aria-label="Next"
+                                    className="btn br-md"
+                                    onClick={() => callBack(undefined, true)}
+                                >
+                                    {action}
+                                </button>
+                            </div>
                         </div>
-                        <div className="d-flex">
-                            <button
-                                aria-label="Next"
-                                className="btn br-md"
-                                onClick={() => callBack(undefined, true)}
-                            >
-                                {action}
-                            </button>
-                        </div>
-                    </div>
+                    )}
                     {/* <span className="divider"></span> */}
                     <div className="__content">{children}</div>
                 </div>

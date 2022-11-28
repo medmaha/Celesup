@@ -63,7 +63,10 @@ export default function PostDetail() {
                         )}
                         {postData.video && (
                             <div className="width-100 height-100 d-flex justify-content-center">
-                                <VideoPlayer file={postData.video} />
+                                <VideoPlayer
+                                    file={postData.video}
+                                    thumbnail={postData.thumbnail}
+                                />
                             </div>
                         )}
                     </>

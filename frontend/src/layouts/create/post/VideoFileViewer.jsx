@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useRef } from "react"
 import { useState } from "react"
-import Modal from "../../../../features/Modal"
-import Textarea from "../../../../features/TextArea"
-import { PostContext } from "./createPost"
+import Modal from "../../../features/Modal"
+import Textarea from "../../../features/TextArea"
+import { PostContext } from "./create"
 
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
-import VideoPlayer from "../../../../components/VideoPlayer"
-import VideoContainer from "../../../../components/videoContainer"
-import AlertMessage from "../../../../features/AlertMessage"
+import VideoPlayer from "../../../components/VideoPlayer"
+import VideoContainer from "../../../components/videoContainer"
+import AlertMessage from "../../../features/AlertMessage"
 const ffmpeg = createFFmpeg({ log: true })
 
 export default function VideoFileViewer() {
@@ -16,27 +16,27 @@ export default function VideoFileViewer() {
         useContext(PostContext)
 
     const [thumbnails, setThumbnails] = useState([])
+    const [loading, setLoading] = useState("loading video")
 
     useEffect(() => {
-        if (ffmpeg.isLoaded()) return
-
         async function loadFFmpeg() {
+            if (ffmpeg.isLoaded()) return
             await load()
+            setLoading("generating thumbnails")
             await generateThumbnails()
+            setLoading(null)
         }
         return () => loadFFmpeg()
     }, [])
 
-    // useEffect(() => {
-    //     if (!thumbnails.length) return
-    //     return () =>
-    //         updateFormData((prev) => {
-    //             return {
-    //                 ...prev,
-    //                 thumbnail: thumbnails[0],
-    //             }
-    //         })
-    // }, [thumbnails])
+    useEffect(() => {
+        updateFormData((prev) => {
+            return {
+                ...prev,
+                thumbnail: thumbnails.find((t) => t.active)?.file || null,
+            }
+        })
+    }, [thumbnails])
 
     async function load() {
         await ffmpeg.load()
@@ -71,7 +71,7 @@ export default function VideoFileViewer() {
                 const blob = new Blob([binaryData.buffer], {
                     type: "image/jpeg",
                 })
-                data.push(blob)
+                data.push({ active: idx === 2, file: blob })
             }
         })
 
@@ -79,7 +79,7 @@ export default function VideoFileViewer() {
             return {
                 ...prev,
                 VALID: true,
-                thumbnail: data[0],
+                thumbnail: data.find((t) => t.active),
             }
         })
         setThumbnails(data)
@@ -95,8 +95,15 @@ export default function VideoFileViewer() {
                 callBack={handleModalActions}
                 children={
                     <>
-                        {!thumbnails?.length ? (
-                            <p>..loading</p>
+                        {!thumbnails?.length && loading ? (
+                            <div className="d-flex flex-column gap-1-rem justify-content-center align-items-center width-100 height-100 minheight-400-px">
+                                <p className="typography center">
+                                    {loading}...
+                                </p>
+                                <p className="typography center text-muted">
+                                    this might take some seconds
+                                </p>
+                            </div>
                         ) : (
                             <div className="width-100 height-100 d-flex justify-content-center align-items-center pos-relative flex-column">
                                 {error && (
@@ -107,9 +114,10 @@ export default function VideoFileViewer() {
                                 )}
                                 <div
                                     style={{
-                                        maxHeight: "var(--modal-max-height)",
+                                        maxHeight:
+                                            "var(--modal-content-max-height)",
                                     }}
-                                    className="row width-100 px-__ align-items-center overflow-hidden overflow-y-auto justify-content-center"
+                                    className="row pb-2 width-100 px-__ align-items-center overflow-hidden overflow-y-auto justify-content-center"
                                 >
                                     <div className="col-7-md flex-1 p-1 d-flex justify-content-center">
                                         <form
@@ -142,7 +150,7 @@ export default function VideoFileViewer() {
                                                     Thumbnails
                                                 </label>
                                                 <div
-                                                    className="d-flex justify-content-between gap-5-px"
+                                                    className="d-flex justify-content-between gap-5-px maxwidth-500-px"
                                                     style={{
                                                         alignItems: "stretch",
                                                     }}
@@ -170,11 +178,33 @@ export default function VideoFileViewer() {
                                                             return (
                                                                 <div
                                                                     key={idx}
-                                                                    className="maxwidth-150-px height-100 cursor-pointer"
+                                                                    onClick={() => {
+                                                                        // prettier-ignore
+                                                                        setThumbnails(prev=>{
+                                                                            const currentA = prev.find(t=>t.active)
+                                                                            prev[prev.indexOf(currentA)].active = false
+                                                                            prev[idx].active = true
+                                                                            return [...prev]
+                                                                        })
+                                                                    }}
+                                                                    className={`maxwidth-150-px height-100 cursor-pointer ${
+                                                                        thumbnail.active &&
+                                                                        "border"
+                                                                    }`}
+                                                                    style={
+                                                                        thumbnail.active
+                                                                            ? {
+                                                                                  borderColor:
+                                                                                      "var(textColor)",
+                                                                                  borderWidth:
+                                                                                      "2px",
+                                                                              }
+                                                                            : {}
+                                                                    }
                                                                 >
                                                                     <img
                                                                         src={URL.createObjectURL(
-                                                                            thumbnail,
+                                                                            thumbnail.file,
                                                                         )}
                                                                         alt=""
                                                                         width="100%"
@@ -190,7 +220,10 @@ export default function VideoFileViewer() {
                                     <div className="col-5-md">
                                         <VideoPlayer
                                             file={formData.video}
-                                            thumbnail={thumbnails[0]}
+                                            thumbnail={
+                                                thumbnails.find((t) => t.active)
+                                                    .file
+                                            }
                                             options={{
                                                 maxWidth: true,
                                                 CONTROLS: {

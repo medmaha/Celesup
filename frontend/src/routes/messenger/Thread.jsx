@@ -16,6 +16,7 @@ export default function Thread({ thread }) {
                 <div className="width-fit-content">
                     <div className="client profile-img ml-__ width-50-px height-50-px br-full border">
                         <img
+                            crossOrigin="anonymous"
                             src={client.avatar}
                             className="border"
                             alt="chat author"

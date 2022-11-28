@@ -25,6 +25,7 @@ const HashtagField = ({
     }, [hashtags])
 
     useEffect(() => {
+        instance.current?.scrollIntoView({ behavior: "smooth" })
         instance.current?.focus()
     }, [])
 

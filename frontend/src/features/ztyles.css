@@ -146,6 +146,7 @@
     --modal-wrapper-width: 100%;
     --modal-wrapper-height: calc(100vh - var(--nav-height));
     --modal-body-width: 600px;
+    --modal-body-widthMAX: 1000px;
     --modal-body-height: fit-content;
     --modal-content-max-height: calc(100vh - 150px);
     position: fixed;
@@ -168,7 +169,7 @@
 }
 
 .modal__wrapper .modal__content .__modal {
-    /* width: max-content; */
+    width: 100%;
     min-height: 200px;
     max-width: var(--modal-body-width);
     /*  */

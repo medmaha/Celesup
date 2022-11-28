@@ -230,17 +230,25 @@ export default function VideoPlayer({ file, thumbnail, options = {} }) {
             videoContainerRef.current.querySelector(".video-wrapper")
 
         const video = document.createElement("video")
+        video.crossOrigin = "anonymous"
 
         video.onclick = () => {
             video.paused ? video.play() : video.pause()
             videoContainerRef.current.classList.toggle("pause", video.paused)
         }
 
-        video.src = URL.createObjectURL(file)
-        videoWrapper.appendChild(video)
-        video.play()
-        setPlay(true)
-        setVideoElement(video)
+        if (file.toLowerCase) {
+            video.src = file
+        } else {
+            video.src = URL.createObjectURL(file)
+        }
+
+        video.addEventListener("loadeddata", () => {
+            videoWrapper.appendChild(video)
+            video.play()
+            setPlay(true)
+            setVideoElement(video)
+        })
     }
 
     return (
@@ -262,7 +270,11 @@ export default function VideoPlayer({ file, thumbnail, options = {} }) {
                         <div className="video-thumbnail">
                             <img
                                 crossOrigin="anonymous"
-                                src={URL.createObjectURL(thumbnail)}
+                                src={
+                                    thumbnail.toLowerCase
+                                        ? thumbnail
+                                        : URL.createObjectURL(thumbnail)
+                                }
                                 alt="thumbnail"
                             />
                         </div>

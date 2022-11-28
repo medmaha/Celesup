@@ -1,92 +1,82 @@
 import { useState, useEffect, useContext, useRef } from "react"
-import { GlobalContext } from "../../../../App"
-import { CELESUP_BASE_URL } from "../../../../axiosInstances"
-import { PostContext } from "./createPost"
-import { TextAreaLarge } from "../../../../features/TextArea"
-
-import HashtagField from "../../../../features/HashtagField"
-import VideoFileViewer from "./VideoFileViewer"
-import AlertMessage from "../../../../features/AlertMessage"
+import { GlobalContext } from "../../../App"
+import { CELESUP_BASE_URL } from "../../../axiosInstances"
+import AlertMessage from "../../../features/AlertMessage"
+import HashtagField from "../../../features/HashtagField"
+import Textarea, { TextAreaLarge } from "../../../features/TextArea"
+import { PostContext } from "./create"
+import ImageViewer from "./ImageViewer"
+import { ACCEPTED_FILE_EXTENSIONS, fileUploader } from "./utils"
 
 const PostForm = () => {
-    const { error, formData, updateFormData } = useContext(PostContext)
+    const {
+        error,
+        postData,
+        dispatcher,
+        updatePostData,
+        exitPostCreation,
+        setHeaderOptions,
+    } = useContext(PostContext)
 
     const [addHashtag, setAddHashTag] = useState(false)
-    const postData = useRef()
+    const postFormWrapperRef = useRef()
     const context = useContext(GlobalContext)
 
     useEffect(() => {
-        if (localStorage.getItem("openFile")) {
-            uploadFile(localStorage.getItem("openFileType"))
-            localStorage.removeItem("openFile")
-            localStorage.removeItem("openFileType")
-            return
-        } else {
-            postData.current.children[0].focus()
-        }
+        setHeaderOptions((prev) => {
+            const options = getHeaderOptions(exitPostCreation)
+            return {
+                ...prev,
+                ...options,
+                METHODS: {
+                    ...prev.METHODS,
+                    ...options.METHODS,
+                    onActionBtnClicked: async () => {
+                        dispatcher("PREVIEW")
+                    },
+                },
+            }
+        })
+        postFormWrapperRef.current.children[0].focus()
     }, [])
 
     useEffect(() => {
-        if (!addHashtag) return
-        postData.current.parentNode.scrollTo({ top: 100 })
-    }, [addHashtag])
+        // console.log(postData)
+    }, [postData])
 
-    function uploadFile() {
-        const hiddenFileInput = document.createElement("input")
-        hiddenFileInput.setAttribute("type", "file")
-        hiddenFileInput.setAttribute("type", "file")
-        hiddenFileInput.click()
-        hiddenFileInput.addEventListener("change", ({ target }) => {
-            if (target.files && target.files[0]) {
-                function fileType_(type = "") {
-                    const isPhoto = type.match(/image\//g)?.length === 1
-                    const isVideo = type.match(/video\//g)?.length === 1
+    function uploader(ev) {
+        const type = ev.currentTarget.dataset.file
+        fileUploader(updatePostData, dispatcher, type)
+    }
 
-                    if (isPhoto) return "picture"
-                    if (isVideo) return "video"
-                    return ""
-                }
-
-                const fileType = fileType_(target.files[0].type)
-
-                if (!!fileType) {
-                    const ev = {
-                        target: {
-                            name: fileType,
-                            value: target.files[0],
-                            VALID: true,
-                        },
-                    }
-                    handleFormChange(ev)
-                } else {
-                    // TODO
-                }
-            } else if (target.files.length > 1) {
-                // TODO
+    function handleFormChange({ target }) {
+        updatePostData((prev) => {
+            return {
+                ...prev,
+                [target.name]: target.value,
             }
         })
     }
 
-    function handleFormChange({ target }) {
-        updateFormData({
-            ...formData,
-            [target.name]: target.value,
-            VALID: target.VALID,
-        })
-    }
-
     return (
-        <div
-            className="pos-relative d-flex justify-content-center flex-column align-items-center"
-            style={{
-                maxHeight: "var(--modal-content-max-height)",
-                overflow: "hidden",
-                overflowY: "auto",
-            }}
-        >
-            {error && <AlertMessage message={error} asError={true} />}
+        <div className="pos-relative d-flex justify-content-center flex-column align-items-center">
+            {error && (
+                <div
+                    className="pos-absolute top-2-rem left-0 right-0 invalid-bg width-100"
+                    style={{ zIndex: "1" }}
+                >
+                    <p className="typography center p-__">{error}</p>
+                </div>
+            )}
             <span className="d-block height-100 width-100">
-                <div className="">
+                <div
+                    className=""
+                    style={{
+                        maxHeight: "400px",
+                        overflow: "hidden",
+                        overflowY: "auto",
+                    }}
+                >
                     <div className="pt-1 d-flex align-items-center px-1">
                         <div className="profile-img width-4-rem height-4-rem">
                             <img
@@ -120,7 +110,7 @@ const PostForm = () => {
                     </div>
 
                     <div
-                        ref={postData}
+                        ref={postFormWrapperRef}
                         className="px-1 d-flex flex-column gap-1-rem"
                     >
                         <span>
@@ -141,11 +131,12 @@ const PostForm = () => {
                         </span>
 
                         <span>
-                            <TextAreaLarge
+                            <Textarea
+                                id="formTextArea"
+                                onChange={handleFormChange}
                                 name="excerpt"
                                 placeholder="Add a Description"
-                                row={6}
-                                onChange={handleFormChange}
+                                row={4}
                             />
                         </span>
                         <span>
@@ -157,7 +148,7 @@ const PostForm = () => {
                                     "Add hashtags"
                                 ) : (
                                     <>
-                                        {formData.hashtags?.split(",").length >
+                                        {postData.hashtags?.split(",").length >
                                         1
                                             ? "Hashtags"
                                             : "Hashtag"}
@@ -166,7 +157,7 @@ const PostForm = () => {
                             </button>
                         </span>
 
-                        <span>
+                        <span className="hashtags">
                             {addHashtag && (
                                 <HashtagField
                                     name="hashtags"
@@ -178,7 +169,7 @@ const PostForm = () => {
                     </div>
                 </div>
 
-                <div className="d-flex justify-content-center flex-column height-4-rem width-100">
+                <div className="d-flex justify-content-center flex-column width-100">
                     <span
                         className="divider"
                         style={{ backgroundColor: "grey" }}
@@ -188,7 +179,9 @@ const PostForm = () => {
                             <span
                                 className="icon-wrapper cursor-pointer"
                                 title="Image"
-                                onClick={uploadFile}
+                                data-file="photo"
+                                onClick={uploader}
+                                data-accepts="image/jpeg"
                             >
                                 <svg
                                     className="_blue-icon"
@@ -200,6 +193,8 @@ const PostForm = () => {
                             </span>
                             <span
                                 className="icon-wrapper cursor-pointer ml-__"
+                                data-file="video"
+                                onClick={uploader}
                                 title="Video"
                             >
                                 <svg
@@ -238,24 +233,21 @@ const PostForm = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="mx-1 inverse-bg-color hover-dimgrey br-sm" title='Add Photo or Video'>
-                        <input ref={hiddenFileInput} type="file" accept='image/*' hidden/>
-
-                        <span onClick={uploadFile} className="cursor-pointer py-1 d-flex justify-content-center align-items-center">
-                            <span className='icon-wrapper'>
-                                <svg className='black-icon' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                    <path d="M512 32H160c-35.35 0-64 28.65-64 64v224c0 35.35 28.65 64 64 64H512c35.35 0 64-28.65 64-64V96C576 60.65 547.3 32 512 32zM528 320c0 8.822-7.178 16-16 16h-16l-109.3-160.9C383.7 170.7 378.7 168 373.3 168c-5.352 0-10.35 2.672-13.31 7.125l-62.74 94.11L274.9 238.6C271.9 234.4 267.1 232 262 232c-5.109 0-9.914 2.441-12.93 6.574L176 336H160c-8.822 0-16-7.178-16-16V96c0-8.822 7.178-16 16-16H512c8.822 0 16 7.178 16 16V320zM224 112c-17.67 0-32 14.33-32 32s14.33 32 32 32c17.68 0 32-14.33 32-32S241.7 112 224 112zM456 480H120C53.83 480 0 426.2 0 360v-240C0 106.8 10.75 96 24 96S48 106.8 48 120v240c0 39.7 32.3 72 72 72h336c13.25 0 24 10.75 24 24S469.3 480 456 480z"/></svg>
-                            </span>
-                            <span className='mx-1 black-text' >/</span>
-                            <span className='icon-wrapper'>
-                                <svg className='black-icon' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                    <path d="M384 112v288c0 26.51-21.49 48-48 48h-288c-26.51 0-48-21.49-48-48v-288c0-26.51 21.49-48 48-48h288C362.5 64 384 85.49 384 112zM576 127.5v256.9c0 25.5-29.17 40.39-50.39 25.79L416 334.7V177.3l109.6-75.56C546.9 87.13 576 102.1 576 127.5z"/></svg>
-                            </span>
-                        </span>
-                    </div> */}
             </span>
         </div>
     )
 }
 
 export default PostForm
+
+function getHeaderOptions(handleModalActions) {
+    return {
+        backBtn: false,
+        closeBtn: true,
+        textTitle: "Create post",
+
+        METHODS: {
+            onCloseBtnClicked: () => handleModalActions(true, null),
+        },
+    }
+}

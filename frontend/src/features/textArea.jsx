@@ -1,14 +1,15 @@
 import { useRef, useEffect, useState } from "react"
 
 export default function Textarea({
-    className = "",
+    row = 1,
+    name = "",
+    value = null,
     children = "",
+    className = "",
     placeholder = "",
     childrenClassName = "",
-    row = 1,
-    id = `abhshvstfwtftwgs${Math.random()}`,
-    value = null,
-    onSubmit = () => {},
+    id = `random-${Math.random()}`,
+    onSubmit = (ev = EventTarget) => {},
     onChange = (ev = EventTarget) => {},
 }) {
     const instanceRef = useRef(`ref${id}`)
@@ -44,17 +45,34 @@ export default function Textarea({
 
     return (
         <span className="pos-relative width-100">
-            <textarea
-                data-id={id}
-                ref={instanceRef}
-                className={`border-0 outline-0` + className}
-                onKeyDown={handleTextarea}
-                data-sp-textarea=""
-                placeholder={placeholder}
-                onChange={(ev) => {
-                    onChange(ev)
-                }}
-            ></textarea>
+            {value ? (
+                <textarea
+                    name={name}
+                    data-id={id}
+                    ref={instanceRef}
+                    className={`border-0 outline-0 ` + className}
+                    onKeyDown={handleTextarea}
+                    data-sp-textarea=""
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={(ev) => {
+                        onChange(ev)
+                    }}
+                ></textarea>
+            ) : (
+                <textarea
+                    name={name}
+                    data-id={id}
+                    ref={instanceRef}
+                    className={`border-0 outline-0 ` + className}
+                    onKeyDown={handleTextarea}
+                    data-sp-textarea=""
+                    placeholder={placeholder}
+                    onChange={(ev) => {
+                        onChange(ev)
+                    }}
+                ></textarea>
+            )}
             <span className={`pos-absolute ${childrenClassName}`}>
                 {children}
             </span>

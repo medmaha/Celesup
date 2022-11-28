@@ -12,6 +12,11 @@ const SignupEmailVerification = ({ signupContext }) => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        if (!data) return
+        localStorage.setItem("sn-st", "info")
+    }, [data])
+
+    useEffect(() => {
         if (!code) return
         submitCode()
     }, [code])
@@ -51,6 +56,8 @@ const SignupEmailVerification = ({ signupContext }) => {
         localStorage.removeItem("sn-st")
         navigate("/signup")
     }
+
+    if (data) return <SignupExtraData />
 
     return (
         <div className="d-flex mb-1 justify-content-center flex-column align-items-center px-__">

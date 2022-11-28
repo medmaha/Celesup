@@ -1,10 +1,12 @@
 // import'../../../cssStyles/authentication.css'
-import { useState } from "react"
+import { createContext, useState } from "react"
 import SignupUserType from "./state_1/signupUserType"
 import SignupEmailVerification from "./state_2/SignupEmailVerification"
 import SignupExtraData from "./state_3/signupExtraData"
 
 //  sn-st = signup state
+
+export const SignupContext = createContext()
 
 const Register = () => {
     const [context, setContext] = useState()
@@ -17,7 +19,11 @@ const Register = () => {
         return <SignupExtraData />
     }
 
-    return <SignupUserType />
+    return (
+        <SignupContext.Provider value={{}}>
+            <SignupUserType />
+        </SignupContext.Provider>
+    )
 }
 
 export default Register

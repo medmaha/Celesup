@@ -2,8 +2,13 @@ import Supcel from "./cssStyles/supcel-CSS/supcel"
 import { useEffect, useState, createContext } from "react"
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
 import jwtDecode from "jwt-decode"
+
 import Navbar from "./layouts/navbar/navbar"
+import Create from "./layouts/create/post/create"
+
 import MobileNavbarLinks from "./layouts/navbar/mobileNavbarLinks"
+
+import { celesupApi, refreshAuthTokens } from "./axiosInstances"
 
 // route elements
 import Login from "./routes/auth/signin/login"
@@ -14,10 +19,8 @@ import Index from "./routes"
 import UserProfile from "./routes/profile/userProfile"
 import ExplorePosts from "./routes/explore/explorePosts"
 import PageNotFound from "./routes/pageNotFound"
-import CreateNewPost from "./routes/feed/posts/create/createPost"
 import Messenger from "./routes/messenger/Messenger"
 import useWebSocketHook from "./hooks/useWebSocketHook"
-import { celesupApi, refreshAuthTokens } from "./axiosInstances"
 import Settings from "./routes/settings/Settings"
 import PostDetail from "./routes/feed/posts/postDetail"
 
@@ -168,7 +171,7 @@ function App() {
                     <Route path="*" element={<PageNotFound />} />
                 </Routes>
 
-                {focusStates?.createPost && <CreateNewPost />}
+                {focusStates?.createPost && <Create />}
 
                 <MobileNavbarLinks />
             </GlobalContext.Provider>

@@ -2,19 +2,29 @@ import { Link } from "react-router-dom"
 import { CELESUP_BASE_URL } from "../../../axiosInstances"
 
 const ComposePost = ({ context, reFetchPosts }) => {
-    function createPost({ currentTarget }) {
-        if (currentTarget.getAttribute("data-file")) {
-            if (currentTarget.getAttribute("data-file-picture")) {
-                localStorage.setItem("openFileType", "picture")
-            } else if (currentTarget.getAttribute("data-file-video")) {
-                localStorage.setItem("openFileType", "video")
-            }
-            localStorage.setItem("openFile", true)
+    async function createPost({ currentTarget }) {
+        const action = currentTarget.dataset.file
+
+        if (context.state.createPost) {
+            const data = await dispatchContext()
         }
+        if (action === "video") return
         context.setFocusState({
             ...context.state,
-            createPost: true,
+            createPost: action,
             reFetchPosts: reFetchPosts,
+        })
+    }
+
+    async function dispatchContext() {
+        const data = context.state.createPost
+
+        return new Promise((resolve, error) => {
+            context.setFocusState({
+                ...context.state,
+                createPost: null,
+            })
+            resolve(data)
         })
     }
 
@@ -40,6 +50,7 @@ const ComposePost = ({ context, reFetchPosts }) => {
                     <div className="post__items d-flex flex-column gap-5-px width-100">
                         <div
                             id="inputField"
+                            data-file="form"
                             className="height-3-rem br-md width-100 bg-color text-muted border d-flex align-items-center px-1 cursor-pointer grey-text"
                             onClick={createPost}
                         >
@@ -59,8 +70,7 @@ const ComposePost = ({ context, reFetchPosts }) => {
                         <div className="d-flex align-items-center cursor-pointer width-max-content">
                             <ul className="d-flex align-items-center">
                                 <li
-                                    data-file
-                                    data-file-picture
+                                    data-file="photo"
                                     className="cursor-pointer icon-wrapper width-21-px height-21-px"
                                     onClick={createPost}
                                 >
@@ -73,8 +83,7 @@ const ComposePost = ({ context, reFetchPosts }) => {
                                     </svg>
                                 </li>
                                 <li
-                                    data-file
-                                    data-file-video
+                                    data-file="video"
                                     className="cursor-pointer icon-wrapper width-21-px height-21-px"
                                     onClick={createPost}
                                 >
