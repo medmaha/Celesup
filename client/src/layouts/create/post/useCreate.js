@@ -1,6 +1,11 @@
 import { useEffect, useContext, useReducer, useState } from "react"
 import { GlobalContext } from "../../../App"
-import { ACCEPTED_FILE_EXTENSIONS, checkValid, fileUploader } from "./utils"
+import {
+    ACCEPTED_FILE_EXTENSIONS,
+    checkValid,
+    fileUploader,
+    getCurrentJsx,
+} from "./utils"
 
 import PostForm from "./postForm"
 import ImageViewer from "./ImageViewer"
@@ -146,10 +151,6 @@ function reducer(state, action) {
         default:
             return { ...state }
     }
-}
-
-function getCurrentJsx(Element) {
-    return <Element />
 }
 
 function getPostDataObject() {

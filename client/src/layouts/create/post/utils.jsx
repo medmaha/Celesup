@@ -2,6 +2,11 @@ import { useState, useContext, useEffect } from "react"
 import ImageViewer from "./ImageViewer"
 import VideoFileViewer from "./VideoFileViewer"
 
+// for useCreate hook
+export function getCurrentJsx(Element) {
+    return <Element />
+}
+
 const HEADER_BUTTONS = {
     closeBtn: <span className="font-lg">&times;</span>,
     backBtn: (

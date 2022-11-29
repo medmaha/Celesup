@@ -10,10 +10,10 @@ class HashtagsConfig(AppConfig):
     def ready(self):
         from . import signals
 
-        from utilities import createFakeObjects
+        # from utilities import createFakeObjects
 
         # threading.Thread(target=run, args=(createFakeObjects,))
-        run(createFakeObjects)
+        # run(createFakeObjects)
         return super().ready()
 
 
