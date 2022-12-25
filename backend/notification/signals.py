@@ -111,9 +111,9 @@ class Utils:
 
     def resize_hint_img(self, post: Post):
         if post.video and post.picture:
-            return post.video.url
+            return post.video.file.url
         elif post.picture:
-            return post.picture.url
+            return post.picture.image.url
         else:
             return ""
 

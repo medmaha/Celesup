@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 
 from post.models import Post
-from .serializers import PostDetailSerializer
+from .serializers import PostDetailSerializer, PhotoSerializer
 
 from utilities.api_utils import get_post_json
 from comment.models import Comment
@@ -29,7 +29,7 @@ class LikePost(GenericAPIView):
             post.activity_rate += 2
             post.save()
 
-        data = get_post_json(post, self)
+        data = post.get_data(self, PhotoSerializer)
 
         return Response(
             data,

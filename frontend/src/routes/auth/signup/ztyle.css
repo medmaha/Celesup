@@ -1,0 +1,126 @@
+/* ! User type */
+
+/* Custom Password Field */
+
+.s__type {
+    border-radius: 1rem;
+    /* padding: 2rem 2rem; */
+    height: 80px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 0 0 1px var(--secondary);
+    transition: background-color 100ms ease-in-out, color 100ms ease-in-out,
+        box-shadow 100ms ease-in-out;
+}
+
+.s__type[data-supporter] {
+    box-shadow: 0 0 0 1px var(--primary);
+}
+.s__type[data-supporter]:hover {
+    color: var(--primary-text);
+    background-color: var(--primary);
+}
+.s__type[data-celebrity]:hover {
+    color: var(--secondary-text);
+    background-color: var(--secondary);
+}
+
+.s__type:hover {
+    box-shadow: none;
+}
+
+#registrationForm .input-field input {
+    padding: 2rem inherit;
+}
+
+.password-strength .percent {
+    flex: 1;
+    height: 5px;
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.password-strength .label {
+    font-size: 0.7rem;
+    margin-left: 1rem;
+}
+
+.password-strength .percent .process {
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    max-width: 100%;
+    background-color: transparent;
+    transition: all 0.7s ease-in-out;
+}
+
+.weak {
+    background-color: rgb(246, 106, 106) !important;
+}
+.average {
+    background-color: #9f9a8a !important;
+}
+.strong {
+    background-color: #358dc4 !important;
+}
+.strongest {
+    background-color: rgb(84, 240, 123) !important;
+}
+
+/* ! Email Verification */
+
+.code__field {
+    display: flex;
+    justify-content: center;
+}
+
+.code__field input {
+    outline: none;
+    border: 2px solid rgb(4, 140, 140);
+    text-align: center;
+    letter-spacing: 5px;
+    max-width: 150px !important;
+    font-size: 1.3rem;
+    transition: padding 0.2s ease-in-out, color 0.2s ease-in-out;
+    padding: 0.35rem 0;
+}
+
+.code__field input:focus {
+    padding: 0.5rem 0;
+    border-color: rgb(6, 193, 193);
+}
+.code__field input::placeholder {
+    font-size: large;
+}
+
+.code__field input {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.code__field input::-webkit-inner-spin-button,
+.code__field input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+/* ! Signed up user Details */
+
+.default__avater {
+    width: 100px;
+    height: 100px;
+}
+
+@media (max-width: 480px) {
+    .default__avater {
+        width: 75px !important;
+        height: 75px !important;
+    }
+
+    .default__avater span:nth-child(2) {
+        right: -25px;
+    }
+}

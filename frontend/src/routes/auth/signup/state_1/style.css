@@ -1,0 +1,69 @@
+/* Custom Password Field */
+
+.s__type {
+    border-radius: 1rem;
+    /* padding: 2rem 2rem; */
+    height: 80px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 0 0 1px var(--secondary);
+    transition: background-color 100ms ease-in-out, color 100ms ease-in-out,
+        box-shadow 100ms ease-in-out;
+}
+
+.s__type[data-supporter] {
+    box-shadow: 0 0 0 1px var(--primary);
+}
+.s__type[data-supporter]:hover {
+    color: var(--primary-text);
+    background-color: var(--primary);
+}
+.s__type[data-celebrity]:hover {
+    color: var(--secondary-text);
+    background-color: var(--secondary);
+}
+
+.s__type:hover {
+    box-shadow: none;
+}
+
+#registrationForm .input-field input {
+    padding: 2rem inherit;
+}
+
+.password-strength .percent {
+    flex: 1;
+    height: 5px;
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.password-strength .label {
+    font-size: 0.7rem;
+    margin-left: 1rem;
+}
+
+.password-strength .percent .process {
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    max-width: 100%;
+    background-color: transparent;
+    transition: all 0.7s ease-in-out;
+}
+
+.weak {
+    background-color: rgb(246, 106, 106) !important;
+}
+.average {
+    background-color: #9f9a8a !important;
+}
+.strong {
+    background-color: #358dc4 !important;
+}
+.strongest {
+    background-color: rgb(84, 240, 123) !important;
+}

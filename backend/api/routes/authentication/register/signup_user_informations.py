@@ -8,7 +8,7 @@ from .db import Database
 from utilities.generators import get_auth_tokens
 
 
-class SignupUserInformations(CreateAPIView):
+class SignupUserInformation(CreateAPIView):
     authentication_classes = []
     permission_classes = []
 

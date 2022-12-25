@@ -1,34 +1,40 @@
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.response import Response
+from rest_framework import status
 
-from ...user.serializers import UserDetailSerializer
-from notification.models import Notification
-from messenging.models import Message
-
-
-class AccessTokenPayload(TokenObtainPairSerializer):
-    """A custom jwt token payload"""
-
-    @classmethod
-    def get_token(cls, user):
-        # token = super().get_token(user)
-        token = cls.token_class.for_user(user)
-        user_data = UserDetailSerializer(user).data
-
-        token["has_alerts"] = Notification.objects.filter(
-            recipient=user, is_viewed=False
-        ).exists()
-        token["has_message"] = Message.objects.filter(
-            recipient=user, is_seen=False
-        ).exists()
-
-        for key, val in user_data.items():
-            token[str(key)] = val
-
-        return token
+from api.routes.authentication.utils import GenerateToken, Database
+from users.models import User
 
 
 class AuthenticationTokens(TokenObtainPairView):
     """A view for getting access token and refreshing tokens"""
 
-    serializer_class = AccessTokenPayload
+    serializer_class = GenerateToken
+    temporal_db = Database("signup_verification")
+
+    def post(self, request, *args, **kwargs):
+
+        data = request.data.copy()
+
+        email = data.get("email")
+        password = data.get("password")
+
+        user = authenticate(request, email=email, password=password)
+        cookie_id = self.temporal_db.authenticate(email, password)
+
+        if not cookie_id and not user:
+            return Response(
+                {"message": "Your credentials does match our database"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        elif user:
+            data = self.serializer_class.tokens(user)
+
+        else:
+            data = {**self.temporal_db.get(cookie_id=cookie_id)}
+            del data["code"]
+
+        return Response(data, status=status.HTTP_200_OK)

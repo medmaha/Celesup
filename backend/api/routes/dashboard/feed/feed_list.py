@@ -3,8 +3,8 @@ from rest_framework.response import Response
 
 from feed.models import Feed
 from rest_framework import status
-from post.models import Post
-from ..posts.serializers import PostDetailSerializer
+from post.models import Post, Photo
+from ..posts.serializers import PostDetailSerializer, PhotoSerializer
 from users.models import User
 from utilities.api_utils import get_post_json
 from django.shortcuts import get_object_or_404
@@ -17,6 +17,10 @@ class FeedPost(generics.ListAPIView):
 
         feed = Feed.objects.get(user=self.request.user)
         queryset = feed.posts.all()
+        if not queryset.count():
+            queryset = Post.objects.filter(author=self.request.user)
+            if not queryset.count():
+                queryset = Post.objects.all()[:50]
 
         return queryset
 
@@ -34,7 +38,7 @@ class FeedPost(generics.ListAPIView):
         for post in serializer.data:
             instance = Post.objects.get(key=post["key"])
 
-            data = get_post_json(instance, self)
+            data = instance.get_data(self, PhotoSerializer)
             feed.append({**post, **data})
 
         return self.get_paginated_response(feed)

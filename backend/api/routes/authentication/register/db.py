@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent
 
 class Database:
     """
-    A utility module for storing user data for validation process to take place,
+    A utility class for storing user data for validation process to take place,
     before finally storing the user data into the USER model.
     """
 
@@ -74,7 +74,8 @@ class Database:
                         username VARCHAR(50),
                         password TEXT,
                         user_type TEXT,
-                        code TEXT
+                        code TEXT,
+                        cookie_id TEXT NULL
                     ) """
                 )
             return True
@@ -96,6 +97,8 @@ class Database:
     def add_record(self, **kwargs):
         """Adds a temporally record to the database for validation process, password and email are encrypted"""
 
+        if not kwargs.get("code"):
+            return
         # encrypting client password password
         password = kwargs["password"]
         encrypted_password = self.hash_information.encrypt(password.encode())
@@ -106,43 +109,51 @@ class Database:
         encrypted_email = self.hash_information.encrypt(email.encode())
         kwargs["email"] = encrypted_email
 
-        try:
+        with self.connection:
+            self.db_query.execute(
+                f""" INSERT INTO {self.table} (code) values("{kwargs['code']}") """
+            )
+
+        code = kwargs["code"]
+        cookie_id = Fernet.generate_key().decode()
+        kwargs["cookie_id"] = cookie_id
+
+        del kwargs["code"]
+
+        for column in kwargs:
             with self.connection:
                 self.db_query.execute(
-                    f""" INSERT INTO {self.table} (code) values({kwargs['code']}) """
+                    f""" UPDATE {self.table} SET {column}=:value WHERE code=:code""",
+                    {"value": kwargs[column], "code": code},
                 )
-
-            code = kwargs["code"]
-            del kwargs["code"]
-
-            for column in kwargs:
-                with self.connection:
-                    self.db_query.execute(
-                        f""" UPDATE {self.table} SET {column}=:value WHERE code=:code""",
-                        {"value": kwargs[column], "code": code},
-                    )
-            return True
-
-        except:
-            return
+        return {"cookie_id": cookie_id}
 
     @validate_table_name
     def get_record(self, **kwargs):
         """Gets a single record from the given database table_name with the password and email is encrypted"""
+
+        if "code" in kwargs:
+            lookup = "code", kwargs["code"]
+        elif "cookie_id" in kwargs:
+            lookup = "cookie_id", kwargs["cookie_id"]
+        else:
+            return
         try:
             with self.connection:
                 self.db_query.execute(
                     f""" SELECT * FROM {self.table} WHERE code=:code""",
-                    {"code": kwargs["code"]},
+                    {lookup[0]: lookup[1]},
                 )
                 data = self.db_query.fetchone()
 
                 resp = {
+                    "id": data[0],
                     "email": data[1],
                     "username": data[2],
                     "password": data[3],
                     "user_type": data[4],
                     "code": data[5],
+                    "cookie_id": data[6],
                 }
             return resp
         except:
@@ -151,11 +162,17 @@ class Database:
     @validate_table_name
     def delete_record(self, **kwargs):
         "Deletes a single record from the giving db table \n Expecting a (email and code) arguments"
+        if "code" in kwargs:
+            lookup = "code", kwargs["code"]
+        elif "cookie_id" in kwargs:
+            lookup = "cookie_id", kwargs["cookie_id"]
+        else:
+            return
         try:
             with self.connection:
                 self.db_query.execute(
                     f""" DELETE FROM {self.table} WHERE  code=:code""",
-                    {"code": kwargs["code"]},
+                    {lookup[0]: lookup[1]},
                 )
             return True
         except:
@@ -183,4 +200,50 @@ class Database:
         """Create a random 7 (seven) digit numbers\n * Returns the stringified version"""
         import random
 
-        return str(random.randrange(1000000, 9000000))
+        code = random.randrange(100000, 900000)
+
+        return f"C-{code}"
+
+    def is_authenticate(self, cookie_id):
+        auth = self.get_record(**{"cookie_id": cookie_id}) is not None
+        return auth
+
+    @validate_table_name
+    def authenticate(self, email, password):
+        with self.connection:
+            items = self.db_query.execute(
+                "SELECT email, username, password, code from {}".format(self.table)
+            )
+            for item in items.fetchall():
+                _email = self.hash_information.decrypt(item[0]).decode()
+                _password = self.hash_information.decrypt(item[2]).decode()
+                if email == _email and password == _password:
+                    _username = item[1]
+                    return {"email": email, "username": _username}
+
+    @validate_table_name
+    def update_code(self, email):
+        computed = False
+        code = self.create_unique_validation_code()
+        with self.connection:
+            items = self.db_query.execute("SELECT email FROM {}".format(self.table))
+            for e in items.fetchall():
+                encrypt_email = e[0]
+                decrypt_email = self.hash_information.decrypt(
+                    encrypt_email.decode()
+                ).decode()
+                if decrypt_email == email:
+                    self.db_query.execute(
+                        "UPDATE {} SET code=:code WHERE email=:email;".format(
+                            self.table
+                        ),
+                        {
+                            "code": code,
+                            "email": encrypt_email,
+                        },
+                    )
+                    computed = True
+                    break
+
+        if computed:
+            return code

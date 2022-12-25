@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     # customs apps
     "users.apps.UsersConfig",
     "admin_users.apps.AdminUserConfig",
+    "celebrity.apps.CelebrityConfig",
+    "supporter.apps.SupporterConfig",
     "feed.apps.FeedConfig",
     "post.apps.PostConfig",
     "hashtags.apps.HashtagsConfig",
@@ -41,7 +43,8 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # custom Django cors headers
+    # custom Django cors headers
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -57,7 +60,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            BASE_DIR / "api/routes/authentication/register",
+            BASE_DIR / "api/templates",
             BASE_DIR / "build",
         ],
         "APP_DIRS": True,

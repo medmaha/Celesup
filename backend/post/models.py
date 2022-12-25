@@ -31,32 +31,46 @@ class ObjectManager(models.Manager):
         return queryset
 
 
+def post_video_path(instance, filename):
+    return f"posts/by__{instance.author.email}/videos/{filename}"
+
+
 class Video(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     file = models.FileField(upload_to=post_video_path, null=True, blank=True)
     title = models.TextField(max_length=150, null=True, blank=True)
     alt_text = models.CharField(max_length=50, default="post video")
     thumbnail = models.ImageField(
         upload_to=post_thumbnail_path,
-        default="defaults/thumbnail.png",
+        default="default/video.png",
         null=True,
         blank=True,
     )
 
     def __str__(self):
-        self.title or self.file.url
+        return self.file.url
+
+
+class Music(models.Model):
+    pass
+
+
+def post_photo_path(instance, filename):
+    return f"posts/by__{instance.author.email}/photos/{filename}"
 
 
 class Photo(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     image = models.ImageField(
-        upload_to=post_thumbnail_path,
-        default="posts/default-thumbnail.png",
+        upload_to=post_photo_path,
+        default="default/photo.png",
         null=True,
         blank=True,
     )
     alt_text = models.CharField(max_length=50, default="post image")
 
     def __str__(self) -> str:
-        return self.post_set().author or self.image.url
+        return self.image.url
 
 
 class Post(models.Model):
@@ -78,8 +92,9 @@ class Post(models.Model):
         null=True,
         blank=True,
     )
-    picture = models.ImageField(upload_to=post_img_path, null=True, blank=True)
-    video = models.FileField(upload_to=post_video_path, null=True, blank=True)
+    video = models.ForeignKey(Video, null=True, blank=True, on_delete=models.SET_NULL)
+    picture = models.ForeignKey(Photo, null=True, blank=True, on_delete=models.SET_NULL)
+    music = models.ForeignKey(Music, null=True, blank=True, on_delete=models.SET_NULL)
 
     likes = models.ManyToManyField(User, blank=True, related_name="post_likes")
     shares = models.ManyToManyField(User, blank=True, related_name="post_shares")
@@ -93,6 +108,21 @@ class Post(models.Model):
 
     def __str__(self):
         return "Author --> " + self.author.email
+
+    def get_data(self, view, serializer):
+        from utilities.api_utils import get_post_json
+
+        data = get_post_json(self, view)
+
+        # TODO --> files implementation e.g Music, Video
+
+        if data.get("picture"):
+            view.serializer_class = serializer
+            photo = Photo.objects.get(id=data["picture"])
+            photo = view.get_serializer(photo)
+            data["picture"] = photo.data["image"]
+
+        return data
 
     class Meta:
         get_latest_by = "created_at"

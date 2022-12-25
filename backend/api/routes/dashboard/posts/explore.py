@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from feed.models import Feed
 from rest_framework import status
 from post.models import Post
-from .serializers import PostDetailSerializer
+from .serializers import PostDetailSerializer, PhotoSerializer
 from users.models import User
 from utilities.api_utils import get_post_json
 from django.shortcuts import get_object_or_404
@@ -15,8 +15,9 @@ class ExplorePosts(generics.ListAPIView):
 
     def get_queryset(self):
         author = self.request.user
-        posts = Post.objects.exclude(author=self.request.user)
-        print(posts)
+        posts = Post.objects.exclude(author=author)
+        if not posts.count():
+            posts = Post.objects.filter()
         return posts
 
     def list(self, request, *args, **kwargs):
@@ -29,9 +30,11 @@ class ExplorePosts(generics.ListAPIView):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
 
-        feed = []
+        exploits = []
+
         for post in serializer.data:
             instance = Post.objects.get(key=post["key"])
-            data = get_post_json(instance, self)
-            feed.append({**post, **data})
-        return self.get_paginated_response(feed)
+            data = instance.get_data(self, PhotoSerializer)
+            exploits.append({**post, **data})
+
+        return self.get_paginated_response(exploits)

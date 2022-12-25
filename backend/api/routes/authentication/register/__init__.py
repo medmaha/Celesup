@@ -1,3 +1,3 @@
-from .signup_user import SignupUser
+from .signup import Registration
 from .signup_user_verification import SignupUserVerification
-from .signup_user_informations import SignupUserInformations
+from .signup_user_informations import SignupUserInformation

@@ -1,0 +1,58 @@
+.edit__profile {
+    padding: auto 10px;
+    overflow: hidden;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.edit__profile form {
+    max-width: 550px;
+}
+
+.edit__profile form .form__fields .form__fields .profile__images {
+    position: relative;
+    width: 100px;
+}
+
+.edit__profile form .form__fields .profile__images .edit__cover {
+    width: 100%;
+    height: 170px;
+    position: relative;
+    overflow: hidden;
+}
+
+.edit__profile form .form__fields .profile__images .edit__cover img {
+    width: 100%;
+    height: 100%;
+}
+
+.edit__profile form .form__fields .profile__images .edit__avatar {
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    overflow: hidden;
+    top: 60%;
+    left: 1rem;
+    /* z-index: 1; */
+}
+
+.edit__profile form .form__fields .profile__images .edit__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.img__btn {
+    transition: background-color 100ms ease-in-out;
+    background-color: rgba(15, 20, 25, 0.5);
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img__btn:hover {
+    background-color: rgba(15, 20, 25, 0.75);
+}

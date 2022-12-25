@@ -3,7 +3,7 @@
 from django.db import models
 from users.models import User
 from post.models import Post
- 
+
 # class FanClub(models.Model):
 #     """
 #     Provides a fan base functionality for a celebrity user...
@@ -17,33 +17,18 @@ from post.models import Post
 #     }]
 
 
-class Celebrity (models.Model):
+class Celebrity(models.Model):
     """
-    Celebrity user acoount class
+    Celebrity user account class
     """
-    id        = models.CharField(max_length=100, unique=True, primary_key=True)
-    user      = models.OneToOneField(User, models.CASCADE, related_name='celebrity_user')
-    friends   = models.ManyToManyField(User, blank=True, related_name='celebrity_friends')
-    followers = models.ManyToManyField(User, blank=True, related_name='celebrity_followers')
-    following = models.ManyToManyField(User, blank=True, related_name='celebrity_following')
-    profile_type = models.CharField(max_length=50, default='Celebrity', editable=False)
-    
+
+    id = models.CharField(max_length=100, unique=True, primary_key=True)
+    user = models.OneToOneField(User, models.CASCADE, related_name="celebrity_user")
+    friends = models.ManyToManyField(User, blank=True, related_name="celebrity_friends")
+    profile_type = models.CharField(max_length=50, default="Celebrity", editable=False)
+
     # fan_club  = models.OneToOneField(FanClub, on_delete=models.PROTECT, null=True, blank=True)
 
-    @property
-    def avatar(self):
-        return self.user.avater.url
-
-    @property
-    def posts(self):
-        posts = Post.objects.filter(author=self.user)
-        return posts.count()
-
-    def __str__(self):
-        return self.user.email
-
     class Meta:
-        verbose_name = 'Celebrity'
-        verbose_name_plural = 'Celebrities'
-
-
+        verbose_name = "Celebrity"
+        verbose_name_plural = "Celebrities"

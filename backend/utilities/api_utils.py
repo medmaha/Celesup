@@ -1,7 +1,6 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework import status
 
-from post.models import Post
 from comment.models import Comment
 
 from api.routes.dashboard.posts.serializers import PostDetailSerializer
@@ -10,7 +9,7 @@ from api.routes.user.serializers import UserMiniInfoSeriaLizer, UserDetailSerial
 from utilities.generators import get_profile_data
 
 
-def get_post_json(post: Post, view: GenericAPIView) -> dict:
+def get_post_json(post, view: GenericAPIView) -> dict:
 
     view.serializer_class = PostDetailSerializer
     post_comments = Comment.objects.filter(post=post)

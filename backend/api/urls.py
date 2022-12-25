@@ -3,16 +3,18 @@ app_name = "api"
 from django.urls import path
 
 from .routes.authentication.register import (
-    SignupUser,
-    SignupUserVerification,
-    SignupUserInformations,
+    Registration,
 )
 
 from .routes.authentication.login import (
     AuthenticationTokens,
     RefreshAuthenticationTokens,
-    UpdateAuthenticationTokens,
 )
+
+from .routes.authentication.logout import LogoutAuthenticationTokens
+
+from .routes.authentication.verification import VerifyEmailAddress
+
 
 from .routes.dashboard.posts import posts_url_patterns
 from .routes.dashboard.feed import feed_url_urlpatterns
@@ -27,13 +29,13 @@ from django.views.generic import TemplateView
 urlpatterns = [
     # registration
     # path("", TemplateView.as_view(template_name="index.html")),
-    path("signup/user", SignupUser.as_view()),
-    path("signup/user/verification", SignupUserVerification.as_view()),
-    path("signup/user/informations", SignupUserInformations.as_view()),
+    path("signup", Registration.as_view()),
+    path("verify/email", VerifyEmailAddress.as_view()),
+    # path("signup/user/informations", SignupUserInformation.as_view()),
     # authentication
     path("obtain/user/tokens", AuthenticationTokens.as_view()),
     path("refresh/user/tokens", RefreshAuthenticationTokens.as_view()),
-    path("update/user/tokens", UpdateAuthenticationTokens.as_view()),
+    path("logout/user/tokens", LogoutAuthenticationTokens.as_view()),
     # re_path(r'', TemplateView.as_view(template_name='index.html')),
 ]
 

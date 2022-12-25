@@ -31,3 +31,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.author.username}/{self.content[:15]}..."
+
+    def get_replies(self, max=15):
+        replies = Comment.objects.filter(post_id=self.post.key, parent_id=self.id)[:max]
+        return replies
