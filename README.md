@@ -1,4 +1,4 @@
-Celesup
+#Celesup
 
 Celesup is a social media platform for connecting with celebrities and supporters.
 
