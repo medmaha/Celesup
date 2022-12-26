@@ -6,13 +6,13 @@ function PasswordField({ id, name, label, placeholder, updateFormData }) {
     const [passwordStrength, setPasswordStrength] = useState({
         width: "0%",
         label: "week",
-        state: "active",
+        focused: false,
     })
     const [showPassword, setShowPassword] = useState(false)
 
     useEffect(() => {
         if (!password) return
-        // console.log(password.length);
+        // console.log(password.length)
     }, [password])
 
     function handlePasswordChange(ev) {
@@ -56,36 +56,23 @@ function PasswordField({ id, name, label, placeholder, updateFormData }) {
                     type="password"
                     name={name}
                     placeholder={placeholder}
-                    onChange={handlePasswordChange}
                     ref={passInputField}
-                    onKeyUp={(ev) => {
-                        const width = ev.target.value.length / 0.16
-                        const label =
-                            width > 85
-                                ? "strongest"
-                                : width > 50
-                                ? "strong"
-                                : width > 35
-                                ? "average"
-                                : "weak"
-                        setPasswordStrength({
-                            label: label,
-                            width: `${width}%`,
-                            state: ev.code,
-                        })
+                    onInput={(ev) => {
+                        handlePasswordChange(ev)
+                        calculatePasswordStrength(ev, setPasswordStrength)
                     }}
                     onFocus={() => {
                         setPasswordStrength((prev) => {
                             return {
                                 ...prev,
-                                state: "active",
+                                focused: true,
                             }
                         })
                     }}
                     onBlurCapture={() => {
                         setPasswordStrength({
-                            width: passwordStrength.width,
-                            label: passwordStrength.label,
+                            ...passwordStrength,
+                            focused: false,
                         })
                     }}
                 />
@@ -119,16 +106,24 @@ function PasswordField({ id, name, label, placeholder, updateFormData }) {
                     </span>
                 )}
             </div>
-            {!!password.length && passwordStrength.state && (
-                <div className="d-flex justify-content-between font-sm align-items-center gap-1-rem pt-__">
-                    <div className="height-5-px width-100">
+            {password.length > 0 && !!passwordStrength.focused && (
+                <div className="d-flex justify-content-between font-sm align-items-center gap-10-px pt-__">
+                    <div
+                        className="height-5-px width-100 border br-md"
+                        style={{
+                            "--strength": passwordStrength.width,
+                        }}
+                    >
                         <div
                             className={`height-100 br-md ${passwordStrength.label}`}
-                            style={{ width: passwordStrength.width }}
+                            style={{
+                                width: "calc(1% * var(--strength, 0))",
+                            }}
                         ></div>
                     </div>
-                    <span className="label  text-color">
+                    <span className="label text-color blue">
                         {passwordStrength.label}
+                        {/* strongest */}
                     </span>
                 </div>
             )}
@@ -136,41 +131,97 @@ function PasswordField({ id, name, label, placeholder, updateFormData }) {
     )
 }
 
+function calculatePasswordStrength(ev, setPasswordStrength) {
+    const weaknesses = []
+    const password = ev.target.value
+    weaknesses.push(lengthWeakness(password))
+    weaknesses.push(lowercaseWeakness(password))
+    weaknesses.push(uppercaseWeakness(password))
+    weaknesses.push(numberCaseWeakness(password))
+    weaknesses.push(specialCaseWeakness(password))
+    weaknesses.push(repeatedCaseWeakness(password))
+
+    let strength = 100
+
+    weaknesses.forEach((weakness) => {
+        if (weakness) strength -= weakness.deduction
+    })
+
+    const label =
+        strength > 85
+            ? "strongest"
+            : strength > 50
+            ? "strong"
+            : strength > 35
+            ? "average"
+            : "weak"
+    setPasswordStrength({
+        label: label,
+        width: strength,
+        focused: true,
+    })
+}
+
+function lengthWeakness(password) {
+    const length = password.length
+
+    if (length <= 5) {
+        return {
+            message: "Password is too short",
+            deduction: 40,
+        }
+    }
+    if (length <= 10) {
+        return {
+            message: "Password could be longer",
+            deduction: 15,
+        }
+    }
+}
+
+function lowercaseWeakness(password) {
+    return characterCaseWeakness(password, /[A-Z]/g, "lowercase")
+}
+function uppercaseWeakness(password) {
+    return characterCaseWeakness(password, /[A-Z]/g, "uppercase")
+}
+function numberCaseWeakness(password) {
+    return characterCaseWeakness(password, /[0-9]/g, "number")
+}
+function specialCaseWeakness(password) {
+    return characterCaseWeakness(
+        password,
+        /[^0-9a-zA-Z\s]/g,
+        "special characters",
+    )
+}
+
+function characterCaseWeakness(password, regex, _case) {
+    const matches = password.match(regex) || []
+
+    if (matches.length === 0) {
+        return {
+            message: `password has no ${_case} characters`,
+            deduction: 10,
+        }
+    }
+    if (matches.length < 1) {
+        return {
+            message: `password could use more ${_case} characters`,
+            deduction: 5,
+        }
+    }
+}
+
+function repeatedCaseWeakness(password) {
+    const matches = password.match(/(.)\1/g) || []
+
+    if (!!matches.length) {
+        return {
+            message: "password has repeated characters",
+            deduction: matches.length * 5,
+        }
+    }
+}
+
 export default PasswordField
-
-// function passwordStrength() {
-
-//     const strengthlabel = document.querySelector('.password-strength .label')
-//     const process = document.querySelector('.password-strength .process')
-//     if (target.value.length === 0){
-//     process.classList.remove('weak')
-//     strengthlabel.innerHTML = 'Strength'
-//     passStrength.current.classList.toggle('d-none')
-//     showPass.current.classList.toggle('d-none')
-//     }
-//     if (target.value.length <= 3){
-//     strengthlabel.innerHTML = 'Strength'
-//     passStrength.current.classList.remove('d-none')
-//     showPass.current.classList.remove('d-none')
-//     process.classList.add('weak')
-//     process.style.width = '15%'
-//     }
-//     if (target.value.length >= 4){
-//     strengthlabel.innerHTML = 'Weak'
-//     process.classList.remove('average')
-//     process.classList.add('weak')
-//     process.style.width = '33%'
-//     }
-//     if (target.value.length >= 8){
-//     strengthlabel.innerHTML = 'Average'
-//     process.classList.remove('weak')
-//     process.classList.remove('strong')
-//     process.classList.add('average')
-
-//     }
-//     if (target.value.length >= 12){
-//     strengthlabel.innerHTML = 'Strong'
-//     process.classList.remove('average')
-//     process.classList.add('strong')
-//     }
-// }
