@@ -1,33 +1,79 @@
-# Celesup
+#Celesup
 
--   Create a profile as a celebrity or a supporter
--   Connect with other users by following them or sending friend requests
--   Share and discover events, posts, and other content
--   Send and receive messages
--   Save and share events and posts to other social media platforms
--   Customize your profile with a profile picture, bio, and location
+Celesup is a social media platform that allows celebrities and supporters to connect and interact with each other. It features a variety of tools and features that make it easy for users to share content, follow their favorite celebrities, and stay up-to-date on the latest events and happenings.
 
-## Requirements
+## Prerequisites
 
--   A device with internet access
--   A modern web browser (e.g. Chrome, Firefox, Safari)
+Before you can start using Celesup, you'll need to have the following software installed on your machine:
+
+-   Node.js 16.17 or higher
+-   Python 3.8 or higher
 
 ## Installation
 
-1. Visit the Celesup website (link)
-2. Click "Sign Up" in the top right corner
-3. Select your profile type (celebrity or supporter)
-4. Fill out the registration form with your name, email, and password
-5. Click "Sign Up" to create your account
+To get started with Celesup, follow these steps:
 
-## How to Use
+-   Clone the repository from GitHub:
 
-1. After creating your account, log in to your Celesup account using your email and password
-2. Customize your profile by clicking on the settings icon in the top right corner and filling out the relevant fields (profile picture, bio, location)
-3. Discover and connect with other users by searching for their username or browsing through the "Discover" tab
-4. Share your own events, posts, and other content by clicking on the "Create" button in the top right corner
-5. Save and share events and posts to other social media platforms by clicking on the share icon in the bottom right corner of the post
+```
+    $ git clone https://github.com/medmaha/Celesup.git
+    $ cd Celesup
+```
 
-## Support
+### Development Configuration
 
-If you encounter any issues or have questions about using Celesup, please contact our support team at support@celesup.com. We are always happy to help!
+To configure the development environment for Celesup, follow these steps:
+
+## Backend
+
+-   From the root directory (Celesup):
+-   Open a terminal window:
+-   Run the following commands
+
+```
+    $ cd backend
+
+    # Create a virtual env
+    $ python -m venv venv
+
+    # activate the virtual env
+    $ venv/scripts/activate.bat
+
+    # install the requirements
+    (venv) $ pip install -r requirement.txt
+
+    # migrate to the database
+    $ python manage.py migrate
+
+    # run the development server
+    $ python manage.py runserver
+
+```
+
+## Frontend
+
+-   From the root directory (Celesup):
+-   Open a new terminal window:
+-   Run the following commands:
+
+```
+    $ cd frontend
+
+    # install the dependencies
+    $ npm install
+
+    # start the development server
+    $ npm start
+
+```
+
+## Contributors
+
+1. Mahamed Toure (author)
+
+## Usage
+
+To use Celesup, simply visit http://localhost:3000 in your web browser. From there, you can create a new account or log in to an existing account and start interacting with celebrities and supporters.
+License
+
+Celesup is licensed under the MIT License. See the LICENSE file for more details.

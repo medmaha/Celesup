@@ -4,10 +4,6 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from utilities.media_paths import avatar_path, cover_img_path
 
 
-class UserManager(BaseUserManager):
-    pass
-
-
 class User(AbstractUser):
     "Base the user class"
     id = models.CharField(max_length=100, primary_key=True, blank=True)
@@ -61,7 +57,6 @@ class User(AbstractUser):
 
     rating = models.BigIntegerField(default=0)
 
-    objects = UserManager()
     verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"

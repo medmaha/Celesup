@@ -3,13 +3,19 @@ import { useContext, useState, useEffect, useRef } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 import { GlobalContext } from "../../App"
-import { celesupApi, CELESUP_BASE_URL } from "../../axiosInstances"
+import {
+    celesupApi,
+    celesupAuthApi,
+    CELESUP_BASE_URL,
+} from "../../axiosInstances"
 
 import "./components/styles.css"
 import Dropdown from "../../features/Dropdown"
 import SearchBar from "./components/searchBar"
 import NavDrawerWrapper from "./components/navDrawer"
 import NavLinks from "./components/navLinks"
+import { UseCookie } from "../../hooks/useCookie"
+import { updateModes } from "../../redux/app"
 
 const Navbar = () => {
     const navbar = useRef()
@@ -20,7 +26,7 @@ const Navbar = () => {
     const navigate = useNavigate()
     const context = useContext(GlobalContext)
     const params = useParams()
-
+    const cookie = UseCookie()
     function toggleNavDropdown() {}
 
     // useEffect(() => {
@@ -62,6 +68,11 @@ const Navbar = () => {
     }
 
     function logoutUser() {
+        if (cookie.get("acid")) {
+            logoutCookie()
+            return
+        }
+
         celesupApi
             .post(
                 "/logout/user/tokens",
@@ -77,6 +88,20 @@ const Navbar = () => {
                     })
                 }
             })
+    }
+
+    async function logoutCookie() {
+        cookie.erase("acid")
+        await celesupAuthApi
+            .post("/verify/email", { "logout-cookie": true })
+            .then(
+                (res) => {
+                    // window.location.reload()
+                },
+                (err) => {},
+            )
+            .catch((err) => {})
+            .finally(navigate("/login"))
     }
 
     return (
@@ -133,9 +158,9 @@ const Navbar = () => {
                 {!!context.user && <SearchBar />}
 
                 {!!context.user && <NavLinks />}
-                {!context.user && !context.moods.verification && (
+                {/* {!context.user && !context.moods.verification && (
                     <ul className="nav-links">
-                        <li className="link" onClick={() => navigate("/login")}>
+                        {/* <li className="link" onClick={() => navigate("/login")}>
                             <button className="btn">Log in</button>
                         </li>
                         <li
@@ -145,7 +170,7 @@ const Navbar = () => {
                             Sign up
                         </li>
                     </ul>
-                )}
+                )} */}
 
                 {context.moods.verification && context.dummy && (
                     <ul className="nav-links">
@@ -156,7 +181,9 @@ const Navbar = () => {
                             className="link"
                             // onClick={() => navigate("/signup")}
                         >
-                            <button className="red btn">Logout</button>
+                            <button className="red btn" onClick={logoutUser}>
+                                Logout
+                            </button>
                         </li>
                     </ul>
                 )}

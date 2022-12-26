@@ -56,7 +56,7 @@ const SignupForm = ({ userType }) => {
 
     return (
         <>
-            <div className="d-flex justify-content-center flex-wrap">
+            <div className="d-flex justify-content-center flex-wrap pb-2">
                 <div className="pb-0 flex d-flex justify-content center align-items-center maxwidth-500-px">
                     <h3
                         className="px-__ center typography pb-__"
@@ -84,6 +84,7 @@ const SignupForm = ({ userType }) => {
                             </h2>
                         </div>
                         <RegistrationForm
+                            submitForm={submitForm}
                             updateFormData={updateFormData}
                             handleFormChange={handleFormChange}
                         />

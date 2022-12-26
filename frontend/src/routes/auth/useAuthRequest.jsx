@@ -4,7 +4,7 @@ import { celesupAuthApi } from "../../axiosInstances"
 function useAuthRequest() {
     const [data, setData] = useState(null)
     const [pending, setPending] = useState(false)
-    const [error, setError] = useState(false)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         if (!error) return
@@ -24,16 +24,7 @@ function useAuthRequest() {
                     setData(res.data)
                 },
                 (error) => {
-                    let errorMsg = {
-                        message: "An error occurred",
-                    }
-
-                    if (error.code === "ERR_NETWORK") {
-                        errorMsg.message = "Unable to connect to celesup server"
-                    } else if (error.code === "ERR_BAD_REQUEST") {
-                        errorMsg = error.response.data
-                    }
-                    setError(errorMsg)
+                    setError(error.message)
                 },
             )
             .finally(setPending(false))

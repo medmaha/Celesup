@@ -1,11 +1,16 @@
 import React from "react"
 import PasswordField from "./passwordField"
 
-export default function RegistrationForm({ handleFormChange, updateFormData }) {
+export default function RegistrationForm({
+    submitForm,
+    handleFormChange,
+    updateFormData,
+}) {
     return (
         <form
             className="px-__ d-flex flex-column align-items-center width-100"
             data-auth-form
+            onSubmit={submitForm}
         >
             <div className="py-__ d-flex flex-column gap-5-px">
                 <label htmlFor="email">Email</label>
@@ -49,6 +54,9 @@ export default function RegistrationForm({ handleFormChange, updateFormData }) {
                 placeholder="confirm password"
                 updateFormData={updateFormData}
             />
+            <div className="right pt-__">
+                <button className="btn-large">Submit</button>
+            </div>
         </form>
     )
 }

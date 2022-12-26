@@ -9,7 +9,7 @@ import MobileNavbarLinks from "./layouts/navbar/mobileNavbarLinks"
 import { refreshAuthTokens } from "./axiosInstances"
 
 import { AppStore } from "./redux/store"
-import { updateAuthTokens, updateUserData } from "./redux/app"
+import { updateAuthTokens, updateModes } from "./redux/app"
 
 // VIEWS
 import Homepage from "./routes/homepage"
@@ -19,6 +19,8 @@ import { Login, Register, EmailVerification } from "./routes/auth"
 import PageNotFound from "./routes/pageNotFound"
 import useWebSocketHook from "./hooks/useWebSocketHook"
 import { Provider, useDispatch, useSelector } from "react-redux"
+import Alerts from "./features/Alerts"
+import Loading from "./features/Loading"
 
 export const GlobalContext = createContext({})
 
@@ -52,7 +54,6 @@ function App() {
 
     async function refreshTokens() {
         const data = await refreshAuthTokens()
-        console.log("called")
         updateTokens(data)
     }
 
@@ -68,14 +69,11 @@ function App() {
         webSocketMaster,
     }
 
-    // if (!Object.keys(user).length) {
-    //     navigate("login")
-    // }
-
     return (
-        <div className="">
+        <div className="pos-relative">
             <GlobalContext.Provider value={contextValues}>
                 <Navbar />
+
                 <Routes>
                     <Route path="/" exact element={<Homepage />} />
 
@@ -85,8 +83,8 @@ function App() {
                     <Route path={`/:username`} element={<UserProfile />} />
                     <Route path={`/post/:postId`} element={<PostDetail />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/login" self element={<Login />} />
-                */}
+                    <Route path="/login" self element={<Login />} /> */}
+
                     <Route path="/signup" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route
@@ -97,7 +95,16 @@ function App() {
                     <Route path="*" element={<PageNotFound />} />
                 </Routes>
 
-                {state?.createPost && <Create />}
+                {moods?.createPost && <Create />}
+                {moods.errorMessage && (
+                    <Alerts type={"error"} message={moods.errorMessage} />
+                )}
+                {moods.successMessage && (
+                    <Alerts type={"success"} message={moods.successMessage} />
+                )}
+                {moods.loadingRequest && (
+                    <Loading icon={moods.loadingRequest} />
+                )}
 
                 <MobileNavbarLinks />
             </GlobalContext.Provider>

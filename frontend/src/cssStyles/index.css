@@ -67,6 +67,10 @@ body {
 .typography {
     color: #333333;
 }
+.black-text {
+    color: #222;
+}
+
 .dark-mode .typography {
     color: #c6c5c5;
 }

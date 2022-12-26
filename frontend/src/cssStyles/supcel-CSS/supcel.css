@@ -1373,8 +1373,8 @@
     nav .nav-links .link svg {
         transition: fill 200ms ease-in-out;
         margin: 0 calc(var(--baseFontSize--) * 0.5);
-        width: calc(var(--baseFontSize--) * 1.5);
-        height: calc(var(--baseFontSize--) * 1.5);
+        width: calc(var(--baseFontSize--, 1rem) * 1.5);
+        height: calc(var(--baseFontSize--, 1rem) * 1.5);
     }
     .navbar .nav-links > * svg:hover,
     nav .nav-links > * svg:hover,
@@ -5710,4 +5710,3 @@
         box-shadow: none;
     }
 }
-

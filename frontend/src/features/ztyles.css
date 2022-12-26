@@ -1,5 +1,9 @@
+.animate-text {
+    transition: 100ms ease-out;
+}
+
 .spinner svg {
-    animation: spin 1500ms ease-in-out 50ms infinite;
+    animation: spin 2000ms ease-in-out 50ms infinite;
 }
 
 .spinner.large svg {

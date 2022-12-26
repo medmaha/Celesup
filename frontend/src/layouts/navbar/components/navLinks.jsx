@@ -43,7 +43,7 @@ const NavLinks = () => {
         navigate("/messager")
     }
     return (
-        <ul className="nav-links">
+        <ul className="nav-links red">
             <li className="link home d-flex" title="Home">
                 <Link to={"/"}>
                     <span className="icon-wrapper">

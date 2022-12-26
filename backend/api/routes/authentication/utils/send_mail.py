@@ -26,8 +26,13 @@ class SendMail(threading.Thread):
             to=[recipient],
         )
         mail.fail_silently = False
-        sended = mail.send()
-        print("sending_mail to", recipient)
+        sended = False
+
+        try:
+            sended = mail.send()
+        except Exception as e:
+            print(e)
+
         if sended:
             return True
         return False

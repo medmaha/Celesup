@@ -17,6 +17,9 @@ export const appSlice = createSlice({
 
         moods: {
             createPost: false,
+            loadingRequest: null,
+            errorMessage: null,
+            successMessage: null,
             verification: cookies.get("acid") !== null,
             playingAudio: false,
         },
@@ -40,9 +43,8 @@ export const appSlice = createSlice({
         },
 
         updateModes(state, action) {
-            if (action.payload.dummy) {
-                state.dummy = action.payload.dummy
-                delete action.payload["dummy"]
+            if (action.payload.dispatch) {
+                return (state.moods = {})
             }
             state.moods = {
                 ...state.moods,

@@ -13,7 +13,9 @@ const Homepage = () => {
     //     return <Login />
     // }
 
-    // return <Dashboard />
+    if (user?.id) {
+        return <Dashboard />
+    }
 
     return (
         <div className="d-flex justify-content-center align-items-center height-100">

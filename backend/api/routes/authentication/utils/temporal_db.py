@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import random
 from cryptography.fernet import Fernet
 
 from pathlib import Path
@@ -187,25 +188,35 @@ class DB(Utils):
         lookup = self.valid_lookup_field(**kwargs)
         if not lookup:
             return
-        query = f""" SELECT * FROM {self.table} WHERE {lookup[0]}="{lookup[1]}" """
-        # print(query.strip())
         self.db_query.execute(
-            # query.strip()
-            f""" SELECT * FROM {self.table} WHERE {lookup[0]}=:lookup """,
+            f""" 
+                SELECT * FROM {self.table} WHERE {lookup[0]}=:lookup
+            """,
             {"lookup": lookup[1]},
         )
         data = self.db_query.fetchall()
-        # print(data)
-
         return bool(len(data))
 
     def get_email_code(self) -> str:
         """Create a random 7 (seven) digit numbers\n * Returns the stringified version"""
-        import random
 
-        code = random.randrange(100000, 900000)
+        c_num = random.randrange(100000, 900000)
 
-        return f"C-{code}"
+        code = f"C-{c_num}"
+
+        print(code)
+
+        return code
+
+    def get_auth_response_json(map, state="unverified"):
+        if map:
+            data = {
+                "email": map.get("email"),
+                "username": map.get("username"),
+                "mailed": map.get("username"),
+                "state": state,
+            }
+        return data
 
 
 class Database(DB):
@@ -272,11 +283,21 @@ class Database(DB):
     def get_raw_data(self, **kwargs):
         """GET raw for data submitted by the user. To create a new user model"""
 
-        if self.exists(**kwargs):
-            if not "data" in kwargs:
-                data = self.get(**kwargs)
-            else:
-                data = kwargs["data"]
+        lookup = self.valid_lookup_field(**kwargs)
+
+        with self.connection:
+            data = self.db_query.execute(
+                f""" SELECT email, username, password, user_type FROM {self.table} WHERE {lookup[0]}=:lookup """,
+                {"lookup": lookup[1]},
+            )
+            user = data.fetchone()
+
+            data = {
+                "email": user[0],
+                "username": user[1],
+                "password": user[2],
+                "user_type": user[3],
+            }
 
             # decrypting client password
             password = data["password"]

@@ -118,6 +118,7 @@ function clearTokenCached() {
     ? a Separate axios instance for user authentication state,
     ? so it would share any interceptors
 */
+
 export const celesupAuthApi = axios.create({
     baseURL: CELESUP_BASE_URL,
     // withCredentials: true,
@@ -126,3 +127,28 @@ export const celesupAuthApi = axios.create({
     //     Cookie: "acid=" + cookies.get("acid"),
     // },
 })
+
+celesupAuthApi.interceptors.request.use((config) => {
+    const cookieID = cookies.get("acid")
+
+    if (cookieID) {
+        config.headers["Authorization"] = `Celesup ${cookieID}`
+    }
+    return config
+})
+
+celesupAuthApi.interceptors.response.use(
+    (response) => {
+        // console.log(response.status)
+        return Promise.resolve(response)
+    },
+    (error) => {
+        let msg = "Connection Error"
+        if (error.code === "ERR_NETWORK") {
+            msg = "Unable to connect to the Celesup server"
+            // return { message: msg }
+            error.message = msg
+        }
+        return Promise.reject(error)
+    },
+)
