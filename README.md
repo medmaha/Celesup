@@ -1,4 +1,4 @@
-#Celesup
+# Celesup
 
 Celesup is a social media platform that allows celebrities and supporters to connect and interact with each other. It features a variety of tools and features that make it easy for users to share content, follow their favorite celebrities, and stay up-to-date on the latest events and happenings.
 
