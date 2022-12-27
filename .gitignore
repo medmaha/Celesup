@@ -15,7 +15,9 @@ __pycache__/
 
 
 MEDIA_FILES/
+media/
 build/
+fake_objects/
 
 
 Ignore all files in the migrations folder

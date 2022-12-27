@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     # customs apps
+    # "fake_objects.apps.FakeObjectsConfig",
     "users.apps.UsersConfig",
     "admin_users.apps.AdminUserConfig",
     "celebrity.apps.CelebrityConfig",
