@@ -58,7 +58,7 @@ const Dashboard = () => {
 
             {posts && !error && (
                 <>
-                    <div className="d-flex width justify-content-center">
+                    <div className="d-flex width-100 justify-content-center maxwidth-600-px">
                         <div className="width-100">
                             <ComposePost
                                 context={context}

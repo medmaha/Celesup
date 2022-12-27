@@ -15,10 +15,9 @@ To get started with Celesup, follow these steps:
 
 -   Clone the repository from GitHub:
 
-```
+`  
     $ git clone https://github.com/medmaha/Celesup.git
-    $ cd Celesup
-```
+    $ cd Celesup`
 
 ### Development Configuration
 
@@ -33,19 +32,16 @@ To configure the development environment for Celesup, follow these steps:
 ```
     $ cd backend
 
-    # Create a virtual env
     $ python -m venv venv
 
-    # activate the virtual env
     $ venv/scripts/activate.bat
 
-    # install the requirements
-    (venv) $ pip install -r requirement.txt
+    $ pip install -r requirement.txt
 
-    # migrate to the database
+    $ python manage.py makemigrations
+
     $ python manage.py migrate
 
-    # run the development server
     $ python manage.py runserver
 
 ```
@@ -59,10 +55,8 @@ To configure the development environment for Celesup, follow these steps:
 ```
     $ cd frontend
 
-    # install the dependencies
     $ npm install
 
-    # start the development server
     $ npm start
 
 ```

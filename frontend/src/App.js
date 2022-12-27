@@ -15,6 +15,11 @@ import { updateAuthTokens, updateModes } from "./redux/app"
 import Homepage from "./routes/homepage"
 import { Login, Register, EmailVerification } from "./routes/auth"
 
+import { Discover } from "./routes/discover"
+import { Settings } from "./routes/settings"
+import { Messenger } from "./routes/messenger"
+import { UserProfile } from "./routes/profile"
+
 // import Index from "./routes"
 import PageNotFound from "./routes/pageNotFound"
 import useWebSocketHook from "./hooks/useWebSocketHook"
@@ -61,8 +66,9 @@ function App() {
         user: Object.keys(user).length ? user : null,
         tokens: Object.keys(tokens).length ? tokens : null,
         state: state,
-        moods,
+        moods: { ...moods, ...state },
         dummy,
+        updateModes,
         updateTokens,
         refreshTokens,
         setFocusState,
@@ -77,14 +83,13 @@ function App() {
                 <Routes>
                     <Route path="/" exact element={<Homepage />} />
 
-                    {/* <Route path={`/explore`} element={<ExplorePosts />} />
                     <Route path={`/messenger`} element={<Messenger />} />
                     <Route path={`/settings`} element={<Settings />} />
                     <Route path={`/:username`} element={<UserProfile />} />
+                    <Route path={`/explore`} element={<Discover />} />
+                    {/* 
                     <Route path={`/post/:postId`} element={<PostDetail />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/login" self element={<Login />} /> */}
-
+                */}
                     <Route path="/signup" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route

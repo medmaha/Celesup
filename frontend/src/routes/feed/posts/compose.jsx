@@ -1,19 +1,22 @@
+import { useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
 import { CELESUP_BASE_URL } from "../../../axiosInstances"
 
 const ComposePost = ({ context, reFetchPosts }) => {
+    const dispatch = useDispatch()
     async function createPost({ currentTarget }) {
         const action = currentTarget.dataset.file
 
-        if (context.state.createPost) {
-            const data = await dispatchContext()
-        }
-        if (action === "video") return
-        context.setFocusState({
-            ...context.state,
-            createPost: action,
-            reFetchPosts: reFetchPosts,
-        })
+        dispatch(context.updateModes({ createPost: action }))
+        // if (context.state.createPost) {
+        //     const data = await dispatchContext()
+        // }
+        // if (action === "video") return
+        // context.setFocusState({
+        //     ...context.state,
+        //     createPost: action,
+        //     reFetchPosts: reFetchPosts,
+        // })
     }
 
     async function dispatchContext() {
@@ -30,7 +33,7 @@ const ComposePost = ({ context, reFetchPosts }) => {
 
     return (
         <section
-            className=" d-flex pt-1 px-__ align-items-center"
+            className=" d-flex pt-1 px-__ align-items-center width-100"
             id="composePost"
         >
             {context.user && (
@@ -68,7 +71,7 @@ const ComposePost = ({ context, reFetchPosts }) => {
                         />
                          */}
                         <div className="d-flex align-items-center cursor-pointer width-max-content">
-                            <ul className="d-flex align-items-center">
+                            <ul className="d-flex align-items-center gap-1-rem px-__">
                                 <li
                                     data-file="photo"
                                     className="cursor-pointer icon-wrapper width-21-px height-21-px"

@@ -161,10 +161,14 @@ function getDispatchedConfig(
                     })
                 }
                 await dispatchFormData()
-                context.setFocusState({
-                    ...context.state,
+                context.updateModes({
                     createPost: null,
                 })
+                storeDispatch(
+                    context.updateModes({
+                        createPost: null,
+                    }),
+                )
             },
             onEditBtnClicked: () => {},
             onDefaultBtnClicked: () => {},

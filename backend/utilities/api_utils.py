@@ -32,7 +32,7 @@ def get_post_json(post, view: GenericAPIView) -> dict:
     view.serializer_class = UserDetailSerializer
 
     data["author"] = {
-        **get_profile_data(post.author),
+        **get_profile_data(post.author).data,
         **view.get_serializer(post.author).data,
     }
 

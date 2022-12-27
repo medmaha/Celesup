@@ -40,7 +40,7 @@ const postWrapperStyles = {
     overflow: "hidden",
 }
 
-function PostsContainer({ posts: data, getPosts }) {
+function PostsContainer({ data, getPosts }) {
     // const [paginatorLinks, setPaginatorLinks] = useState(posts.links)
     const context = useContext(GlobalContext)
     const [posts, setPosts] = useState({
@@ -50,7 +50,7 @@ function PostsContainer({ posts: data, getPosts }) {
     })
 
     useEffect(() => {
-        if (data?.posts_count) {
+        if (!!data?.objects_count) {
             setPosts(data)
         }
     }, [data])

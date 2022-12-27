@@ -10,7 +10,7 @@ import useWebSocketHook from "../../hooks/useWebSocketHook"
 import { useContext } from "react"
 import { GlobalContext } from "../../App"
 
-export default function Messager() {
+export default function Messenger() {
     const context = useContext(GlobalContext)
     const [compose, setCompose] = useState(false)
     const [activeThread, setActiveThread] = useState(null)

@@ -1,0 +1,79 @@
+# Ignore .DS_Store files
+.DS_Store
+
+# Use 4-space tabs
+indent_style = space
+indent_size = 4
+
+# Use single quotes
+quote_style = single
+
+# Add some additional standard parameters
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Ignore dependency directories
+node_modules/
+
+# Ignore backup files
+*~
+*.bak
+*.swp
+
+# Ignore log files
+*.log
+
+# Ignore minified files
+*.min.js
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore compiled TypeScript files
+*.d.ts
+
+# Ignore TypeScript definition files
+typings/
+
+# Ignore .vscode directory
+.vscode/
+
+# Ignore .next directory
+.next/
+
+# Ignore .prettierrc files
+.prettierrc
+
+# Ignore .prettierignore files
+.prettierignore
+
+# Ignore .env files
+.env
+
+# Ignore .eslintrc files
+.eslintrc
+
+# Ignore .eslintignore files
+.eslintignore
+
+
+# Ignore .editorconfig files
+.editorconfig
+
+# Ignore .npmrc files
+.npmrc
+
+# Ignore .lock files
+*.lock
+
+# Ignore files starting with _
+_*

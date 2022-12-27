@@ -173,7 +173,7 @@ const Navbar = () => {
                 )} */}
 
                 {context.moods.verification && context.dummy && (
-                    <ul className="nav-links">
+                    <ul className="nav-links px-2">
                         <li className="">
                             <b>@{context.dummy.username}</b>
                         </li>

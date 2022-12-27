@@ -1,13 +1,13 @@
 import "./style.css"
 import { useState, useEffect, useContext, useRef, useReducer } from "react"
 import { useNavigate } from "react-router-dom"
-import AlertMessage from "../../../../features/AlertMessage"
-import { GlobalContext } from "../../../../App"
-import useAuthRequest from "../../useAuthRequest"
-import Textarea from "../../../../features/TextArea"
-import ProgressBar from "../../../../features/loader"
+import AlertMessage from "../../../features/AlertMessage"
+import { GlobalContext } from "../../../App"
+import useAuthRequest from "../useAuthRequest"
+import Textarea from "../../../features/TextArea"
+import ProgressBar from "../../../features/loader"
 
-import { prepareFormData, toggleGender } from "./utils"
+import { prepareFormData, toggleGender } from "../signup/state_3/utils"
 
 const GENDER = {
     male: false,

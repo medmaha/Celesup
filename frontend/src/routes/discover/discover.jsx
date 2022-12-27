@@ -23,7 +23,7 @@ function paginatorIntersection(instance, response, updatePost) {
     }
 }
 
-const ExplorePosts = () => {
+export default function Discover() {
     const [posts, setPosts] = useState({ data: [] })
     const [response, pending, error, sendRequest] = useAxiosRequest()
     const instanceRef = useRef("explorer")
@@ -68,5 +68,3 @@ const ExplorePosts = () => {
         </div>
     )
 }
-
-export default ExplorePosts

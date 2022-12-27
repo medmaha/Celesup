@@ -32,25 +32,22 @@ export default function CreatePost({ setConfig }) {
                 header: <PostModalHeader dispatcher={dispatcher} />,
             }
         })
-        return () => {
-            switch (context.state?.createPost) {
-                case "photo":
-                case "video":
-                    uploader()
+        const action = context.moods.createPost?.toLowerCase()
+        switch (action) {
+            case "photo":
+            case "video":
+                uploader()
 
-                case "form":
-                    dispatcher()
-                    break
-
-                default:
-                    break
-            }
-            // storeDispatch(updateForm({ dispatch: true }))
+            case "form":
+                dispatcher()
+                break
         }
+        storeDispatch(updateForm({ dispatch: true }))
     }, [])
 
     async function uploader() {
-        const [filetype, file] = await fileUploader(context.state?.createPost)
+        const [filetype, file] = await fileUploader(context.moods.createPost)
+
         storeDispatch(
             updateForm({
                 [filetype]: file,
