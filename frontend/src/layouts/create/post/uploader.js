@@ -1,7 +1,7 @@
 //
 
 export default async function fileUploader(type) {
-    if (type.toLowerCase() === "video") return
+    if (type.toLowerCase() === "video") return Promise.resolve({})
     //
     const hiddenFileInput = document.createElement("input")
 
@@ -37,9 +37,9 @@ export default async function fileUploader(type) {
 }
 
 export const ACCEPTED_FILE_EXTENSIONS = {
-    photo: "image/*",
-    video: "video/*",
-    video: "audio/*",
+    photo: "image/jpeg, image/jpg, image/jpeg, image/gif, image/bmp, image/webp",
+    video: "video/mp4, video/webm, video/ogg",
+    video: "audio/mpeg, audio/ogg, audio/webm/ audio/wav",
 }
 
 function fileType(type = "") {

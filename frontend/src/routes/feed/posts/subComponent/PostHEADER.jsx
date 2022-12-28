@@ -31,7 +31,6 @@ export default function PostHEADER({
 
     function removePostFromList() {
         if (postData.author.id === context.user.id) return
-        console.log("caal")
         celesupApi
             .post("feeds/remove", {
                 post_author_id: postData.author.id,
@@ -153,7 +152,7 @@ export default function PostHEADER({
                                 // btnParentClass="pos-absolute top-neg-2-rem right-0"
                                 items={[
                                     {
-                                        text: postData.author.followers.find(
+                                        text: postData.author.followers?.find(
                                             (id) => id === context.user.id,
                                         )
                                             ? "Unfollow"

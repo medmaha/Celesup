@@ -87,13 +87,14 @@
         opacity var(--transition-duration) ease-in-out;
     width: max-content;
     top: var(--TOP);
-    padding: 0.8rem;
+    padding: 0.5rem 1rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 0.25rem;
     opacity: 0;
     pointer-events: none;
 
-    min-width: 100px;
+    /* min-width: 100px; */
+    min-width: 250px;
     min-height: 100px;
 
     display: flex;
@@ -137,7 +138,7 @@
     fill: var(--primaryColor--);
 }
 
-.dropdown-item svg {
+.dropdown-menu svg {
     width: 20px;
     height: 20px;
 }

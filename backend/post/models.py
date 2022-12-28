@@ -8,6 +8,32 @@ from users.models import User
 from django.db import models
 from django.db.models import Q
 
+import mimetypes
+from django.core.exceptions import ValidationError
+
+MAX_FILE_SIZE = 10485760  # mega bytes
+
+
+def validate_file(file):
+    mime_type = mimetypes.guess_type(file.name)[0]
+    audio_types = ["audio/mpeg", "audio/ogg", "audio/webm" "audio/wav"]
+    video_types = ["video/mp4", "video/webm", "video/ogg"]
+    image_types = [
+        "image/jpeg",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif",
+        "image/bmp",
+        "image/webp",
+    ]
+
+    file_size = file.size
+    if file_size > MAX_FILE_SIZE:  # 10MB
+        raise ValidationError("File is too large")
+
+    if mime_type not in [*audio_types, *video_types, *image_types]:
+        raise ValidationError("Invalid file type")
+
 
 class ObjectManager(models.Manager):
     def trending(self, limit=5):
@@ -37,9 +63,18 @@ def post_video_path(instance, filename):
 
 class Video(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    file = models.FileField(upload_to=post_video_path, null=True, blank=True)
-    title = models.TextField(max_length=150, null=True, blank=True)
-    alt_text = models.CharField(max_length=50, default="post video")
+    file = models.FileField(
+        upload_to=post_video_path,
+        null=True,
+        blank=True,
+        validators=[validate_file],
+    )
+    title = models.TextField(
+        max_length=150,
+        null=True,
+        blank=True,
+    )
+    alt_text = models.CharField(max_length=50, default="post")
     thumbnail = models.ImageField(
         upload_to=post_thumbnail_path,
         default="default/video.png",
@@ -51,7 +86,15 @@ class Video(models.Model):
         return self.file.url
 
 
+def post_video_path(instance, filename):
+    return f"posts/by__{instance.author.email}/videos/{filename}"
+
+
 class Music(models.Model):
+    audio = models.FileField(
+        upload_to=post_video_path,
+        validators=[validate_file],
+    )
     pass
 
 
@@ -61,13 +104,14 @@ def post_photo_path(instance, filename):
 
 class Photo(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    image = models.ImageField(
+    image = models.FileField(
         upload_to=post_photo_path,
         default="default/photo.png",
         null=True,
         blank=True,
+        validators=[validate_file],
     )
-    alt_text = models.CharField(max_length=50, default="post image")
+    alt_text = models.CharField(max_length=50, default="post")
 
     def __str__(self) -> str:
         return self.image.url

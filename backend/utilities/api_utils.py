@@ -4,7 +4,7 @@ from rest_framework import status
 from comment.models import Comment
 
 from api.routes.dashboard.posts.serializers import PostDetailSerializer
-from api.routes.user.serializers import UserMiniInfoSeriaLizer, UserDetailSerializer
+from api.routes.user.serializers import UserMiniInfoSeriaLizer
 
 from utilities.generators import get_profile_data
 
@@ -29,10 +29,8 @@ def get_post_json(post, view: GenericAPIView) -> dict:
         "likes": view.get_serializer(post.likes.all(), many=True).data,
     }
 
-    view.serializer_class = UserDetailSerializer
-
     data["author"] = {
-        **get_profile_data(post.author).data,
+        **get_profile_data(post.author),
         **view.get_serializer(post.author).data,
     }
 

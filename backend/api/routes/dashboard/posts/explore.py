@@ -30,11 +30,11 @@ class ExplorePosts(generics.ListAPIView):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
 
-        exploits = []
-
+        discovers = []
         for post in serializer.data:
             instance = Post.objects.get(key=post["key"])
-            data = instance.get_data(self, PhotoSerializer)
-            exploits.append({**post, **data})
 
-        return self.get_paginated_response(exploits)
+            data = instance.get_data(self, PhotoSerializer)
+            discovers.append({**post, **data})
+
+        return self.get_paginated_response(discovers)

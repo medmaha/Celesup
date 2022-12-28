@@ -73,12 +73,6 @@ function PostsContainer({ data, getPosts }) {
     useEffect(() => {
         return () => {
             document.title = "Celesup | Home"
-            context.setFocusState((prev) => {
-                return {
-                    ...prev,
-                    reFetchPosts: reFetchPosts,
-                }
-            })
         }
     }, [])
 
@@ -115,7 +109,7 @@ function PostsContainer({ data, getPosts }) {
                                 <section
                                     data-post
                                     key={post.key}
-                                    className="mt-__"
+                                    className="mt-__ "
                                 >
                                     <Post
                                         post={post}

@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
 from rest_framework import status
 
-from .serializers import PostCreateSerializer
+from .serializers import PostCreateSerializer, PostDetailSerializer
 from post.models import Photo, Music, Video, Post
 
 
@@ -14,46 +14,66 @@ class PostCreate(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy()
+
+        if not len(data.keys()):
+            return Response(
+                "Bad request field required", status=status.HTTP_400_BAD_REQUEST
+            )
+
         data["author"] = request.user.id
 
+        serializer = self.serializer_class(data=self.clean_data(data.copy()))
+        serializer.is_valid(raise_exception=True)
+
+        post = self.assign_post_file(data, serializer)
+
+        self.serializer_class = PostDetailSerializer
+
+        post_serializer = self.get_serializer(post)
+
+        return Response({"post": post_serializer.data}, status=status.HTTP_201_CREATED)
+
+    def assign_post_file(self, data, serializer):
         picture = data.get("picture")
         music = data.get("music")
         video, thumbnail = data.get("video"), data.get("thumbnail")
 
+        with transaction.atomic():
+            post: Post = serializer.save()
+
         if picture:
+            photo = Photo.objects.create(
+                author=post.author, image=picture, alt_text="photo"
+            )
+            post.picture = photo
+            post.save()
+
+        elif music:
+            music = Music.objects.create(
+                author=post.author,
+            )
+            post.music = music
+            post.save()
+
+        elif video:
+            video = Video.objects.create(
+                author=post.author, file=video, thumbnail=thumbnail
+            )
+            post.video = video
+            post.save()
+
+            return post
+
+        return post
+
+    def clean_data(self, data):
+        if "picture" in data:
             del data["picture"]
-        if music:
-            del data["music"]
-        if video:
+        if "video" in data:
             del data["video"]
+        if "music" in data:
+            del data["music"]
+        if "thumbnail" in data:
+            del data["thumbnail"]
 
-        serializer = self.serializer_class(data=data)
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            with transaction.atomic():
-
-                post: Post = serializer.save()
-
-            if picture:
-                photo = Photo.objects.create(
-                    author=post.author, image=picture, alt_text="photo"
-                )
-                post.picture = photo
-                post.save()
-            elif music:
-                music = Music.objects.create(
-                    author=post.author,
-                )
-                post.music = music
-                post.save()
-            elif video:
-                video = Video.objects.create(
-                    author=post.author, file=video, thumbnail=thumbnail
-                )
-                post.video = video
-                post.save()
-        except:
-            raise Exception
-            # return Response("", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        return Response(status=status.HTTP_201_CREATED)
+        return data

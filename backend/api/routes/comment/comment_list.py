@@ -25,15 +25,13 @@ class PostCommentList(ListAPIView):
             instance = Comment.objects.get(id=comment["id"])
             child_comments = instance.get_replies()
 
-            self.serializer_class = UserMiniInfoSeriaLizer
-            comment["author"] = self.get_serializer(
-                User.objects.get(id=comment["author"])
-            ).data
             self.serializer_class = CommentSerializer
-            comment["children"] = self.get_serializer(child_comments, many=True).data
+            comment["replies"] = self.get_serializer(child_comments, many=True).data
 
-            for child in comment["children"]:
-                self.serializer_class = UserMiniInfoSeriaLizer
+            self.serializer_class = UserMiniInfoSeriaLizer
+            comment["author"] = self.get_serializer(instance.author).data
+
+            for child in comment["replies"]:
                 child["author"] = self.get_serializer(
                     User.objects.get(id=child["author"])
                 ).data

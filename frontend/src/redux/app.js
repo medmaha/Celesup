@@ -17,11 +17,13 @@ export const appSlice = createSlice({
 
         moods: {
             createPost: false,
+            verification: cookies.get("acid") !== null,
+            playingAudio: false,
+
             loadingRequest: null,
             errorMessage: null,
             successMessage: null,
-            verification: cookies.get("acid") !== null,
-            playingAudio: false,
+            infoMessage: null,
         },
 
         dummy: cookies.get("dusr") ? JSON.parse(cookies.get("dusr")) : null,
@@ -44,11 +46,22 @@ export const appSlice = createSlice({
 
         updateModes(state, action) {
             if (action.payload.dispatch) {
-                return (state.moods = {})
-            }
-            state.moods = {
-                ...state.moods,
-                ...action.payload,
+                state.moods = {
+                    verification: cookies.get("acid") !== null,
+
+                    createPost: false,
+                    playingAudio: false,
+
+                    loadingRequest: null,
+                    errorMessage: null,
+                    successMessage: null,
+                    infoMessage: null,
+                }
+            } else {
+                state.moods = {
+                    ...state.moods,
+                    ...action.payload,
+                }
             }
         },
     },

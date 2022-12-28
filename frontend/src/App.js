@@ -72,6 +72,7 @@ function App() {
         updateTokens,
         refreshTokens,
         setFocusState,
+        storeDispatch,
         webSocketMaster,
     }
 
@@ -86,7 +87,7 @@ function App() {
                     <Route path={`/messenger`} element={<Messenger />} />
                     <Route path={`/settings`} element={<Settings />} />
                     <Route path={`/:username`} element={<UserProfile />} />
-                    <Route path={`/explore`} element={<Discover />} />
+                    <Route path={`/discover`} element={<Discover />} />
                     {/* 
                     <Route path={`/post/:postId`} element={<PostDetail />} />
                 */}
@@ -106,6 +107,9 @@ function App() {
                 )}
                 {moods.successMessage && (
                     <Alerts type={"success"} message={moods.successMessage} />
+                )}
+                {moods.infoMessage && (
+                    <Alerts type={"info"} message={moods.infoMessage} />
                 )}
                 {moods.loadingRequest && (
                     <Loading icon={moods.loadingRequest} />

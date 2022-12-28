@@ -1,3 +1,3 @@
-import Discover from "./discover"
+import Discover from "./Discover"
 
 export { Discover }

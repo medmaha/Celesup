@@ -1,7 +1,14 @@
 import { useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { GlobalContext } from "../../../App"
+import { celesupApi } from "../../../axiosInstances"
+import { UseCookie } from "../../../hooks/useCookie"
 import { updateForm, updatePages } from "../../../redux/createPost"
+import { createFileFromDataUrl } from "./utils"
+
+const COOKIES = UseCookie()
+
+const CustomEvent = new Event("addToPostFeeds")
 
 export default function PostModalHeader({ dispatcher, options = {} }) {
     const context = useContext(GlobalContext)
@@ -28,15 +35,22 @@ export default function PostModalHeader({ dispatcher, options = {} }) {
             storeDispatch,
             dispatcher,
         )
-        setConfiguration(pages, setConfig, _config, dispatcher)
+        setConfiguration(
+            pages,
+            setConfig,
+            _config,
+            context,
+            form,
+            storeDispatch,
+        )
         return () =>
             setConfiguration(
                 pages,
                 setConfig,
                 _config,
-                dispatcher,
+                context,
+                form,
                 storeDispatch,
-                updatePages,
             )
     }, [pages, validForm])
 
@@ -121,6 +135,140 @@ const HEADER_BUTTONS = {
     actionBtn: <span className="btn br-md">NEXT</span>,
 }
 
+function setConfiguration(
+    pages,
+    setConfig,
+    config,
+    context,
+    form,
+    storeDispatch,
+) {
+    switch (pages.current?.value) {
+        case "FORM":
+            setConfig((prev) => {
+                return {
+                    ...prev,
+                    ...config,
+                    closeBtn: true,
+                    backBtn: false,
+                    editBtn: false,
+                    defaultBtn: false,
+                    textTitle: "Create post",
+                    METHODS: {
+                        ...prev.METHODS,
+                        ...config.METHODS,
+                    },
+                }
+            })
+            break
+        case "PHOTO":
+            setConfig((prev) => {
+                return {
+                    ...prev,
+                    ...config,
+                    closeBtn: false,
+                    backBtn: true,
+                    editBtn: true,
+                    defaultBtn: true,
+                    textTitle: false,
+                }
+            })
+            break
+        case "PREVIEW":
+            setConfig((prev) => {
+                return {
+                    ...prev,
+                    ...config,
+                    editBtn: false,
+                    closeBtn: false,
+                    backBtn: true,
+                    defaultBtn: false,
+                    textTitle: "Preview post",
+                    BUTTONS: {
+                        ...prev.BUTTONS,
+                        ...config.BUTTONS,
+                        actionBtn: <span className="btn br-md">Create</span>,
+                    },
+                    METHODS: {
+                        ...prev.METHODS,
+                        ...config.METHODS,
+                        onActionBtnClicked: async () => {
+                            // dispatcher(pages.next)
+                            const data = { ...form }
+                            if (data.picture) {
+                                const { file } = await createFileFromDataUrl(
+                                    data.picture,
+                                )
+                                data["picture"] = file
+                            }
+
+                            if (!Object.keys(data).length) return
+
+                            await celesupApi
+                                .post("/posts/create", data, {
+                                    headers: {
+                                        "content-type": "multipart/form-data",
+                                    },
+                                })
+                                .then(
+                                    (res) => {
+                                        // context.state.addToPostFeeds(
+                                        //     res.data.post,
+                                        // )
+                                        COOKIES.set(
+                                            "post",
+                                            JSON.stringify(res.data.post),
+                                        )
+                                        storeDispatch(
+                                            updateForm({ dispatch: true }),
+                                        )
+                                        storeDispatch(
+                                            updatePages({ dispatch: true }),
+                                        )
+
+                                        storeDispatch(
+                                            context.updateModes({
+                                                createPost: null,
+                                            }),
+                                        )
+                                        storeDispatch(
+                                            context.updateModes({
+                                                infoMessage:
+                                                    "Post created successfully",
+                                            }),
+                                        )
+                                        document.dispatchEvent(CustomEvent)
+
+                                        setTimeout(() => {
+                                            storeDispatch(
+                                                context.updateModes({
+                                                    infoMessage: null,
+                                                }),
+                                            )
+                                        }, 3000)
+                                    },
+                                    (err) => {
+                                        //  Todo --> error handling
+
+                                        console.log(err)
+                                    },
+                                )
+                                .catch((err) => {
+                                    //  Todo --> error handling
+
+                                    console.log(err)
+                                })
+                        },
+                    },
+                }
+            })
+            break
+
+        default:
+            break
+    }
+}
+
 function getDispatchedConfig(
     validForm,
     context,
@@ -194,67 +342,4 @@ function checkIsValidForm(form = {}) {
         continue
     }
     return valid
-}
-
-function setConfiguration(pages, setConfig, _config, dispatcher) {
-    switch (pages.current?.value) {
-        case "FORM":
-            setConfig((prev) => {
-                return {
-                    ...prev,
-                    ..._config,
-                    closeBtn: true,
-                    backBtn: false,
-                    editBtn: false,
-                    defaultBtn: false,
-                    textTitle: "Create post",
-                    METHODS: {
-                        ...prev.METHODS,
-                        ..._config.METHODS,
-                    },
-                }
-            })
-            break
-        case "PHOTO":
-            setConfig((prev) => {
-                return {
-                    ...prev,
-                    ..._config,
-                    closeBtn: false,
-                    backBtn: true,
-                    editBtn: true,
-                    defaultBtn: true,
-                    textTitle: false,
-                }
-            })
-            break
-        case "PREVIEW":
-            setConfig((prev) => {
-                return {
-                    ...prev,
-                    ..._config,
-                    editBtn: false,
-                    closeBtn: false,
-                    backBtn: true,
-                    defaultBtn: false,
-                    textTitle: "Preview post",
-                    BUTTONS: {
-                        ...prev.BUTTONS,
-                        ..._config.BUTTONS,
-                        actionBtn: <span className="btn br-md">Create</span>,
-                    },
-                    METHODS: {
-                        ...prev.METHODS,
-                        ..._config.METHODS,
-                        onActionBtnClicked: () => {
-                            // dispatcher(pages.next)
-                        },
-                    },
-                }
-            })
-            break
-
-        default:
-            break
-    }
 }

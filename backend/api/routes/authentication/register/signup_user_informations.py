@@ -5,8 +5,6 @@ from users.models import User
 from api.routes.user.serializers import UserCreationSerializer
 from .db import Database
 
-from utilities.generators import get_auth_tokens
-
 
 class SignupUserInformation(CreateAPIView):
     authentication_classes = []
@@ -68,11 +66,7 @@ class SignupUserInformation(CreateAPIView):
                     status=201,
                 )
 
-            tokens = get_auth_tokens(
-                url=request.headers["host"],
-                email=user.email,
-                password=client.get("password"),
-            )
+            tokens = {}
             temporal_database.delete_record(code=client.get("code"))
             return Response(
                 {"message": "Successful User created", "tokens": tokens}, status=201

@@ -49,21 +49,21 @@ const Notification = ({ context }) => {
         }
 
         async function viewed(form) {
-            await celesupApi
-                .put("/notifications/viewed", form, {
-                    headers: { "Content-type": "application/json" },
-                })
-                .then(
-                    () => {},
-                    () => {},
-                )
-                .catch(() => {})
-                .finally()
+            //     await celesupApi
+            //         .put("/notifications/viewed", form, {
+            //             headers: { "Content-type": "application/json" },
+            //         })
+            //         .then(
+            //             () => {},
+            //             () => {},
+            //         )
+            //         .catch(() => {})
+            //         .finally()
         }
     }
 
     return (
-        <div className="">
+        <div className="d-flex flex-column gap-5-px px-__ overflow-hidden overflow-y-auto minwidth-300-px maxheight-500-px">
             {!!notifications && (
                 <NotificationsWrapper notifications={notifications} />
             )}
@@ -72,10 +72,14 @@ const Notification = ({ context }) => {
 }
 
 function NotificationsWrapper({ notifications }) {
-    function item(notification) {
+    function item(idx, notification, map) {
         return (
             <span key={notification.id}>
-                <NotificationItem notification={notification} />
+                <NotificationItem
+                    map={map}
+                    notification={notification}
+                    idx={idx}
+                />
             </span>
         )
     }
@@ -85,14 +89,14 @@ function NotificationsWrapper({ notifications }) {
             {!!notifications.new.length && (
                 <h5 className="typography mb-1">New Notifications</h5>
             )}
-            {notifications.new?.map((notification) => {
-                return item(notification)
+            {notifications.new?.map((notification, idx) => {
+                return item(idx, notification, notifications.new)
             })}
             {!!notifications.old.length && (
                 <h5 className="typography mt-1">Old Notifications</h5>
             )}
-            {notifications.old?.map((notification) => {
-                return item(notification)
+            {notifications.old?.map((notification, idx) => {
+                return item(idx, notification, notifications.new)
             })}
         </>
     )

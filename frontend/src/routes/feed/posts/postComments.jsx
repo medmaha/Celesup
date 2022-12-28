@@ -2,34 +2,28 @@ import { useEffect, useState, useContext, useRef, createContext } from "react"
 import { celesupApi, CELESUP_BASE_URL } from "../../../axiosInstances"
 import { GlobalContext } from "../../../App"
 import Textarea from "../../../features/TextArea"
+import DateTime from "../../../hooks/getDateTime"
 
 const CommentContext = createContext()
 
 export default function PostComments({ post, toggle, cardView = true }) {
-    const [controller, setController] = useState(new AbortController())
     const [comments, setComments] = useState({ data: [] })
     const [slices, setSlices] = useState({ start: 0, stop: 2, next: 10 })
     const context = useContext(GlobalContext)
     const commentFormRef = useRef()
 
     useEffect(() => {
-        if (!comments.length) return
-        return () => controller.abort()
-    }, [comments])
-
-    useEffect(() => {
-        console.log(slices)
-    }, [slices])
-
-    useEffect(() => {
         return () => getComments()
     }, [])
+    useEffect(() => {
+        if (!comments) return
+        console.log(comments)
+    }, [comments])
 
-    async function getComments(uri = `comments/${post.key}`) {
+    async function getComments(uri = `comments/list/${post.key}`) {
         await celesupApi
             .get(uri, {
                 headers: { "Content-type": "application/json" },
-                signal: controller?.signal,
             })
             .then(
                 (res) => {
@@ -58,30 +52,27 @@ export default function PostComments({ post, toggle, cardView = true }) {
                 next: slices.next * 2,
             })
         }
-        // else{
-        //     setSlices({
-        //         start: slices.stop,
-        //         stop: slices.next,
-        //         next: slices.next * 2,
-        //     })
-        // }
     }
 
-    async function sendComment(url, form, callback) {
+    async function sendRequestToComment(url, form, callback) {
         await celesupApi
-            .post("comments" + url, form, {
+            .post("/comments" + url, form, {
                 headers: {
                     "Content-type": "application/json",
                 },
-                signal: controller?.signal,
             })
             .then(
                 (res) => {
                     if (res.status === 201) {
                         let comment = res.data
-                        let newComments = [comment, ...comments]
-                        setComments(newComments)
-                        // getComments()
+
+                        // console.log(comment)
+
+                        setComments({
+                            ...comments,
+                            data: [comment, ...comments.data],
+                        })
+                        // // getComments()
                         callback()
                     }
                 },
@@ -100,16 +91,7 @@ export default function PostComments({ post, toggle, cardView = true }) {
             form.append("post", post.key)
             form.append("content", comment)
 
-            await sendComment("/create", form, callback)
-        }
-    }
-
-    function toggleCommentForm() {
-        if (commentFormRef.current) {
-            commentFormRef.current.classList.remove("d-none")
-            commentFormRef.current
-                .querySelector(`[data-id="${post.key}"]`)
-                .focus()
+            await sendRequestToComment("/create", form, callback)
         }
     }
 
@@ -119,6 +101,8 @@ export default function PostComments({ post, toggle, cardView = true }) {
         comments,
         cardView,
         slices,
+        setComments,
+        sendRequestToComment,
     }
 
     return (
@@ -163,17 +147,16 @@ export default function PostComments({ post, toggle, cardView = true }) {
                         ?.map((comment, idx) => {
                             return (
                                 <div
-                                    key={comment.id}
+                                    key={`${comment.id}-${idx}`}
                                     className="comment__group pos-relative"
                                 >
                                     <ParentComment
                                         idx={idx}
                                         comment={comment}
-                                        sendComment={sendComment}
                                         commentFormRef={commentFormRef}
                                     />
 
-                                    {!!comment.children && (
+                                    {!!comment.replies?.length && (
                                         <ChildComment comment={comment} />
                                     )}
                                 </div>
@@ -197,8 +180,9 @@ export default function PostComments({ post, toggle, cardView = true }) {
     )
 }
 
-function ParentComment({ idx, comment, sendComment, commentFormRef }) {
-    const { comments, post } = useContext(CommentContext)
+function ParentComment({ idx, comment, commentFormRef }) {
+    const { comments, post, setComments, sendRequestToComment } =
+        useContext(CommentContext)
 
     function toggleCommentReply(id) {
         commentFormRef.current
@@ -216,7 +200,26 @@ function ParentComment({ idx, comment, sendComment, commentFormRef }) {
             form.append("content", comment)
             form.append("parent", String(commentId).split("--")[1])
 
-            await sendComment("/reply", form, callback)
+            celesupApi
+                .post("/comments/reply", form, {
+                    headers: {
+                        "Content-type": "application/json",
+                    },
+                })
+                .then(
+                    (res) => {
+                        const comment = res.data
+
+                        comments.data[idx - 1].replies.unshift(comment)
+
+                        setComments({ ...comments })
+                        callback()
+                    },
+                    (err) => {
+                        console.log(err)
+                    },
+                )
+                .catch((res) => console.log(res))
         }
     }
 
@@ -225,7 +228,7 @@ function ParentComment({ idx, comment, sendComment, commentFormRef }) {
             <div className="mt-__ d-flex parent__comment">
                 <Comment
                     comment={comment}
-                    hasNext={!!comments[++idx]}
+                    hasNext={!!comments.data[++idx]}
                     replyComment={replyComment}
                     toggleCommentReply={toggleCommentReply}
                 />
@@ -238,13 +241,16 @@ function ChildComment({ comment }) {
     const { slices } = useContext(CommentContext)
     return (
         <div className="ml-5 child__comment">
-            {comment.children
+            {comment.replies
                 ?.slice(slices.start, slices.stop)
                 .map((reply, idx) => (
-                    <div className="mt-__ d-flex pos-relative" key={reply.id}>
+                    <div
+                        className="mt-__ d-flex pos-relative"
+                        key={`${reply.id}-${idx}`}
+                    >
                         <Comment
                             comment={reply}
-                            hasNext={!!comment.children[++idx]}
+                            hasNext={!!comment.replies[++idx]}
                             isParent={false}
                         />
                     </div>
@@ -261,6 +267,8 @@ function Comment({
     toggleCommentReply,
 }) {
     const { post, context, cardView } = useContext(CommentContext)
+
+    const DATETIME = new DateTime(comment.created_at)
 
     return (
         <>
@@ -290,7 +298,8 @@ function Comment({
                         <b>@{comment.author.username}</b>
                     </span>
                     <small>
-                        <b>{comment.created_at.split("T")[0]}</b>
+                        {/* <b>{comment.created_at.split("T")[0]}</b> */}
+                        <small>{DATETIME.format()}</small>
                     </small>
                 </div>
                 <p className="">{comment.content}</p>

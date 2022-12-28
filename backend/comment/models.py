@@ -27,7 +27,8 @@ class Comment(models.Model):
         related_name="replies",
     )
     likes = models.ManyToManyField(User, blank=True)
-    # is_updated = models.BooleanField(default=False)
+    is_updated = models.BooleanField(default=False)
+    activity_rate = models.BigIntegerField(default=1, null=True, blank=True)
 
     def __str__(self):
         return f"{self.author.username}/{self.content[:15]}..."
@@ -35,3 +36,6 @@ class Comment(models.Model):
     def get_replies(self, max=15):
         replies = Comment.objects.filter(post_id=self.post.key, parent_id=self.id)[:max]
         return replies
+
+    class Meta:
+        ordering = ("-created_at", "activity_rate", "-updated_at")

@@ -12,9 +12,15 @@ export default function Alerts({ type, message }) {
             case "error":
                 setColors({ text: "white-text", bg: "invalid-bg" })
                 break
+
             case "success":
                 setColors({ text: "black-text", bg: "success-bg" })
                 break
+
+            case "info":
+                setColors({ text: "", bg: "bg-secondary" })
+                break
+
             default:
                 break
         }
@@ -30,7 +36,9 @@ export default function Alerts({ type, message }) {
         <div className="pos-absolute top-0 left-0 width-100 d-flex justify-content-center typography">
             <div
                 className={`
-            minheight-2-rem ${colors.bg} ${colors.text} width-80 d-flex align-items-center py-1 br-sm justify-content-center`}
+                ${colors.bg} ${colors.text}
+                minheight-2-rem width-80 d-flex align-items-center
+                py-1 br-sm justify-content-center`}
             >
                 {message}
             </div>

@@ -1,6 +1,6 @@
 import "./styles.css"
 import { useContext, useState, useEffect, useRef } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 
 import { GlobalContext } from "../../App"
 import {
@@ -16,6 +16,7 @@ import NavDrawerWrapper from "./components/navDrawer"
 import NavLinks from "./components/navLinks"
 import { UseCookie } from "../../hooks/useCookie"
 import { updateModes } from "../../redux/app"
+import { useDispatch } from "react-redux"
 
 const Navbar = () => {
     const navbar = useRef()
@@ -25,8 +26,8 @@ const Navbar = () => {
 
     const navigate = useNavigate()
     const context = useContext(GlobalContext)
-    const params = useParams()
-    const cookie = UseCookie()
+    const COOKIES = UseCookie()
+
     function toggleNavDropdown() {}
 
     // useEffect(() => {
@@ -68,7 +69,7 @@ const Navbar = () => {
     }
 
     function logoutUser() {
-        if (cookie.get("acid")) {
+        if (COOKIES.get("acid")) {
             logoutCookie()
             return
         }
@@ -91,7 +92,7 @@ const Navbar = () => {
     }
 
     async function logoutCookie() {
-        cookie.erase("acid")
+        COOKIES.erase("acid")
         await celesupAuthApi
             .post("/verify/email", { "logout-cookie": true })
             .then(
@@ -115,45 +116,47 @@ const Navbar = () => {
                         <path d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z" />
                     </svg>
                 </span>
-                <h1 onClick={() => brand()} className="nav-brand">
-                    <span className="brand-icon">
-                        {/* Celesup Logo */}
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 48 48"
-                        >
-                            <g id="surface154173640">
-                                <path
-                                    style={{
-                                        stroke: "none",
-                                        fillRule: "nonzero",
-                                        fill: "rgb(36.862746%,89.803922%,76.862746%)",
-                                        fillOpacity: "1",
-                                    }}
-                                    d="M 37 36 L 17 36 C 14.238281 36 12 33.761719 12 31 L 12 11 C 12 8.238281 14.238281 6 17 6 L 37 6 C 39.761719 6 42 8.238281 42 11 L 42 31 C 42 33.761719 39.761719 36 37 36 Z M 21 30 L 35 30 L 35 18.5 C 35 15.460938 32.539062 13 29.5 13 L 18 13 L 18 27 C 18 28.65625 19.34375 30 21 30 Z M 21 30 "
-                                />
-                                <path
-                                    style={{
-                                        stroke: "none",
-                                        fillRule: "nonzero",
-                                        fill: "rgb(10.196079%,73.725492%,61.176473%)",
-                                        fillOpacity: "1",
-                                    }}
-                                    d="M 31 42 L 11 42 C 8.238281 42 6 39.761719 6 37 L 6 17 C 6 14.238281 8.238281 12 11 12 L 31 12 C 33.761719 12 36 14.238281 36 17 L 36 37 C 36 39.761719 33.761719 42 31 42 Z M 17.5 36 L 30 36 L 30 21 C 30 19.34375 28.65625 18 27 18 L 15 18 C 13.34375 18 12 19.34375 12 21 L 12 30.5 C 12 33.539062 14.460938 36 17.5 36 Z M 17.5 36 "
-                                />
-                                <path
-                                    style={{
-                                        stroke: "none",
-                                        fillRule: "nonzero",
-                                        fill: "rgb(36.862746%,89.803922%,76.862746%)",
-                                        fillOpacity: "1",
-                                    }}
-                                    d="M 36 26 L 36 27 C 36 28.65625 34.65625 30 33 30 L 23 30 L 23 36 L 37 36 C 39.75 36 42 33.75 42 31 L 42 26 Z M 36 26 "
-                                />
-                            </g>
-                        </svg>
-                    </span>
-                    <span className="brand-name">Celesup</span>
+                <h1 className="nav-brand">
+                    <Link to="/" onClick={() => brand()}>
+                        <span className="brand-icon">
+                            {/* Celesup Logo */}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 48 48"
+                            >
+                                <g id="surface154173640">
+                                    <path
+                                        style={{
+                                            stroke: "none",
+                                            fillRule: "nonzero",
+                                            fill: "rgb(36.862746%,89.803922%,76.862746%)",
+                                            fillOpacity: "1",
+                                        }}
+                                        d="M 37 36 L 17 36 C 14.238281 36 12 33.761719 12 31 L 12 11 C 12 8.238281 14.238281 6 17 6 L 37 6 C 39.761719 6 42 8.238281 42 11 L 42 31 C 42 33.761719 39.761719 36 37 36 Z M 21 30 L 35 30 L 35 18.5 C 35 15.460938 32.539062 13 29.5 13 L 18 13 L 18 27 C 18 28.65625 19.34375 30 21 30 Z M 21 30 "
+                                    />
+                                    <path
+                                        style={{
+                                            stroke: "none",
+                                            fillRule: "nonzero",
+                                            fill: "rgb(10.196079%,73.725492%,61.176473%)",
+                                            fillOpacity: "1",
+                                        }}
+                                        d="M 31 42 L 11 42 C 8.238281 42 6 39.761719 6 37 L 6 17 C 6 14.238281 8.238281 12 11 12 L 31 12 C 33.761719 12 36 14.238281 36 17 L 36 37 C 36 39.761719 33.761719 42 31 42 Z M 17.5 36 L 30 36 L 30 21 C 30 19.34375 28.65625 18 27 18 L 15 18 C 13.34375 18 12 19.34375 12 21 L 12 30.5 C 12 33.539062 14.460938 36 17.5 36 Z M 17.5 36 "
+                                    />
+                                    <path
+                                        style={{
+                                            stroke: "none",
+                                            fillRule: "nonzero",
+                                            fill: "rgb(36.862746%,89.803922%,76.862746%)",
+                                            fillOpacity: "1",
+                                        }}
+                                        d="M 36 26 L 36 27 C 36 28.65625 34.65625 30 33 30 L 23 30 L 23 36 L 37 36 C 39.75 36 42 33.75 42 31 L 42 26 Z M 36 26 "
+                                    />
+                                </g>
+                            </svg>
+                        </span>
+                        <span className="brand-name">Celesup</span>
+                    </Link>
                 </h1>
                 {!!context.user && <SearchBar />}
 
@@ -201,18 +204,31 @@ const Navbar = () => {
                                     onlineStatus ? "Online" : "Offline"
                                 }`}
                             >
-                                <img
-                                    crossOrigin="anonymous"
-                                    className=""
-                                    src={CELESUP_BASE_URL + context.user.avatar}
-                                    alt=""
-                                />
-                                {onlineStatus && (
-                                    <span
-                                        className="online__status pos-absolute left-1-rem  bottom-neg-5-px width-1-rem height-2-px lime"
-                                        style={{ backgroundColor: "lime" }}
-                                    ></span>
-                                )}
+                                <span
+                                    onClick={() => {
+                                        context.storeDispatch(
+                                            context.updateModes({
+                                                dispatch: true,
+                                            }),
+                                        )
+                                    }}
+                                >
+                                    <img
+                                        crossOrigin="anonymous"
+                                        className=""
+                                        src={
+                                            CELESUP_BASE_URL +
+                                            context.user.avatar
+                                        }
+                                        alt=""
+                                    />
+                                    {onlineStatus && (
+                                        <span
+                                            className="online__status pos-absolute left-1-rem  bottom-neg-5-px width-1-rem height-2-px lime"
+                                            style={{ backgroundColor: "lime" }}
+                                        ></span>
+                                    )}
+                                </span>
                             </div>
                         }
                         items={[

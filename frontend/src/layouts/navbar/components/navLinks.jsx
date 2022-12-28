@@ -13,21 +13,11 @@ const NavLinks = () => {
 
     const dispatch = useDispatch()
 
-    function homepage() {
-        context.setFocusState({})
-        window.scrollTo({ top: 0 })
-        navigate(`/`)
-    }
-
-    function exploreRoute() {
-        navigate("/explore")
+    function clearStoreMoods() {
+        dispatch(context.updateModes({ dispatch: true }))
     }
 
     function composePost() {
-        // context.setFocusState({
-        // ...context.state,
-        // createPost: !context.state?.createPost,
-        // })
         dispatch(updateModes({ createPost: "form" }))
     }
 
@@ -44,13 +34,10 @@ const NavLinks = () => {
         })
     }
 
-    function gotoChats() {
-        navigate("/messager")
-    }
     return (
         <ul className="nav-links ">
             <li className="link home d-flex" title="Home">
-                <Link to={"/"}>
+                <Link to={"/"} onClick={clearStoreMoods}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 2048 2048"
@@ -59,17 +46,24 @@ const NavLinks = () => {
                     </svg>
                 </Link>
             </li>
+
             <li
                 className="link create-post d-flex"
                 onClick={() => composePost()}
                 title="Create"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M200 344V280H136C122.7 280 112 269.3 112 256C112 242.7 122.7 232 136 232H200V168C200 154.7 210.7 144 224 144C237.3 144 248 154.7 248 168V232H312C325.3 232 336 242.7 336 256C336 269.3 325.3 280 312 280H248V344C248 357.3 237.3 368 224 368C210.7 368 200 357.3 200 344zM0 96C0 60.65 28.65 32 64 32H384C419.3 32 448 60.65 448 96V416C448 451.3 419.3 480 384 480H64C28.65 480 0 451.3 0 416V96zM48 96V416C48 424.8 55.16 432 64 432H384C392.8 432 400 424.8 400 416V96C400 87.16 392.8 80 384 80H64C55.16 80 48 87.16 48 96z" />
-                </svg>
+                <Link to={"#"}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                    >
+                        <path d="M200 344V280H136C122.7 280 112 269.3 112 256C112 242.7 122.7 232 136 232H200V168C200 154.7 210.7 144 224 144C237.3 144 248 154.7 248 168V232H312C325.3 232 336 242.7 336 256C336 269.3 325.3 280 312 280H248V344C248 357.3 237.3 368 224 368C210.7 368 200 357.3 200 344zM0 96C0 60.65 28.65 32 64 32H384C419.3 32 448 60.65 448 96V416C448 451.3 419.3 480 384 480H64C28.65 480 0 451.3 0 416V96zM48 96V416C48 424.8 55.16 432 64 432H384C392.8 432 400 424.8 400 416V96C400 87.16 392.8 80 384 80H64C55.16 80 48 87.16 48 96z" />
+                    </svg>
+                </Link>
             </li>
+
             <li className="link explore d-flex" title="Discover">
-                <Link to={"/explore"}>
+                <Link to={"/discover"} onClick={clearStoreMoods}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 512 512"
@@ -80,20 +74,26 @@ const NavLinks = () => {
             </li>
 
             <li className="link create-post d-flex" title="Video">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M21 3H3c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.11-.9-2-2-2zm0 14H3V5h18v12zm-5-6l-7 4V7z" />
-                </svg>
+                <Link to={"/video/create"} onClick={clearStoreMoods}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M21 3H3c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.11-.9-2-2-2zm0 14H3V5h18v12zm-5-6l-7 4V7z" />
+                    </svg>
+                </Link>
             </li>
+
             <li
                 className="link notifications"
                 onClick={toggleNotificationPanel}
             >
                 <Dropdown
                     identifier="notificationPanel"
-                    btnParentClass=" pos-relative"
+                    btnParentClass="pos-relative"
                     jsxContent={<Notification context={context} />}
                     button={
-                        <>
+                        <span
+                            className="height-100 d-inline-block"
+                            onClick={clearStoreMoods}
+                        >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 448 512"
@@ -103,17 +103,19 @@ const NavLinks = () => {
                             {!!context.user?.has_alerts && (
                                 <span className="notification__notifier pos-absolute top-0 right-3-px badge width-10-px height-10-px br-full red"></span>
                             )}
-                        </>
+                        </span>
                     }
                     options={{
                         onDropped: () => {
-                            console.log("called")
+                            console.log("dropped")
                         },
+                        right: "0",
                     }}
                 />
             </li>
+
             <li className="link chats pos-relative" title="Chats">
-                <Link to={"/messenger"}>
+                <Link to={"/messenger"} onClick={clearStoreMoods}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 512 512"

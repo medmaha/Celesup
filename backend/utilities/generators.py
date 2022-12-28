@@ -29,35 +29,20 @@ def id_generator(used_for=str):
 
 
 def get_profile_data(user):
-    from admin_users.models import Admin
-
-    from celebrity.models import Celebrity
-    from supporter.models import Supporter
 
     from api.routes.user.serializers import (
         AdminSerializer,
         CelebritySerializer,
         SupporterSerializer,
+        UserMiniInfoSeriaLizer,
     )
 
-    profile = user.get_profile()
+    profiles = {
+        "admin": AdminSerializer(user.profile),
+        "celebrity": CelebritySerializer(user.profile),
+        "supporter": SupporterSerializer(user.profile),
+    }
+    other = UserMiniInfoSeriaLizer(user)
+    profile = profiles.get(user.user_type.lower(), other)
 
-    if isinstance(profile, Admin):
-        return AdminSerializer(profile)
-    elif isinstance(profile, Celebrity):
-        return CelebritySerializer(profile)
-    elif isinstance(profile, Supporter):
-        return SupporterSerializer(profile)
-    else:
-        return {}
-
-
-def get_auth_tokens(url: str, email: str, password: str):
-
-    data = {"email": str(email), "password": str(password)}
-    headers = {"Content-Type": "Application/json"}
-
-    token = requests.post(
-        url="http://{}/obtain/user/tokens".format(url), json=data, headers=headers
-    )
-    return token.json()
+    return profile.data

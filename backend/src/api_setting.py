@@ -3,8 +3,8 @@ from datetime import timedelta
 
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = False
+# SESSION_COOKIE_SECURE = True
 
 # from api_celesup.features.paginator import CustomPaginator
 

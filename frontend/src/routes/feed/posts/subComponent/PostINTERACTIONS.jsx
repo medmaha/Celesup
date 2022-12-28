@@ -13,7 +13,7 @@ export default function PostINTERACTIONS({
             style={{ maxWidth: "400px" }}
         >
             {/* liked */}
-            <div
+            <button
                 className="d-flex align-items-center flex-column likes cursor-pointer"
                 onClick={likePost}
             >
@@ -39,9 +39,9 @@ export default function PostINTERACTIONS({
                     )}
                 </span>
                 <span className="font-sm">{postData.likes.length}</span>
-            </div>
+            </button>
             {/* shared */}
-            <div className="d-flex flex-column align-items-center share cursor-pointer">
+            <button className="d-flex flex-column align-items-center share cursor-pointer">
                 <span className="icon-wrapper">
                     <svg
                         className="grey-icon cursor-pointer"
@@ -52,9 +52,9 @@ export default function PostINTERACTIONS({
                     </svg>
                 </span>
                 <span className="font-sm">{postData.shares}</span>
-            </div>
+            </button>
             {/* comment */}
-            <div
+            <button
                 className="d-flex flex-column align-items-center comment cursor-pointer"
                 onClick={() => setViewComments(true)}
             >
@@ -68,9 +68,9 @@ export default function PostINTERACTIONS({
                     </svg>
                 </span>
                 <span className="font-sm">{postData.comments}</span>
-            </div>
+            </button>
             {/* saved */}
-            <div className="d-flex flex-column align-items-center bookmark cursor-pointer">
+            <button className="d-flex flex-column align-items-center bookmark cursor-pointer">
                 <span className="icon-wrapper">
                     <svg
                         className="grey-icon cursor-pointer"
@@ -81,7 +81,7 @@ export default function PostINTERACTIONS({
                     </svg>
                 </span>
                 <span className="font-sm">{postData.bookmarks}</span>
-            </div>
+            </button>
         </div>
     )
 }

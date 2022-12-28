@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { updateForm, updatePages } from "../../../redux/createPost"
 import PhotoEditor from "./PhotoEditor"
+import { createFileFromDataUrl } from "./utils"
 
 let Last_FILTER = ""
 
@@ -34,14 +35,6 @@ const ImageViewer = () => {
         )
     }, [])
 
-    useEffect(() => {
-        if (!image) return
-        // document.addEventListener("preparePost", () => previewPost(file))
-        // return () => {
-        //     document.removeEventListener("preparePost", () => previewPost(file))
-        // }
-    }, [file])
-
     // function previewPost(file) {
     //     console.log(file)
     //     if (!file) return
@@ -54,10 +47,6 @@ const ImageViewer = () => {
     //         document.dispatchEvent(ev)
     //     }, 250)
     // }
-
-    useEffect(() => {
-        if (!form || !image) return
-    }, [form, image])
 
     useEffect(() => {
         if (!canvasContext) return
@@ -92,7 +81,7 @@ const ImageViewer = () => {
             Last_FILTER = filter || Last_FILTER
         }
         canvasContext.drawImage(image, 0, 0, image.width, image.height)
-        setFile(createFile())
+        updateFile()
     }
 
     async function resizeImage(photo = Image) {
@@ -131,33 +120,12 @@ const ImageViewer = () => {
         Last_FILTER = ""
     }
 
-    function createFile() {
+    function updateFile() {
         const MIME_TYPE = image.src.split(";")[0].split(":")[1]
 
         const dataURL = canvas.toDataURL(`${MIME_TYPE}`, 95)
 
-        const ascii_Char = atob(dataURL.split(",")[1])
-        const ascii_CodeArray = new Uint8Array(ascii_Char.length)
-
-        let i = ascii_Char.length
-        while (i--) {
-            ascii_CodeArray[i] = ascii_Char.charCodeAt(i)
-        }
-
-        const _file = new File(
-            [ascii_CodeArray],
-            `photo-${ascii_CodeArray.byteLength}e.${MIME_TYPE.split("/")[1]}`,
-            {
-                type: MIME_TYPE,
-            },
-        )
-
-        const reader = new FileReader()
-        reader.onload = () => {
-            dispatch(updateForm({ picture: reader.result }))
-        }
-        reader.readAsDataURL(_file)
-        return _file
+        dispatch(updateForm({ picture: dataURL }))
     }
 
     return (

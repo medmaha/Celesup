@@ -142,9 +142,16 @@ export default function Post({
                 <PostTEXTS postData={postData} />
 
                 {/* picture / video */}
-                <Link to={`/post/${postData.key}`} state={{ post: postData }}>
-                    <PostFILES postData={postData} />
-                </Link>
+                {postData.music ||
+                    postData.video ||
+                    (postData.picture && (
+                        <Link
+                            to={`/post/${postData.key}`}
+                            state={{ post: postData }}
+                        >
+                            <PostFILES postData={postData} />
+                        </Link>
+                    ))}
 
                 {/* Post Interaction/activities */}
                 {OPTIONS["interactions"] && (
