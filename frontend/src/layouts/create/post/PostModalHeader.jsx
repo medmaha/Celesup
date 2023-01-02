@@ -238,14 +238,6 @@ function setConfiguration(
                                             }),
                                         )
                                         document.dispatchEvent(CustomEvent)
-
-                                        setTimeout(() => {
-                                            storeDispatch(
-                                                context.updateModes({
-                                                    infoMessage: null,
-                                                }),
-                                            )
-                                        }, 3000)
                                     },
                                     (err) => {
                                         //  Todo --> error handling

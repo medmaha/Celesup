@@ -30,11 +30,10 @@ class AuthenticationTokens(TokenObtainPairView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        elif user:
-            data = self.serializer_class.tokens(user)
+        if user:
+            tokens = self.serializer_class.tokens(user)
+            return Response(tokens, status=status.HTTP_200_OK)
 
-        else:
-            data = {**self.temporal_db.get(cookie_id=cookie_id)}
-            del data["code"]
-
+        data = {**self.temporal_db.get(cookie_id=cookie_id)}
+        del data["code"]
         return Response(data, status=status.HTTP_200_OK)

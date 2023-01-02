@@ -23,9 +23,12 @@ function useAuthRequest() {
                 (res) => {
                     setData(res.data)
                 },
-                (error) => {
-                    setError(error.message)
+                (err) => {
+                    setError(err.response?.data?.message || err.message)
                 },
+            )
+            .catch((err) =>
+                setError(err.response?.data?.message || err.message),
             )
             .finally(setPending(false))
     }

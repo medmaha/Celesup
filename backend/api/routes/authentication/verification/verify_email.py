@@ -63,19 +63,13 @@ class VerifyEmailAddress(APIView):
         if self.temporal_db.exists(code=f"C-{VERIFICATION_CODE}"):
             client = self.temporal_db.get_raw_data(cookie_id=self.cookie)
 
-            user = User.objects.filter(
-                email=client["email"], username=client["username"]
+            user = User.objects.create_user(
+                email=client["email"],
+                username=client["username"],
+                password=client["password"],
+                user_type=client["user_type"],
+                verified=True,
             )
-            if user.exists():
-                user = user[0]
-            else:
-                user = User.objects.create(
-                    email=client["email"],
-                    username=client["username"],
-                    password=client["password"],
-                    user_type=client["user_type"],
-                    verified=True,
-                )
 
             tokens = GenerateToken.tokens(user)
             self.temporal_db.delete(code=VERIFICATION_CODE)
@@ -84,8 +78,13 @@ class VerifyEmailAddress(APIView):
                 status=status.HTTP_201_CREATED,
             )
 
+        data = {"message": "Code is required"}
+
+        if VERIFICATION_CODE:
+            data["message"] = "Invalid code"
+
         return Response(
-            {"message": "Code is missing or invalid"},
+            data,
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -114,9 +113,10 @@ class VerifyEmailAddress(APIView):
         )
 
         mail = SendMail(content, recipient, verify_email=True)
-        mail.proceed()
+        # mail.proceed()
+        data = {"message": "Sending code! this could take a minute"}
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
 
     def missing_cookie_response(self):
         return Response(

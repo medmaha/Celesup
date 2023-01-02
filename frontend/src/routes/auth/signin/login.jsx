@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react"
+import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { GlobalContext } from "../../../App"
 import AlertMessage from "../../../features/AlertMessage"
@@ -7,11 +8,12 @@ import { UseCookie } from "../../../hooks/useCookie"
 import useAuthRequest from "../useAuthRequest"
 
 export default function Login() {
-    const { user, updateTokens } = useContext(GlobalContext)
+    const context = useContext(GlobalContext)
     const [data, pending, error, sendAuthRequest] = useAuthRequest()
 
     const [formData, updateFormData] = useState({})
-    const cookies = UseCookie()
+    const COOKIES = UseCookie()
+    const storeDispatch = useDispatch()
 
     const [showPassword, setShowPassword] = useState(false)
 
@@ -19,21 +21,31 @@ export default function Login() {
 
     useEffect(() => {
         // cookies.erase("cookie_id")
-        if (user) {
+        if (context.user) {
             navigate(`/`, { replace: true })
         }
         // eslint-disable-next-line
-    }, [user])
+    }, [context.user])
+
+    useEffect(() => {
+        if (!error) return
+
+        storeDispatch(context.updateModes({ errorMessage: error }))
+    }, [error])
+
+    useEffect(() => {
+        storeDispatch(context.updateModes({ loadingRequest: pending }))
+    }, [pending])
 
     useEffect(() => {
         if (!data) return
         if (data.state === "unverified") {
-            cookies.set("acid", data.cookie_id, 1)
-            cookies.set("dusr", JSON.stringify(data), 1)
-
+            COOKIES.set("acid", data.cookie_id, 1)
+            COOKIES.set("dusr", JSON.stringify(data), 1)
+            alert("Use this code for validation process")
             navigate("/verify/email", { state: data, replace: true })
         } else if (data.access) {
-            updateTokens(data)
+            context.updateTokens(data)
         }
     }, [data])
 
@@ -81,14 +93,6 @@ export default function Login() {
                     </h3>
                 </div>
                 <div className="d-flex justify-content-center flex-column align-items-center">
-                    <div className="maxwidth-300-px">
-                        {error && (
-                            <AlertMessage
-                                asError={true}
-                                message={error.message}
-                            />
-                        )}
-                    </div>
                     <div className="card p-2  mx-__ pos-relative maxwidth-350-px">
                         <h3 className="center mb-1">Welcome To Celesup</h3>
 

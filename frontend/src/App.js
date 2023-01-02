@@ -9,7 +9,7 @@ import MobileNavbarLinks from "./layouts/navbar/mobileNavbarLinks"
 import { refreshAuthTokens } from "./axiosInstances"
 
 import { AppStore } from "./redux/store"
-import { updateAuthTokens, updateModes } from "./redux/app"
+import { updateAuthTokens, updateModes, updateActiveLink } from "./redux/app"
 
 // VIEWS
 import Homepage from "./routes/homepage"
@@ -40,7 +40,9 @@ function handleWebSocketCommunication(ev, updateUserTokens) {
 function App() {
     //
     const [state, setFocusState] = useState(null)
-    const { tokens, user, moods, dummy } = useSelector((state) => state.main)
+    const { tokens, user, moods, dummy, activeLink } = useSelector(
+        (state) => state.main,
+    )
 
     const { initWebSocket, socket: webSocketMaster } = useWebSocketHook()
 
@@ -68,8 +70,10 @@ function App() {
         state: state,
         moods: { ...moods, ...state },
         dummy,
+        activeLink,
         updateModes,
         updateTokens,
+        updateActiveLink,
         refreshTokens,
         setFocusState,
         storeDispatch,

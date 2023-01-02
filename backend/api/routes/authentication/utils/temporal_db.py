@@ -5,11 +5,15 @@ from cryptography.fernet import Fernet
 
 from pathlib import Path
 
+import base64
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent
 
 
 class Utils:
-    crypto = Fernet(bytes("smPULPNmPEuDudDdjvCNkKAAi3az7FFxLgNUTsEfLOY==", "utf-8"))
+    __env_key = os.getenv("FERNET_SECRET_KEY")
+    __fernet_key = bytes(f"{__env_key}==", "utf-8")
+    crypto = Fernet(__fernet_key)
 
     def valid_lookup_field(self, **kwargs):
         if "code" in kwargs:

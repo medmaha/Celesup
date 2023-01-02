@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { useState } from "react"
 
-const loadConfig = {
+let data = {
     idx: -1,
     data: ["L", "o", "a", "d", "i", "n", "g", ".", ".", "."],
     current: "",
@@ -9,6 +9,8 @@ const loadConfig = {
 
 export default function Loading({ icon }) {
     const [text, setText] = useState("")
+
+    const loadConfig = { ...data }
 
     useEffect(() => {
         const interval = setInterval(updateLoadingText, 300)

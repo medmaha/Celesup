@@ -9,16 +9,35 @@ import useAuthRequest from "../useAuthRequest"
 import PasswordField from "./component/passwordField"
 import { UseCookie } from "../../../hooks/useCookie"
 import RegistrationForm from "./component/RegistrationForm"
+import { GlobalContext } from "../../../App"
+import { useDispatch } from "react-redux"
 
 const SignupForm = ({ userType }) => {
+    const [data, pending, error, sendAuthRequest] = useAuthRequest()
     const [formData, updateFormData] = useState({})
 
-    const [data, pending, error, sendAuthRequest] = useAuthRequest()
-    const cookies = UseCookie()
-
+    const COOKIES = UseCookie()
+    const context = useContext(GlobalContext)
     const registrationContext = useContext(SignupContext)
 
     const navigate = useNavigate()
+    const storeDispatch = useDispatch()
+
+    useEffect(() => {
+        if (!error) return
+        storeDispatch(context.updateModes({ errorMessage: error }))
+    }, [error])
+
+    useEffect(() => {
+        storeDispatch(context.updateModes({ loadingRequest: pending }))
+    }, [pending])
+
+    useEffect(() => {
+        if (!data) return
+        COOKIES.set("acid", data.cookie_id, 1)
+        COOKIES.set("dusr", JSON.stringify(data), 1)
+        navigate("/verify/email", { state: data, replace: true })
+    }, [data])
 
     function handleFormChange({ target }) {
         updateFormData((prev) => {
@@ -46,13 +65,6 @@ const SignupForm = ({ userType }) => {
             form: form,
         })
     }
-
-    useEffect(() => {
-        if (!data) return
-        cookies.set("acid", data.cookie_id, 1)
-        cookies.set("dusr", JSON.stringify(data), 1)
-        navigate("/verify/email", { state: data, replace: true })
-    }, [data])
 
     return (
         <>

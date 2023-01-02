@@ -29,7 +29,13 @@ export default function Alerts({ type, message }) {
     }, [])
 
     function deActivate() {
-        dispatch(updateModes({ errorMessage: null, successMessage: null }))
+        dispatch(
+            updateModes({
+                errorMessage: null,
+                successMessage: null,
+                infoMessage: null,
+            }),
+        )
     }
 
     return (

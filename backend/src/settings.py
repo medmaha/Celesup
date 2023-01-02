@@ -1,16 +1,20 @@
 import os
 from pathlib import Path
 
-# CUSTOM USER MODEL
-AUTH_USER_MODEL = "users.User"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-!ww8*_0$j*cl2^$vmon#aoh-&hv+t8uq#u446w*r0v+$*1z3=m"
+AUTH_USER_MODEL = "users.User"
 
-DEBUG = 1
+SECRET_KEY = os.getenv("CELESUP_SECRET_KEY", os.getenv("SECRET_KEY"))
 
-ALLOWED_HOSTS = ["*"]
+DEBUG = bool(int(os.getenv("DEBUG")))
+
+if not DEBUG:
+    ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+else:
+    ALLOWED_HOSTS = ["*"]
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -118,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "GMT"
 
 USE_I18N = True
 
@@ -139,16 +143,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, '"staticfiles"')
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "MEDIA_FILES/"
 
-
 # Emailing
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_USE_TLS = 1
-EMAIL_PORT = 587
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "celesup00@gmail.com"
-EMAIL_HOST_PASSWORD = "obszcndtjnpqrjxa"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
+EMAIL_USE_TLS = int(os.getenv("EMAIL_USE_TLS"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { celesupApi, CELESUP_BASE_URL } from "../../axiosInstances"
+
+import { celesupApi } from "../../axiosInstances"
 
 import useAxiosRequest from "../../hooks/useAxiosRequest"
 import NotificationItem from "./NotificationItem"
@@ -10,6 +11,14 @@ const Notification = ({ context }) => {
 
     useEffect(() => {
         getNotifications()
+        return () => {
+            console.log("closed")
+            if (context.activeLink === "notification") {
+                // context.storeDispatch(
+                //     context.updateActiveLink({ data: "home" }),
+                // )
+            }
+        }
     }, [])
 
     useEffect(() => {
@@ -66,6 +75,18 @@ const Notification = ({ context }) => {
         <div className="d-flex flex-column gap-5-px px-__ overflow-hidden overflow-y-auto minwidth-300-px maxheight-500-px">
             {!!notifications && (
                 <NotificationsWrapper notifications={notifications} />
+            )}
+            {!!!notifications.new.length && !!!notifications.old.length && (
+                <div
+                    className="d-flex width-100 justify-content-center align-items-center"
+                    style={{
+                        height: "5rem",
+                    }}
+                >
+                    <p className="typography">
+                        You don't have notification yet
+                    </p>
+                </div>
             )}
         </div>
     )

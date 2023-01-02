@@ -10,19 +10,21 @@ import { GlobalContext } from "../../../App"
 
 let PREV_KEY = false
 
+const COOKIES = UseCookie()
+
 const EmailVerification = () => {
-    const { data, pending, error, sendRequest } = useVerifyRequest()
+    const { data, pending, error, setError, setPending, sendRequest } =
+        useVerifyRequest()
     const [code, setCode] = useState("")
     const [state, setState] = useState({})
     const [changeEmail, setChangeEmail] = useState(false)
 
-    const cookies = UseCookie()
     const context = useContext(GlobalContext)
     const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const storeDispatch = useDispatch()
 
     useEffect(() => {
-        const dummyData = cookies.get("dusr")
+        const dummyData = COOKIES.get("dusr")
         if (dummyData) {
             setState(JSON.parse(dummyData))
         }
@@ -32,27 +34,32 @@ const EmailVerification = () => {
 
     useEffect(() => {
         if (!data) return
-        console.log(data)
         if (data.access) {
-            dispatch(updateModes({ successMessage: "Email validated" }))
-            setTimeout(() => {
-                dispatch(updateModes({ successMessage: null }))
-                context.updateTokens(data)
-            }, 3000)
+            COOKIES.erase("acid")
+            COOKIES.erase("dusr")
+            storeDispatch(
+                updateModes({
+                    successMessage: "Email validated",
+                    verification: false,
+                }),
+            )
+            context.updateTokens(data)
+            navigate("/")
         }
     }, [data])
 
     useEffect(() => {
         if (!error) return
-        dispatch(updateModes({ errorMessage: error }))
+        storeDispatch(updateModes({ errorMessage: error }))
+        setError(false)
     }, [error])
 
     useEffect(() => {
         if (!pending) {
-            dispatch(updateModes({ loadingRequest: null }))
+            storeDispatch(updateModes({ loadingRequest: null }))
             return
         }
-        dispatch(updateModes({ loadingRequest: "text" }))
+        storeDispatch(updateModes({ loadingRequest: "spin" }))
     }, [pending])
 
     useEffect(() => {
@@ -83,13 +90,36 @@ const EmailVerification = () => {
     }
 
     async function resendCode() {
+        setPending(true)
         celesupAuthApi
             .post("/verify/email", { "resend-code": true })
-            .then((res) => {
-                alert("code resend")
-            })
+            .then(
+                (res) => {
+                    if (res.data.message) {
+                        setPending(false)
+                        storeDispatch(
+                            updateModes({ infoMessage: res.data.message }),
+                        )
+                    }
+                },
+                (err) => {
+                    setPending(false)
+                    storeDispatch(
+                        updateModes({
+                            errorMessage:
+                                err.response?.data?.message || err.message,
+                        }),
+                    )
+                },
+            )
             .catch((err) => {
-                dispatch(updateModes({ errorMessage: err.message }))
+                setPending(false)
+                storeDispatch(
+                    updateModes({
+                        errorMessage:
+                            err.response?.data?.message || err.message,
+                    }),
+                )
             })
     }
 
@@ -217,6 +247,9 @@ function useVerifyRequest() {
             config: {},
             ...options,
         }
+
+        if (!COOKIES.get("acid")) return
+
         setPending(true)
         await celesupAuthApi(options.url, {
             method: options.method,
@@ -231,13 +264,13 @@ function useVerifyRequest() {
                 },
                 (err) => {
                     setData(null)
-                    setError(err.message)
+                    setError(err.response?.data?.message || err.message)
                     setPending(false)
                 },
             )
             .catch((err) => {
                 setData(null)
-                setError(err.message)
+                setError(err.response?.data?.message || err.message)
                 setPending(false)
             })
     }

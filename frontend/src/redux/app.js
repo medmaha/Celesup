@@ -11,9 +11,12 @@ export const appSlice = createSlice({
             access: localStorage.getItem("ata"),
             refresh: localStorage.getItem("atr"),
         },
+
         user: localStorage.getItem("ata")
             ? jwtDecode(localStorage.getItem("ata")).data
             : {},
+
+        activeLink: "home",
 
         moods: {
             createPost: false,
@@ -44,6 +47,24 @@ export const appSlice = createSlice({
             }
         },
 
+        updateActiveLink(state, action) {
+            const activeLink = state.activeLink
+            const currentLink = action.payload.data
+
+            const activeLinkElement = document.querySelector(
+                `nav [data-link="${activeLink}"]`,
+            )
+
+            const currentLinkElement = document.querySelector(
+                `nav [data-link="${currentLink}"]`,
+            )
+
+            activeLinkElement.classList.remove("active")
+            currentLinkElement.classList.add("active")
+
+            state.activeLink = currentLink
+        },
+
         updateModes(state, action) {
             if (action.payload.dispatch) {
                 state.moods = {
@@ -67,5 +88,6 @@ export const appSlice = createSlice({
     },
 })
 
-export const { updateAuthTokens, updateModes } = appSlice.actions
+export const { updateAuthTokens, updateModes, updateActiveLink } =
+    appSlice.actions
 export default appSlice.reducer
