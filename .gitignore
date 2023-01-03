@@ -15,7 +15,7 @@ virtual-env/
 __pycache__/
 
 /*/**/migrations/[0-9]*_*.py
-
+backend/[0-9]*_*.py
 
 MEDIA_FILES/
 media/

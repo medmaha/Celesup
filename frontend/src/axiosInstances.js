@@ -5,14 +5,12 @@ import { UseCookie } from "./hooks/useCookie"
 
 // TODO
 
-let baseURL = "http://127.0.0.1:8000"
+let baseURL = process.env.REACT_APP_API_BASE_URL
 
 export const CELESUP_BASE_URL = baseURL
 
 // baseURL = "https//mahamedtoure.pythonanywhere.com"
 
-// if (!baseURL) {
-// }
 const cookies = UseCookie()
 
 export const celesupApi = axios.create({

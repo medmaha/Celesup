@@ -8,7 +8,9 @@ import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg"
 import VideoPlayer from "../../../components/VideoPlayer"
 import VideoContainer from "../../../components/videoContainer"
 import AlertMessage from "../../../features/AlertMessage"
-const ffmpeg = createFFmpeg({ log: true })
+
+// const ffmpeg = createFFmpeg({ log: true })
+const ffmpeg = createFFmpeg()
 
 export default function VideoFileViewer() {
     const videoPlayerRef = useRef()
