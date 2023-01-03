@@ -1,5 +1,4 @@
 import uuid
-import requests
 from features.models import UniqueId
 
 
